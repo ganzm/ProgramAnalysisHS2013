@@ -16,7 +16,7 @@ public class ValidationTest {
 
 	@Test
 	public void testExample() {
-		testAnyProgram("ExampleTest", true);
+		testAnyProgram("ExampleTest", true, true);
 	}
 
 	private void redirectOutputStream() {
@@ -34,10 +34,15 @@ public class ValidationTest {
 		return new String(redirectedOutStream.toByteArray());
 	}
 
-	private void testAnyProgram(String name, boolean expectedToBeSafe) {
+	private void testAnyProgram(String name, boolean expectedToBeSafe, boolean isDebug) {
 		String output = null;
 
-		String[] args = new String[] { name };
+		String[] args = null;
+		if (isDebug) {
+			args = new String[] { name, "-d" };
+		} else {
+			args = new String[] { name };
+		}
 		redirectOutputStream();
 		try {
 			int retVal = Verifier.intMain(args);
