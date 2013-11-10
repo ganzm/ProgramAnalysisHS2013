@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import soot.PrimType;
 import soot.RefLikeType;
+import soot.RefType;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AddExpr;
@@ -69,18 +70,28 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			if ((!(left instanceof StaticFieldRef)) && (!(left instanceof JimpleLocal)) && (!(left instanceof JArrayRef))
 					&& (!(left instanceof JInstanceFieldRef)))
 				unhandled("1: Assignment to non-variables is not handled.");
+			
 			else if ((left instanceof JArrayRef) && (!((((JArrayRef) left).getBase()) instanceof JimpleLocal)))
 				unhandled("2: Assignment to a non-local array variable is not handled.");
-
+			
 			// TODO: Handle other cases. For example:
 
-			if (left instanceof JimpleLocal) {
-				String varName = ((JimpleLocal) left).getName();
+			else if (left instanceof JimpleLocal) {
+				
+				JimpleLocal jimpleLocalLeft = (JimpleLocal) left;
+				String varName = jimpleLocalLeft.getName();
+				
 
-				if (right instanceof IntConstant) {
+				if (jimpleLocalLeft.getType() instanceof RefType) {
+					logger.warning("ignoring assignments to complex types.");
+				}
+				
+				else if (right instanceof IntConstant) {
 					IntConstant c = ((IntConstant) right);
 					fallState.putIntervalForVar(varName, new Interval(c.value, c.value));
-				} else if (right instanceof JimpleLocal) {
+				} 
+				
+				else if (right instanceof JimpleLocal) {
 					JimpleLocal l = ((JimpleLocal) right);
 					if (l.getType() instanceof RefLikeType) {
 						logger.warning("ignore right side "+l.getType());
@@ -89,7 +100,9 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 						fallState.putIntervalForVar(varName, current.getIntervalForVar(l.getName()));
 						throw new RuntimeException("hit unexpected type "+l.getType());
 					}
-				} else if (right instanceof BinopExpr) {
+				} 
+				
+				else if (right instanceof BinopExpr) {
 					Value r1 = ((BinopExpr) right).getOp1();
 					Value r2 = ((BinopExpr) right).getOp2();
 
@@ -104,10 +117,19 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 					}
 				}
 
+				else {
+					throw new RuntimeException("unhandled JimpleLocal "+left+ " at "+op);
+				}
 				// ...
 			}
+			
+			else {
+				throw new RuntimeException("unhandled lhs "+left);
+			}
 			// ...
-		} else if (s instanceof JInvokeStmt) {
+		} 
+		
+		else if (s instanceof JInvokeStmt) {
 			// A method is called. e.g. AircraftControl.adjustValue
 
 			// You need to check the parameters here.
