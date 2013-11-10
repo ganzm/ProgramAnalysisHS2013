@@ -18,6 +18,7 @@ import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.MulExpr;
 import soot.jimple.NegExpr;
+import soot.jimple.ReturnVoidStmt;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.SubExpr;
@@ -90,7 +91,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 				
 
 				if (jimpleLocalLeft.getType() instanceof RefType) {
-					logger.warning("ignoring assignments to complex types.");
+					logger.warning("ignoring assignments to complex type: "+op);
 				}
 				
 				else if (right instanceof IntConstant) {
@@ -199,6 +200,14 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 					checkInterval(expr.getArg(1), legalValueInterval, current);
 				}
 			}
+		}
+		
+		else if (s instanceof ReturnVoidStmt) {
+			logger.warning("ignoring return void statement: "+op);
+		}
+		
+		else {
+			throw new RuntimeException("unhandled statement: "+op);
 		}
 
 		// TODO: Maybe avoid copying objects too much. Feel free to optimize.
