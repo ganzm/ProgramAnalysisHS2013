@@ -8,12 +8,12 @@ public class ReadSensorTest extends ValidationTestBase {
 
 	@Test(timeout = 10000)
 	public void testReadSensor() {
-		testAnyProgram("ReadSensor", true, false);
+		testAnyProgram("ReadSensor", SAFE, false);
 	}
 
 	@Test(timeout = 10000)
 	public void testReadSensorDebug() {
-		testAnyProgram("ReadSensor", true, true);
+		testAnyProgram("ReadSensor", SAFE, true);
 	}
 
 }

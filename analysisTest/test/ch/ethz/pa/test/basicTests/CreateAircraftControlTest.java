@@ -8,12 +8,12 @@ public class CreateAircraftControlTest extends ValidationTestBase {
 
 	@Test(timeout = 10000)
 	public void testCreateAircraftControl() {
-		testAnyProgram("CreateAircraftControl", true, false);
+		testAnyProgram("CreateAircraftControl", SAFE, false);
 	}
 
 	@Test(timeout = 10000)
 	public void testCreateAircraftControlDebug() {
-		testAnyProgram("CreateAircraftControl", true, true);
+		testAnyProgram("CreateAircraftControl", SAFE, true);
 	}
 
 }

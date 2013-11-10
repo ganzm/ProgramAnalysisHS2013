@@ -11,6 +11,9 @@ public class ValidationTestBase {
 
 	private PrintStream originalOut;
 	private ByteArrayOutputStream redirectedOutStream;
+	
+	protected final static boolean SAFE = true;
+	protected final static boolean UNSAFE = false;
 
 	public ValidationTestBase() {
 		super();
