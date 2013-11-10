@@ -1,7 +1,7 @@
 
 /**
- * Increments 990 by 9, then assign it.
- * This is UNSAFE.
+ * Doubles 499, then assigns it.
+ * This is SAFE.
  */
 public class DoubleHighValue {
 

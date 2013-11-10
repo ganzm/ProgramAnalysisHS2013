@@ -46,4 +46,24 @@ public class ComputeValues extends ValidationTestBase {
 		testAnyProgram("DoubleHighValue", SAFE, true);
 	}
 
+	@Test(timeout = 10000)
+	public void testDoubleLargeValue() {
+		testAnyProgram("DoubleLargeValue", UNSAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testDoubleLargeValueDebug() {
+		testAnyProgram("DoubleLargeValue", UNSAFE, true);
+	}
+
+	@Test(timeout = 10000)
+	public void testMultiplyTwoSensorValues() {
+		testAnyProgram("MultiplyTwoSensorValues", UNSAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testMultiplyTwoSensorValuesDebug() {
+		testAnyProgram("MultiplyTwoSensorValues", UNSAFE, true);
+	}
+
 }
