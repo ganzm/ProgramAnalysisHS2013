@@ -27,6 +27,16 @@ public class ComputeValues extends ValidationTestBase {
 	}
 
 	@Test(timeout = 10000)
+	public void testDecrementLargeValue() {
+		testAnyProgram("DecrementLargeValue", UNSAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testDecrementLargeValueDebug() {
+		testAnyProgram("DecrementLargeValue", UNSAFE, true);
+	}
+
+	@Test(timeout = 10000)
 	public void testIncrementHighValue() {
 		testAnyProgram("IncrementHighValue", SAFE, false);
 	}
