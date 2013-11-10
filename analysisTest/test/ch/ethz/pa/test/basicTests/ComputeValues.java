@@ -36,4 +36,14 @@ public class ComputeValues extends ValidationTestBase {
 		testAnyProgram("IncrementHighValue", SAFE, true);
 	}
 
+	@Test(timeout = 10000)
+	public void testDoubleHighValue() {
+		testAnyProgram("DoubleHighValue", SAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testDoubleHighValueDebug() {
+		testAnyProgram("DoubleHighValue", SAFE, true);
+	}
+
 }

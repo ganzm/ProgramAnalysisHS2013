@@ -15,6 +15,7 @@ import soot.jimple.BinopExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
+import soot.jimple.MulExpr;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.internal.JArrayRef;
@@ -116,6 +117,12 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 						if (right instanceof AddExpr) {
 							fallState.putIntervalForVar(varName, Interval.plus(i1, i2));
 						}
+						
+						else if (right instanceof MulExpr) {
+							fallState.putIntervalForVar(varName, Interval.multiply(i1, i2));
+						} 
+						
+						else throw new RuntimeException("unsupported operation "+right+" at "+op);
 					}
 				}
 				

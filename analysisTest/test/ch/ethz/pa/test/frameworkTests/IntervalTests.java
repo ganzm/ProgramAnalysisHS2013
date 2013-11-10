@@ -31,5 +31,10 @@ public class IntervalTests {
 		Assert.assertFalse("underrun not considered", new Interval(10, 15).covers(new Interval(9,15)));
 		Assert.assertFalse("overrun not considered", new Interval(10, 15).covers(new Interval(10,16)));
 	}
+	
+	@Test
+	public void testMultiply() {
+		Assert.assertEquals(new Interval(-9,3), Interval.multiply(new Interval(-3,1), new Interval(-1,3)));
+	}
 
 }
