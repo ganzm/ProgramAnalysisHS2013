@@ -86,4 +86,14 @@ public class ComputeValues extends ValidationTestBase {
 		testAnyProgram("InvertSensorValue", SAFE, true);
 	}
 
+	@Test(timeout = 10000)
+	public void testSubtractFromMinusOne() {
+		testAnyProgram("SubtractFromMinusOne", UNSAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testSubtractFromMinusOneDebug() {
+		testAnyProgram("SubtractFromMinusOne", UNSAFE, true);
+	}
+
 }

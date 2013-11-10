@@ -19,6 +19,7 @@ import soot.jimple.MulExpr;
 import soot.jimple.NegExpr;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
+import soot.jimple.SubExpr;
 import soot.jimple.UnopExpr;
 import soot.jimple.internal.JArrayRef;
 import soot.jimple.internal.JInstanceFieldRef;
@@ -125,6 +126,10 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 						if (right instanceof AddExpr) {
 							fallState.putIntervalForVar(varName, Interval.plus(i1, i2));
 						}
+						
+						else if (right instanceof SubExpr) {
+							fallState.putIntervalForVar(varName, Interval.subtract(i1, i2));
+						} 
 						
 						else if (right instanceof MulExpr) {
 							fallState.putIntervalForVar(varName, Interval.multiply(i1, i2));

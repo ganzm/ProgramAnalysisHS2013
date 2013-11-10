@@ -26,6 +26,11 @@ public class Interval {
 		return new Interval(i1.lower + i2.lower, i1.upper + i2.upper);
 	}
 
+	public static Interval subtract(Interval i1, Interval i2) {
+		// TODO Auto-generated method stub
+		return new Interval(i1.lower - i2.upper, i1.upper - i2.lower);
+	}
+
 	public static Interval multiply(Interval i1, Interval i2) {
 		int x1 = i1.lower * i2.lower;
 		int x2 = i1.lower * i2.upper;
