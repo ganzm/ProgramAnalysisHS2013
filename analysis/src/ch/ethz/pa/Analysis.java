@@ -14,6 +14,7 @@ import soot.jimple.AddExpr;
 import soot.jimple.BinopExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.DivExpr;
+import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.MulExpr;
@@ -74,6 +75,15 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		
 		else if (s instanceof JInvokeStmt) {
 			flowThroughJInvokeStmt(current, (JInvokeStmt) s);
+		}
+		
+		else if (s instanceof IfStmt) {
+			
+			IfStmt is = (IfStmt) s;
+			
+			Value condition = is.getCondition();
+			
+			throw new RuntimeException("unhandled if statement: "+op);
 		}
 		
 		else if (s instanceof ReturnVoidStmt) {
@@ -157,38 +167,10 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			} 
 			
 			else if (right instanceof BinopExpr) {
-				Value r1 = ((BinopExpr) right).getOp1();
-				Value r2 = ((BinopExpr) right).getOp2();
 
-				Interval i1 = tryGetIntervalForValue(current, r1);
-				Interval i2 = tryGetIntervalForValue(current, r2);
+				Interval result = evalIntervalForBinop((BinopExpr) right, current);
 
-				if (i1 == null) 
-					throw new NullPointerException();
-				
-				else if (i2 == null) 
-					throw new NullPointerException();
-				
-				else {
-					// Implement transformers.
-					if (right instanceof AddExpr) {
-						fallState.putIntervalForVar(varName, Interval.plus(i1, i2));
-					}
-					
-					else if (right instanceof SubExpr) {
-						fallState.putIntervalForVar(varName, Interval.subtract(i1, i2));
-					} 
-					
-					else if (right instanceof MulExpr) {
-						fallState.putIntervalForVar(varName, Interval.multiply(i1, i2));
-					} 
-					
-					else if (right instanceof DivExpr) {
-						fallState.putIntervalForVar(varName, Interval.divide(i1, i2));
-					} 
-					
-					else throw new RuntimeException("unsupported operation "+right+" at "+sd);
-				}
+				fallState.putIntervalForVar(varName, result);
 			}
 			
 			else if (right instanceof JVirtualInvokeExpr) {
@@ -230,6 +212,46 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			throw new RuntimeException("unhandled lhs "+left);
 		}
 		// ...
+	}
+
+	private Interval evalIntervalForBinop(BinopExpr binop, IntervalPerVar current) {
+		Value r1 = binop.getOp1();
+		Value r2 = binop.getOp2();
+
+		Interval i1 = tryGetIntervalForValue(current, r1);
+		Interval i2 = tryGetIntervalForValue(current, r2);
+
+		Interval result;
+
+		if (i1 == null) 
+			throw new NullPointerException();
+		
+		else if (i2 == null) 
+			throw new NullPointerException();
+		
+		else {
+			// Implement transformers.
+			
+			if (binop instanceof AddExpr) {
+				result = Interval.plus(i1, i2);
+			}
+			
+			else if (binop instanceof SubExpr) {
+				result = Interval.subtract(i1, i2);
+			} 
+			
+			else if (binop instanceof MulExpr) {
+				result = Interval.multiply(i1, i2);
+			} 
+			
+			else if (binop instanceof DivExpr) {
+				result = Interval.divide(i1, i2);
+			} 
+			
+			else throw new RuntimeException("unsupported expression "+binop);
+			
+		}
+		return result;
 	}
 
 	/**
