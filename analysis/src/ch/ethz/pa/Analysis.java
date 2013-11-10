@@ -1,10 +1,8 @@
 package ch.ethz.pa;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import soot.PrimType;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.SootMethod;
@@ -34,7 +32,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 	private final Logger logger = Logger.getLogger(Analysis.class.getSimpleName());
 	
-	private final List<String> problems = new LinkedList<String>();
+	private final ProblemReport problemReport = new ProblemReport();
 	
 	private final Interval legalSensorInterval = new Interval(0, 15);
 	private final Interval legalValueInterval = new Interval(-999,999);
@@ -112,8 +110,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			if (expr.getMethod().getDeclaringClass().getName().equals("AircraftControl"))
 			{
 				// TODO: Check that the values are in the allowed range (we do this while computing fixpoint).
-				checkInterval(expr.getArg(0), legalSensorInterval, current);
-				checkInterval(expr.getArg(1), legalValueInterval, current);
+				problemReport.checkInterval(expr.getArg(0), legalSensorInterval, current);
+				problemReport.checkInterval(expr.getArg(1), legalValueInterval, current);
 			}
 		}
 	}
@@ -171,7 +169,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 				SootMethod method = expr.getMethodRef().resolve();
 				if (method.getName().equals("readSensor")) {
 					if (method.getDeclaringClass().getName().equals("AircraftControl")) {
-						checkInterval(expr.getArg(0), legalSensorInterval, current);
+						problemReport.checkInterval(expr.getArg(0), legalSensorInterval, current);
 						fallState.putIntervalForVar(varName, new Interval(-999, 999));
 					}
 				}
@@ -192,41 +190,6 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			throw new RuntimeException("unhandled lhs "+left);
 		}
 		// ...
-	}
-
-	/**
-	 * Assert the given value is in the given range, otherwise
-	 * report a problem.
-	 * @param value
-	 * @param range
-	 * @param current 
-	 */
-	private void checkInterval(Value value, Interval range, IntervalPerVar current) {
-		
-		if (value instanceof IntConstant) {
-			IntConstant c = ((IntConstant) value);
-			if(!range.covers(c.value)) {
-				// TODO this is not very expressive, we can improve that
-				problems.add("sensor index out of range");
-			}
-		}
-		
-		else if (value.getType() instanceof PrimType){
-			
-			Interval interval = IntegerExpression.tryGetIntervalForValue(current, value);
-			if (interval == null) {
-				throw new RuntimeException("unhandled case: no value for "+value);
-			}
-			
-			if (!range.covers(interval)) {
-				problems.add(String.format("sensor index [%s] out of range", interval));				
-			}
-		}
-		
-		else {
-			// TODO probably there are other cases as well
-			throw new RuntimeException("hit unexpected type "+value.getType());
-		}
 	}
 
 	@Override
@@ -257,8 +220,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	 * Register another problem found during analysis.
 	 * @param line
 	 */
-	protected void addProblem(String line) {
-		problems.add(line);
+	public void addProblem(String line) {
+		problemReport.addProblem(line);
 	}
 
 	/**
@@ -266,6 +229,6 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	 * @return
 	 */
 	public List<String> getProblems() {
-		return problems;
+		return problemReport.getProblems();
 	}
 }
