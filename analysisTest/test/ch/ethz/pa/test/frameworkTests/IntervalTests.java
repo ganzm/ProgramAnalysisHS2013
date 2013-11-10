@@ -35,6 +35,13 @@ public class IntervalTests {
 	@Test
 	public void testMultiply() {
 		Assert.assertEquals(new Interval(-9,3), Interval.multiply(new Interval(-3,1), new Interval(-1,3)));
+		Assert.assertEquals(new Interval(-4,0), Interval.multiply(new Interval(-2,0), new Interval(0,2)));
+		Assert.assertEquals(new Interval(0,0), Interval.multiply(new Interval(-5,5), new Interval(0,0)));
+	}
+	
+	@Test
+	public void testNegate() {
+		Assert.assertEquals(new Interval(-3,7), new Interval(-7, 3).negate());
 	}
 
 }
