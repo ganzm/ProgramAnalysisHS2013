@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import soot.ByteType;
+import soot.PrimType;
 import soot.RefLikeType;
 import soot.Unit;
 import soot.Value;
@@ -29,6 +31,9 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	private final Logger logger = Logger.getLogger(Analysis.class.getSimpleName());
 	
 	private final List<String> problems = new LinkedList<String>();
+	
+	private final Interval legalSensorInterval = new Interval(0, 15);
+	private final Interval legalValueInterval = new Interval(-999,999);
 	
 	public Analysis(UnitGraph g) {
 		super(g);
@@ -109,10 +114,13 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			// You need to check the parameters here.
 			InvokeExpr expr = s.getInvokeExpr();
 			if (expr.getMethod().getName().equals("adjustValue")) {
-				// TODO: Check that is the method from the AircraftControl class.
-
-				// TODO: Check that the values are in the allowed range (we do this while computing fixpoint).
-				// System.out.println(expr.getArg(0) + " " + expr.getArg(1));
+				// Check that is the method from the AircraftControl class.
+				if (expr.getMethod().getDeclaringClass().getName().equals("AircraftControl"))
+				{
+					// TODO: Check that the values are in the allowed range (we do this while computing fixpoint).
+					checkInterval(expr.getArg(0), legalSensorInterval, current);
+					checkInterval(expr.getArg(1), legalValueInterval, current);
+				}
 			}
 		}
 
@@ -126,6 +134,41 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			if (branchState != null) {
 				fnext.copyFrom(branchState);
 			}
+		}
+	}
+
+	/**
+	 * Assert the given value is in the given range, otherwise
+	 * report a problem.
+	 * @param value
+	 * @param range
+	 * @param current 
+	 */
+	private void checkInterval(Value value, Interval range, IntervalPerVar current) {
+		
+		if (value instanceof IntConstant) {
+			IntConstant c = ((IntConstant) value);
+			if(!range.covers(c.value)) {
+				// TODO this is not very expressive, we can improve that
+				problems.add("sensor index out of range");
+			}
+		}
+		
+		else if (value.getType() instanceof PrimType){
+			
+			Interval interval = tryGetIntervalForValue(current, value);
+			if (interval == null) {
+				throw new RuntimeException("unhandled case: no value for "+value);
+			}
+			
+			if (!range.covers(interval)) {
+				problems.add(String.format("sensor index [%s] out of range", interval));				
+			}
+		}
+		
+		else {
+			// TODO probably there are other cases as well
+			throw new RuntimeException("hit unexpected type "+value.getType());
 		}
 	}
 
