@@ -14,7 +14,7 @@ public class ValidationTest {
 
 	private ByteArrayOutputStream redirectedOutStream;
 
-	@Test
+	@Test(timeout = 10000)
 	public void testExample() {
 		testAnyProgram("ExampleTest", true, true);
 	}
