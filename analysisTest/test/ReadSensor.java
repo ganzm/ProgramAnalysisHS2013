@@ -7,7 +7,7 @@ public class ReadSensor {
 
 	public static void readSensor() {
 		AircraftControl ac = new AircraftControl();
-		ac.readSensor(5);
+		int value = ac.readSensor(5);
 	}
 	
 }
