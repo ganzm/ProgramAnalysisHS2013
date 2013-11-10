@@ -7,8 +7,8 @@
 public class AdjustValueDirectOverflow {
 
 	public static void adjustValueDirectOverflow() {
-		PowerPlantControl ppc = new PowerPlantControl();
-		ppc.adjustValue(3, 1000);
+		AircraftControl ac = new AircraftControl();
+		ac.adjustValue(3, 1000);
 	}
 	
 }

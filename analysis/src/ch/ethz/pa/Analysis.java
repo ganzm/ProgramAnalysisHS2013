@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import soot.ByteType;
 import soot.PrimType;
 import soot.RefLikeType;
 import soot.Unit;

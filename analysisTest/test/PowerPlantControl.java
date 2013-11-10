@@ -1,6 +1,6 @@
 
 /**
- * This funny method has the same methods as the {@link AircraftControl},
+ * This class has the same methods as the {@link AircraftControl},
  * but is not related to it. Therefore, the specific checks of
  * {@link AircraftControl} do not apply to it.
  */
