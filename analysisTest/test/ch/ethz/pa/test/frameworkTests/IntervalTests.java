@@ -38,7 +38,14 @@ public class IntervalTests {
 		Assert.assertEquals(new Interval(-4,0), Interval.multiply(new Interval(-2,0), new Interval(0,2)));
 		Assert.assertEquals(new Interval(0,0), Interval.multiply(new Interval(-5,5), new Interval(0,0)));
 	}
+
+	@Test
+	public void testDivide() {
+		Assert.assertEquals(new Interval(-8,4), Interval.divide(new Interval(-80,40), new Interval(2,10)));
+		Assert.assertEquals(new Interval(-12,4), Interval.divide(new Interval(-20,60), new Interval(-5,-2)));
+	}
 	
+
 	@Test
 	public void testSubtract() {
 		Assert.assertEquals(new Interval(-3,4), Interval.subtract(new Interval(-1,5), new Interval(1,2)));
@@ -47,6 +54,12 @@ public class IntervalTests {
 	@Test
 	public void testNegate() {
 		Assert.assertEquals(new Interval(-3,7), new Interval(-7, 3).negate());
+	}
+	
+	@Test(expected=Exception.class)
+	public void testInvalidIntervalThrowsException()
+	{
+		new Interval(5,4);
 	}
 
 }

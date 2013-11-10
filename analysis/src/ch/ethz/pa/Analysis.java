@@ -13,6 +13,7 @@ import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.BinopExpr;
 import soot.jimple.DefinitionStmt;
+import soot.jimple.DivExpr;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.MulExpr;
@@ -133,6 +134,10 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 						
 						else if (right instanceof MulExpr) {
 							fallState.putIntervalForVar(varName, Interval.multiply(i1, i2));
+						} 
+						
+						else if (right instanceof DivExpr) {
+							fallState.putIntervalForVar(varName, Interval.divide(i1, i2));
 						} 
 						
 						else throw new RuntimeException("unsupported operation "+right+" at "+op);

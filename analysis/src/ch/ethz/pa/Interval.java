@@ -7,6 +7,7 @@ public class Interval {
 	}
 	
 	public Interval(int l, int u) {
+		if (l>u) throw new RuntimeException("interval range corrupt");
 		lower = l;
 		upper = u;
 	}
@@ -17,6 +18,7 @@ public class Interval {
 	}
 	
 	public void copyFrom(Interval other) {
+		if (other.lower>other.upper) throw new RuntimeException("interval range corrupt");
 		lower = other.lower;
 		upper = other.upper;
 	}
@@ -61,5 +63,15 @@ public class Interval {
 
 	public Interval negate() {
 		return new Interval(-upper, -lower);
+	}
+
+	public static Interval divide(Interval i1, Interval i2) {
+		if (i2.upper <0) {
+			return new Interval(i1.upper / i2.lower, i1.lower/i2.lower);
+		}
+		if (i2.lower >0) {
+			return new Interval(i1.lower / i2.upper, i1.upper / i2.upper);
+		}
+		throw new RuntimeException("potential division by zero not supported");
 	}
 }

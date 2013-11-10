@@ -67,6 +67,16 @@ public class ComputeValues extends ValidationTestBase {
 	}
 
 	@Test(timeout = 10000)
+	public void testHalfSensorValue() {
+		testAnyProgram("HalfSensorValue", SAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testHalfSensorValueDebug() {
+		testAnyProgram("HalfSensorValue", SAFE, true);
+	}
+
+	@Test(timeout = 10000)
 	public void testMultiplyTwoSensorValues() {
 		testAnyProgram("MultiplyTwoSensorValues", UNSAFE, false);
 	}
