@@ -36,4 +36,14 @@ public class AdjustValueTests extends ValidationTestBase {
 		testAnyProgram("AdjustValueDirectOverflow", false, true);
 	}
 
+	@Test(timeout = 10000)
+	public void testAdjustUnrelatedValue() {
+		testAnyProgram("AdjustUnrelatedValue", true, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testAdjustUnrelatedValueDebug() {
+		testAnyProgram("AdjustUnrelatedValue", true, true);
+	}
+
 }

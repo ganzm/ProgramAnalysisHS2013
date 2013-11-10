@@ -1,14 +1,14 @@
 
 /**
  * Call adjustValue with an integer literal for the value,
- * where the value exceeds the valid range.
- * This is definitely UNSAFE.
+ * but on {@link PowerPlantControl} instead of {@link AircraftControl}.
+ * This is probably SAFE.
  */
 public class AdjustValueDirectOverflow {
 
 	public static void adjustValueDirectOverflow() {
-		AircraftControl ac = new AircraftControl();
-		ac.adjustValue(3, 1000);
+		PowerPlantControl ppc = new PowerPlantControl();
+		ppc.adjustValue(3, 1000);
 	}
 	
 }
