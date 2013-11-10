@@ -213,7 +213,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		
 		else if (value.getType() instanceof PrimType){
 			
-			Interval interval = StoreHelper.tryGetIntervalForValue(current, value);
+			Interval interval = IntegerExpression.tryGetIntervalForValue(current, value);
 			if (interval == null) {
 				throw new RuntimeException("unhandled case: no value for "+value);
 			}

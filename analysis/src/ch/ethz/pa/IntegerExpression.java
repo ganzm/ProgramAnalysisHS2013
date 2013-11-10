@@ -4,10 +4,12 @@ import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.BinopExpr;
 import soot.jimple.DivExpr;
+import soot.jimple.IntConstant;
 import soot.jimple.MulExpr;
 import soot.jimple.NegExpr;
 import soot.jimple.SubExpr;
 import soot.jimple.UnopExpr;
+import soot.jimple.internal.JimpleLocal;
 
 /**
  * Evaluates small step integer expressions.
@@ -19,8 +21,8 @@ public class IntegerExpression {
 		Value r1 = binop.getOp1();
 		Value r2 = binop.getOp2();
 	
-		Interval i1 = StoreHelper.tryGetIntervalForValue(current, r1);
-		Interval i2 = StoreHelper.tryGetIntervalForValue(current, r2);
+		Interval i1 = IntegerExpression.tryGetIntervalForValue(current, r1);
+		Interval i2 = IntegerExpression.tryGetIntervalForValue(current, r2);
 	
 		Interval result;
 	
@@ -58,7 +60,7 @@ public class IntegerExpression {
 	static public Interval evalUnop(UnopExpr unop, IntervalPerVar current) {
 		Interval result;
 		Value r1 = unop.getOp();
-		Interval i1 = StoreHelper.tryGetIntervalForValue(current, r1);
+		Interval i1 = IntegerExpression.tryGetIntervalForValue(current, r1);
 	
 		if (i1 == null) 
 			throw new NullPointerException();
@@ -68,6 +70,17 @@ public class IntegerExpression {
 		}
 		else throw new RuntimeException("unsupported expression "+unop);
 		return result;
+	}
+
+	public static Interval tryGetIntervalForValue(IntervalPerVar currentState, Value v) {
+		if (v instanceof IntConstant) {
+			IntConstant c = ((IntConstant) v);
+			return new Interval(c.value, c.value);
+		} else if (v instanceof JimpleLocal) {
+			JimpleLocal l = ((JimpleLocal) v);
+			return currentState.getIntervalForVar(l.getName());
+		}
+		return null;
 	}
 
 }
