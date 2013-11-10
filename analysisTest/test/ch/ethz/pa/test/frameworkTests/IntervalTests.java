@@ -40,6 +40,11 @@ public class IntervalTests {
 	}
 	
 	@Test
+	public void testSubtract() {
+		Assert.assertEquals(new Interval(-3,4), Interval.subtract(new Interval(-1,5), new Interval(1,2)));
+	}
+	
+	@Test
 	public void testNegate() {
 		Assert.assertEquals(new Interval(-3,7), new Interval(-7, 3).negate());
 	}
