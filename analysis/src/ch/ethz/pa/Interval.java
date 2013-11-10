@@ -39,4 +39,8 @@ public class Interval {
 	public boolean covers(int value) {
 		return lower <= value && value <= upper;
 	}
+
+	public boolean covers(Interval interval) {
+		return lower <= interval.lower && interval.upper <= upper;
+	}
 }
