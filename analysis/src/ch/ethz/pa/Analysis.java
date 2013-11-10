@@ -15,7 +15,6 @@ import soot.jimple.DefinitionStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
-import soot.jimple.NegExpr;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
@@ -163,9 +162,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			} 
 			
 			else if (right instanceof BinopExpr) {
-
-				Interval result = IntegerExpression.evalIntervalForBinop((BinopExpr) right, current);
-
+				Interval result = IntegerExpression.evalBinop((BinopExpr) right, current);
 				fallState.putIntervalForVar(varName, result);
 			}
 			
@@ -181,21 +178,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			}
 
 			else if (right instanceof UnopExpr) {
-				Value r1 = ((UnopExpr) right).getOp();
-				Interval i1 = tryGetIntervalForValue(current, r1);
-
-				if (i1 == null) 
-					throw new NullPointerException();
-				
-				else {
-					
-					if (right instanceof NegExpr) {
-						fallState.putIntervalForVar(varName, i1.negate());
-					}
-					
-					else throw new RuntimeException("unsupported operation "+right+" at "+sd);
-				}
-
+				Interval result = IntegerExpression.evalUnop((UnopExpr) right, current);
+				fallState.putIntervalForVar(varName, result);
 			}
 
 			else {
@@ -229,7 +213,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		
 		else if (value.getType() instanceof PrimType){
 			
-			Interval interval = tryGetIntervalForValue(current, value);
+			Interval interval = StoreHelper.tryGetIntervalForValue(current, value);
 			if (interval == null) {
 				throw new RuntimeException("unhandled case: no value for "+value);
 			}
@@ -243,17 +227,6 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			// TODO probably there are other cases as well
 			throw new RuntimeException("hit unexpected type "+value.getType());
 		}
-	}
-
-	static Interval tryGetIntervalForValue(IntervalPerVar currentState, Value v) {
-		if (v instanceof IntConstant) {
-			IntConstant c = ((IntConstant) v);
-			return new Interval(c.value, c.value);
-		} else if (v instanceof JimpleLocal) {
-			JimpleLocal l = ((JimpleLocal) v);
-			return currentState.getIntervalForVar(l.getName());
-		}
-		return null;
 	}
 
 	@Override
