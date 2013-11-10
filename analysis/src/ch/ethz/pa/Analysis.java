@@ -3,25 +3,14 @@ package ch.ethz.pa;
 import java.util.List;
 import java.util.logging.Logger;
 
-import soot.RefLikeType;
-import soot.RefType;
-import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
-import soot.jimple.BinopExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.IfStmt;
-import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.ReturnVoidStmt;
-import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
-import soot.jimple.UnopExpr;
-import soot.jimple.internal.JArrayRef;
-import soot.jimple.internal.JInstanceFieldRef;
 import soot.jimple.internal.JInvokeStmt;
-import soot.jimple.internal.JVirtualInvokeExpr;
-import soot.jimple.internal.JimpleLocal;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
@@ -32,15 +21,15 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 	private final Logger logger = Logger.getLogger(Analysis.class.getSimpleName());
 	
-	private final ProblemReport problemReport = new ProblemReport();
-	
-	public static final Interval legalSensorInterval = new Interval(0, 15);
-	public static final Interval legalValueInterval = new Interval(-999,999);
-	
-	private final DefinitionStmtAnalyzer definitionStmtAnalyzer = new DefinitionStmtAnalyzer(problemReport);
+	private final ProblemReport problemReport;
+	private final DefinitionStmtAnalyzer definitionStmtAnalyzer;
 	
 	public Analysis(UnitGraph g) {
 		super(g);
+		
+		problemReport = new ProblemReport();
+		definitionStmtAnalyzer = new DefinitionStmtAnalyzer(problemReport);
+		
 		logger.info("UnitGraph: " + g.toString());
 	}
 
@@ -112,8 +101,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			if (expr.getMethod().getDeclaringClass().getName().equals("AircraftControl"))
 			{
 				// TODO: Check that the values are in the allowed range (we do this while computing fixpoint).
-				problemReport.checkInterval(expr.getArg(0), legalSensorInterval, current);
-				problemReport.checkInterval(expr.getArg(1), legalValueInterval, current);
+				problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, current);
+				problemReport.checkInterval(expr.getArg(1), Config.legalValueInterval, current);
 			}
 		}
 	}

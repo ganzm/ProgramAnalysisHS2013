@@ -78,7 +78,7 @@ public class DefinitionStmtAnalyzer {
 				SootMethod method = expr.getMethodRef().resolve();
 				if (method.getName().equals("readSensor")) {
 					if (method.getDeclaringClass().getName().equals("AircraftControl")) {
-						problemReport.checkInterval(expr.getArg(0), Analysis.legalSensorInterval, current);
+						problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, current);
 						fallState.putIntervalForVar(varName, new Interval(-999, 999));
 					}
 				}
@@ -105,7 +105,5 @@ public class DefinitionStmtAnalyzer {
 		System.err.println("Can't handle " + what);
 		System.exit(1);
 	}
-
-
 
 }
