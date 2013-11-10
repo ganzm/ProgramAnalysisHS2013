@@ -37,7 +37,11 @@ public class IntervalPerVar {
 	}
 	
 	Interval getIntervalForVar(String var) {
-		return values.get(var);
+		Interval interval = values.get(var);
+		if (interval == null) {
+			throw new NullPointerException(String.format("No interval for [%s]", var));
+		}
+		return interval;
 	}
 	
 	@Override
