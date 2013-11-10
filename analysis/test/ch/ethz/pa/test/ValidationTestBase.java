@@ -2,11 +2,9 @@ package ch.ethz.pa.test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.regex.Pattern;
 
 import org.junit.Assert;
 
-import ch.ethz.pa.Analysis;
 import ch.ethz.pa.Verifier;
 
 public class ValidationTestBase {
@@ -54,9 +52,9 @@ public class ValidationTestBase {
 		String resultText = isDebug ? lastLineOf(output) : output;
 		
 		if (expectedToBeSafe) {
-			Assert.assertEquals(Analysis.PROGRAM_IS_SAFE, resultText);
+			Assert.assertEquals(Verifier.PROGRAM_IS_SAFE, resultText);
 		} else {
-			Assert.assertEquals(Analysis.PROGRAM_IS_UNSAFE, resultText);
+			Assert.assertEquals(Verifier.PROGRAM_IS_UNSAFE, resultText);
 		}
 	}
 

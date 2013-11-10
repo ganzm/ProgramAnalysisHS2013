@@ -25,8 +25,6 @@ import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 	private final Logger logger = Logger.getLogger(Analysis.class.getSimpleName());
-	public static final String PROGRAM_IS_SAFE = "Program is SAFE";
-	public static final String PROGRAM_IS_UNSAFE = "Program is UNSAFE";
 	
 	public Analysis(UnitGraph g) {
 		super(g);

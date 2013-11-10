@@ -11,6 +11,8 @@ import ch.ethz.pa.logging.LoggerUtil;
 public class Verifier {
 
 	private static final Logger logger = Logger.getLogger(Verifier.class.getSimpleName());
+	public static final String PROGRAM_IS_SAFE = "Program is SAFE";
+	public static final String PROGRAM_IS_UNSAFE = "Program is UNSAFE";
 
 	public static void main(String[] args) {
 		System.exit(intMain(args));
@@ -34,6 +36,10 @@ public class Verifier {
 			analysis.run();
 			// ....
 		}
+
+		
+		// TODO this will eventually be replaced by more sensible output
+		System.out.print(PROGRAM_IS_SAFE);
 
 		return 0;
 	}
