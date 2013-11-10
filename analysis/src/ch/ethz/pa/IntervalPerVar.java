@@ -30,6 +30,9 @@ public class IntervalPerVar {
 	}
 	
 	void putIntervalForVar(String var, Interval i) {
+		if (i == null) {
+			throw new NullPointerException();
+		}
 		values.put(var, i);
 	}
 	
