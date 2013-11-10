@@ -1,6 +1,9 @@
 package ch.ethz.pa.test.frameworkTests;
 
 import java.util.Arrays;
+import java.util.List;
+
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -56,9 +59,10 @@ public class AnalysisTest {
 	}
 	
 	@Test
-	@Ignore
 	public void testErrorFeedback() {
-		// we will do sth. later on
+		List<String> problems = analysis.getProblems();
+		Assert.assertNotNull("expected a list", problems);
+		Assert.assertEquals("expected an empty list", 0, problems.size());
 	} 
 
 }

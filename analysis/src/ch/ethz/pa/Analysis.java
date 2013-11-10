@@ -1,5 +1,6 @@
 package ch.ethz.pa;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -26,6 +27,8 @@ import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 	private final Logger logger = Logger.getLogger(Analysis.class.getSimpleName());
+	
+	private final List<String> problems = new LinkedList<String>();
 	
 	public Analysis(UnitGraph g) {
 		super(g);
@@ -159,5 +162,13 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	@Override
 	protected IntervalPerVar newInitialFlow() {
 		return new IntervalPerVar();
+	}
+
+	/**
+	 * Returns a list with problems found during analysis.
+	 * @return
+	 */
+	public List<String> getProblems() {
+		return problems;
 	}
 }
