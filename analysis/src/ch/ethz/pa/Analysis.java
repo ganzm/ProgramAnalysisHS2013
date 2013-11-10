@@ -10,19 +10,15 @@ import soot.RefType;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
-import soot.jimple.AddExpr;
 import soot.jimple.BinopExpr;
 import soot.jimple.DefinitionStmt;
-import soot.jimple.DivExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
-import soot.jimple.MulExpr;
 import soot.jimple.NegExpr;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
-import soot.jimple.SubExpr;
 import soot.jimple.UnopExpr;
 import soot.jimple.internal.JArrayRef;
 import soot.jimple.internal.JInstanceFieldRef;
@@ -168,7 +164,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			
 			else if (right instanceof BinopExpr) {
 
-				Interval result = evalIntervalForBinop((BinopExpr) right, current);
+				Interval result = IntegerExpression.evalIntervalForBinop((BinopExpr) right, current);
 
 				fallState.putIntervalForVar(varName, result);
 			}
@@ -214,46 +210,6 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		// ...
 	}
 
-	private Interval evalIntervalForBinop(BinopExpr binop, IntervalPerVar current) {
-		Value r1 = binop.getOp1();
-		Value r2 = binop.getOp2();
-
-		Interval i1 = tryGetIntervalForValue(current, r1);
-		Interval i2 = tryGetIntervalForValue(current, r2);
-
-		Interval result;
-
-		if (i1 == null) 
-			throw new NullPointerException();
-		
-		else if (i2 == null) 
-			throw new NullPointerException();
-		
-		else {
-			// Implement transformers.
-			
-			if (binop instanceof AddExpr) {
-				result = Interval.plus(i1, i2);
-			}
-			
-			else if (binop instanceof SubExpr) {
-				result = Interval.subtract(i1, i2);
-			} 
-			
-			else if (binop instanceof MulExpr) {
-				result = Interval.multiply(i1, i2);
-			} 
-			
-			else if (binop instanceof DivExpr) {
-				result = Interval.divide(i1, i2);
-			} 
-			
-			else throw new RuntimeException("unsupported expression "+binop);
-			
-		}
-		return result;
-	}
-
 	/**
 	 * Assert the given value is in the given range, otherwise
 	 * report a problem.
@@ -289,7 +245,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		}
 	}
 
-	Interval tryGetIntervalForValue(IntervalPerVar currentState, Value v) {
+	static Interval tryGetIntervalForValue(IntervalPerVar currentState, Value v) {
 		if (v instanceof IntConstant) {
 			IntConstant c = ((IntConstant) v);
 			return new Interval(c.value, c.value);
