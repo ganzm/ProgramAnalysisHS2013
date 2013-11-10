@@ -3,12 +3,11 @@
  * And example application you may want to analyze to test your analysis.
  *
  */
-public class ReadSensor {
+public class AdjustValueDirect {
 
-	public static void readSensor() {
+	public static void adjustValueDirect() {
 		AircraftControl ac = new AircraftControl();
-		@SuppressWarnings("unused")
-		int value = ac.readSensor(5);
+		ac.adjustValue(3, 123);
 	}
 	
 }
