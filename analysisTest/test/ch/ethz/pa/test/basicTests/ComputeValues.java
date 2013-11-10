@@ -66,4 +66,14 @@ public class ComputeValues extends ValidationTestBase {
 		testAnyProgram("MultiplyTwoSensorValues", UNSAFE, true);
 	}
 
+	@Test(timeout = 10000)
+	public void testInvertSensorValue() {
+		testAnyProgram("InvertSensorValue", SAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testInvertSensorValueDebug() {
+		testAnyProgram("InvertSensorValue", SAFE, true);
+	}
+
 }

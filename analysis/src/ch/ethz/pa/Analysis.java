@@ -16,8 +16,10 @@ import soot.jimple.DefinitionStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.MulExpr;
+import soot.jimple.NegExpr;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
+import soot.jimple.UnopExpr;
 import soot.jimple.internal.JArrayRef;
 import soot.jimple.internal.JInstanceFieldRef;
 import soot.jimple.internal.JInvokeStmt;
@@ -112,7 +114,13 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 					Interval i1 = tryGetIntervalForValue(current, r1);
 					Interval i2 = tryGetIntervalForValue(current, r2);
 
-					if (i1 != null && i2 != null) {
+					if (i1 == null) 
+						throw new NullPointerException();
+					
+					else if (i2 == null) 
+						throw new NullPointerException();
+					
+					else {
 						// Implement transformers.
 						if (right instanceof AddExpr) {
 							fallState.putIntervalForVar(varName, Interval.plus(i1, i2));
@@ -135,6 +143,24 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 							fallState.putIntervalForVar(varName, new Interval(-999, 999));
 						}
 					}
+				}
+
+				else if (right instanceof UnopExpr) {
+					Value r1 = ((UnopExpr) right).getOp();
+					Interval i1 = tryGetIntervalForValue(current, r1);
+
+					if (i1 == null) 
+						throw new NullPointerException();
+					
+					else {
+						
+						if (right instanceof NegExpr) {
+							fallState.putIntervalForVar(varName, i1.negate());
+						}
+						
+						else throw new RuntimeException("unsupported operation "+right+" at "+op);
+					}
+
 				}
 
 				else {

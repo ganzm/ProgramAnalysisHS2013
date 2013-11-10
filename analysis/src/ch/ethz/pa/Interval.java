@@ -53,4 +53,8 @@ public class Interval {
 	public boolean covers(Interval interval) {
 		return lower <= interval.lower && interval.upper <= upper;
 	}
+
+	public Interval negate() {
+		return new Interval(-upper, -lower);
+	}
 }
