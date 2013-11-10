@@ -3,6 +3,7 @@ package ch.ethz.pa;
 import java.util.List;
 import java.util.logging.Logger;
 
+import soot.RefLikeType;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AddExpr;
@@ -74,7 +75,13 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 					fallState.putIntervalForVar(varName, new Interval(c.value, c.value));
 				} else if (right instanceof JimpleLocal) {
 					JimpleLocal l = ((JimpleLocal) right);
-					fallState.putIntervalForVar(varName, current.getIntervalForVar(l.getName()));
+					if (l.getType() instanceof RefLikeType) {
+						logger.warning("ignore right side "+l.getType());
+					}
+					else {
+						fallState.putIntervalForVar(varName, current.getIntervalForVar(l.getName()));
+						throw new RuntimeException("hit unexpected type "+l.getType());
+					}
 				} else if (right instanceof BinopExpr) {
 					Value r1 = ((BinopExpr) right).getOp1();
 					Value r2 = ((BinopExpr) right).getOp2();
