@@ -11,7 +11,7 @@ public class ComputeValues extends ValidationTestBase {
 		testAnyProgram("IncrementValue", false, false);
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testIncrementValueDebug() {
 		testAnyProgram("IncrementValue", false, true);
 	}

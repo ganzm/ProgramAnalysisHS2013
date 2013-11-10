@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import soot.PrimType;
 import soot.RefLikeType;
 import soot.RefType;
+import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AddExpr;
@@ -19,6 +20,7 @@ import soot.jimple.Stmt;
 import soot.jimple.internal.JArrayRef;
 import soot.jimple.internal.JInstanceFieldRef;
 import soot.jimple.internal.JInvokeStmt;
+import soot.jimple.internal.JVirtualInvokeExpr;
 import soot.jimple.internal.JimpleLocal;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
@@ -113,6 +115,17 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 						// Implement transformers.
 						if (right instanceof AddExpr) {
 							fallState.putIntervalForVar(varName, Interval.plus(i1, i2));
+						}
+					}
+				}
+				
+				else if (right instanceof JVirtualInvokeExpr) {
+					JVirtualInvokeExpr expr = (JVirtualInvokeExpr)right;
+					SootMethod method = expr.getMethodRef().resolve();
+					if (method.getName().equals("readSensor")) {
+						if (method.getDeclaringClass().getName().equals("AircraftControl")) {
+							checkInterval(expr.getArg(0), legalSensorInterval, current);
+							fallState.putIntervalForVar(varName, new Interval(-999, 999));
 						}
 					}
 				}
