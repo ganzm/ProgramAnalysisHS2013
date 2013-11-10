@@ -1,5 +1,6 @@
 package ch.ethz.pa;
 
+
 public class Interval {
 	public Interval(int start_value) {
 		lower = upper = start_value;
@@ -34,4 +35,8 @@ public class Interval {
 
 	// TODO: Do you need to handle infinity or empty interval?
 	int lower, upper;
+
+	public boolean covers(int value) {
+		return lower <= value && value <= upper;
+	}
 }
