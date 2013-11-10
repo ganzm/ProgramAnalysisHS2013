@@ -1,5 +1,7 @@
 package ch.ethz.pa;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import soot.Scene;
@@ -11,6 +13,7 @@ import ch.ethz.pa.logging.LoggerUtil;
 public class Verifier {
 
 	private static final Logger logger = Logger.getLogger(Verifier.class.getSimpleName());
+
 	public static final String PROGRAM_IS_SAFE = "Program is SAFE";
 	public static final String PROGRAM_IS_UNSAFE = "Program is UNSAFE";
 
@@ -29,17 +32,17 @@ public class Verifier {
 
 		String analyzedClass = args[0];
 		SootClass c = loadClass(analyzedClass);
+		
+		List<String> problemsFound = new LinkedList<String>();
 
 		/* Use the following to iterate over the class methods. */
 		for (SootMethod method : c.getMethods()) {
 			Analysis analysis = new Analysis(new BriefUnitGraph(method.retrieveActiveBody()));
 			analysis.run();
-			// ....
+			problemsFound.addAll(analysis.getProblems());
 		}
-
 		
-		// TODO this will eventually be replaced by more sensible output
-		System.out.print(PROGRAM_IS_SAFE);
+		System.out.print(problemsFound.size() == 0 ? PROGRAM_IS_SAFE : PROGRAM_IS_UNSAFE);
 
 		return 0;
 	}

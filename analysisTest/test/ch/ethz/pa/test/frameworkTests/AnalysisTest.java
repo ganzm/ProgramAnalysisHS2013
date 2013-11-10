@@ -6,7 +6,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import soot.Modifier;
@@ -59,10 +58,29 @@ public class AnalysisTest {
 	}
 	
 	@Test
-	public void testErrorFeedback() {
+	public void testInitialErrorFeedback() {
 		List<String> problems = analysis.getProblems();
 		Assert.assertNotNull("expected a list", problems);
 		Assert.assertEquals("expected an empty list", 0, problems.size());
 	} 
+	
+	
+	/**
+	 * Create an {@link Analysis} with one problem.
+	 * @author cfuchs
+	 *
+	 */
+	private class AnalysisWithOneProblemMock extends Analysis {
+		public AnalysisWithOneProblemMock() {
+			super(new BriefUnitGraph(simpleBody));
+			super.addProblem("Houston we have a problem");
+		}
+	}
+	
+	@Test
+	public void testHavingErrorFeedback() {
+		List<String> problems = new AnalysisWithOneProblemMock().getProblems();
+		Assert.assertEquals("expected a problem", 1, problems.size());
+	}
 
 }

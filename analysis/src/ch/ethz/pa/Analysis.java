@@ -165,6 +165,14 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	}
 
 	/**
+	 * Register another problem found during analysis.
+	 * @param line
+	 */
+	protected void addProblem(String line) {
+		problems.add(line);
+	}
+
+	/**
 	 * Returns a list with problems found during analysis.
 	 * @return
 	 */
