@@ -69,137 +69,11 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		branchState.copyFrom(current);
 
 		if (s instanceof DefinitionStmt) {
-			DefinitionStmt sd = (DefinitionStmt) s;
-			Value left = sd.getLeftOp();
-			Value right = sd.getRightOp();
-			logger.info(left.getClass().getName() + " " + right.getClass().getName());
-
-			// You do not need to handle these cases:
-			if ((!(left instanceof StaticFieldRef)) && (!(left instanceof JimpleLocal)) && (!(left instanceof JArrayRef))
-					&& (!(left instanceof JInstanceFieldRef)))
-				unhandled("1: Assignment to non-variables is not handled.");
-			
-			else if ((left instanceof JArrayRef) && (!((((JArrayRef) left).getBase()) instanceof JimpleLocal)))
-				unhandled("2: Assignment to a non-local array variable is not handled.");
-			
-			// TODO: Handle other cases. For example:
-
-			else if (left instanceof JimpleLocal) {
-				
-				JimpleLocal jimpleLocalLeft = (JimpleLocal) left;
-				String varName = jimpleLocalLeft.getName();
-				
-
-				if (jimpleLocalLeft.getType() instanceof RefType) {
-					logger.warning("ignoring assignments to complex type: "+op);
-				}
-				
-				else if (right instanceof IntConstant) {
-					IntConstant c = ((IntConstant) right);
-					fallState.putIntervalForVar(varName, new Interval(c.value, c.value));
-				} 
-				
-				else if (right instanceof JimpleLocal) {
-					JimpleLocal l = ((JimpleLocal) right);
-					if (l.getType() instanceof RefLikeType) {
-						logger.warning("ignore right side "+l.getType());
-					}
-					else {
-						fallState.putIntervalForVar(varName, current.getIntervalForVar(l.getName()));
-						throw new RuntimeException("hit unexpected type "+l.getType());
-					}
-				} 
-				
-				else if (right instanceof BinopExpr) {
-					Value r1 = ((BinopExpr) right).getOp1();
-					Value r2 = ((BinopExpr) right).getOp2();
-
-					Interval i1 = tryGetIntervalForValue(current, r1);
-					Interval i2 = tryGetIntervalForValue(current, r2);
-
-					if (i1 == null) 
-						throw new NullPointerException();
-					
-					else if (i2 == null) 
-						throw new NullPointerException();
-					
-					else {
-						// Implement transformers.
-						if (right instanceof AddExpr) {
-							fallState.putIntervalForVar(varName, Interval.plus(i1, i2));
-						}
-						
-						else if (right instanceof SubExpr) {
-							fallState.putIntervalForVar(varName, Interval.subtract(i1, i2));
-						} 
-						
-						else if (right instanceof MulExpr) {
-							fallState.putIntervalForVar(varName, Interval.multiply(i1, i2));
-						} 
-						
-						else if (right instanceof DivExpr) {
-							fallState.putIntervalForVar(varName, Interval.divide(i1, i2));
-						} 
-						
-						else throw new RuntimeException("unsupported operation "+right+" at "+op);
-					}
-				}
-				
-				else if (right instanceof JVirtualInvokeExpr) {
-					JVirtualInvokeExpr expr = (JVirtualInvokeExpr)right;
-					SootMethod method = expr.getMethodRef().resolve();
-					if (method.getName().equals("readSensor")) {
-						if (method.getDeclaringClass().getName().equals("AircraftControl")) {
-							checkInterval(expr.getArg(0), legalSensorInterval, current);
-							fallState.putIntervalForVar(varName, new Interval(-999, 999));
-						}
-					}
-				}
-
-				else if (right instanceof UnopExpr) {
-					Value r1 = ((UnopExpr) right).getOp();
-					Interval i1 = tryGetIntervalForValue(current, r1);
-
-					if (i1 == null) 
-						throw new NullPointerException();
-					
-					else {
-						
-						if (right instanceof NegExpr) {
-							fallState.putIntervalForVar(varName, i1.negate());
-						}
-						
-						else throw new RuntimeException("unsupported operation "+right+" at "+op);
-					}
-
-				}
-
-				else {
-					throw new RuntimeException("unhandled JimpleLocal "+left+ " at "+op);
-				}
-				// ...
-			}
-			
-			else {
-				throw new RuntimeException("unhandled lhs "+left);
-			}
-			// ...
+			flowThroughDefinitionStmt(current, (DefinitionStmt) s, fallState);
 		} 
 		
 		else if (s instanceof JInvokeStmt) {
-			// A method is called. e.g. AircraftControl.adjustValue
-
-			// You need to check the parameters here.
-			InvokeExpr expr = s.getInvokeExpr();
-			if (expr.getMethod().getName().equals("adjustValue")) {
-				// Check that is the method from the AircraftControl class.
-				if (expr.getMethod().getDeclaringClass().getName().equals("AircraftControl"))
-				{
-					// TODO: Check that the values are in the allowed range (we do this while computing fixpoint).
-					checkInterval(expr.getArg(0), legalSensorInterval, current);
-					checkInterval(expr.getArg(1), legalValueInterval, current);
-				}
-			}
+			flowThroughJInvokeStmt(current, (JInvokeStmt) s);
 		}
 		
 		else if (s instanceof ReturnVoidStmt) {
@@ -221,6 +95,141 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 				fnext.copyFrom(branchState);
 			}
 		}
+	}
+
+	private void flowThroughJInvokeStmt(IntervalPerVar current, JInvokeStmt s) {
+		// A method is called. e.g. AircraftControl.adjustValue
+
+		// You need to check the parameters here.
+		InvokeExpr expr = s.getInvokeExpr();
+		if (expr.getMethod().getName().equals("adjustValue")) {
+			// Check that is the method from the AircraftControl class.
+			if (expr.getMethod().getDeclaringClass().getName().equals("AircraftControl"))
+			{
+				// TODO: Check that the values are in the allowed range (we do this while computing fixpoint).
+				checkInterval(expr.getArg(0), legalSensorInterval, current);
+				checkInterval(expr.getArg(1), legalValueInterval, current);
+			}
+		}
+	}
+
+	private void flowThroughDefinitionStmt(IntervalPerVar current,
+			DefinitionStmt sd, IntervalPerVar fallState) {
+
+		Value left = sd.getLeftOp();
+		Value right = sd.getRightOp();
+		logger.info(left.getClass().getName() + " " + right.getClass().getName());
+
+		// You do not need to handle these cases:
+		if ((!(left instanceof StaticFieldRef)) && (!(left instanceof JimpleLocal)) && (!(left instanceof JArrayRef))
+				&& (!(left instanceof JInstanceFieldRef)))
+			unhandled("1: Assignment to non-variables is not handled.");
+		
+		else if ((left instanceof JArrayRef) && (!((((JArrayRef) left).getBase()) instanceof JimpleLocal)))
+			unhandled("2: Assignment to a non-local array variable is not handled.");
+		
+		// TODO: Handle other cases. For example:
+
+		else if (left instanceof JimpleLocal) {
+			
+			JimpleLocal jimpleLocalLeft = (JimpleLocal) left;
+			String varName = jimpleLocalLeft.getName();
+			
+
+			if (jimpleLocalLeft.getType() instanceof RefType) {
+				logger.warning("ignoring assignments to complex type: "+sd);
+			}
+			
+			else if (right instanceof IntConstant) {
+				IntConstant c = ((IntConstant) right);
+				fallState.putIntervalForVar(varName, new Interval(c.value, c.value));
+			} 
+			
+			else if (right instanceof JimpleLocal) {
+				JimpleLocal l = ((JimpleLocal) right);
+				if (l.getType() instanceof RefLikeType) {
+					logger.warning("ignore right side "+l.getType());
+				}
+				else {
+					fallState.putIntervalForVar(varName, current.getIntervalForVar(l.getName()));
+					throw new RuntimeException("hit unexpected type "+l.getType());
+				}
+			} 
+			
+			else if (right instanceof BinopExpr) {
+				Value r1 = ((BinopExpr) right).getOp1();
+				Value r2 = ((BinopExpr) right).getOp2();
+
+				Interval i1 = tryGetIntervalForValue(current, r1);
+				Interval i2 = tryGetIntervalForValue(current, r2);
+
+				if (i1 == null) 
+					throw new NullPointerException();
+				
+				else if (i2 == null) 
+					throw new NullPointerException();
+				
+				else {
+					// Implement transformers.
+					if (right instanceof AddExpr) {
+						fallState.putIntervalForVar(varName, Interval.plus(i1, i2));
+					}
+					
+					else if (right instanceof SubExpr) {
+						fallState.putIntervalForVar(varName, Interval.subtract(i1, i2));
+					} 
+					
+					else if (right instanceof MulExpr) {
+						fallState.putIntervalForVar(varName, Interval.multiply(i1, i2));
+					} 
+					
+					else if (right instanceof DivExpr) {
+						fallState.putIntervalForVar(varName, Interval.divide(i1, i2));
+					} 
+					
+					else throw new RuntimeException("unsupported operation "+right+" at "+sd);
+				}
+			}
+			
+			else if (right instanceof JVirtualInvokeExpr) {
+				JVirtualInvokeExpr expr = (JVirtualInvokeExpr)right;
+				SootMethod method = expr.getMethodRef().resolve();
+				if (method.getName().equals("readSensor")) {
+					if (method.getDeclaringClass().getName().equals("AircraftControl")) {
+						checkInterval(expr.getArg(0), legalSensorInterval, current);
+						fallState.putIntervalForVar(varName, new Interval(-999, 999));
+					}
+				}
+			}
+
+			else if (right instanceof UnopExpr) {
+				Value r1 = ((UnopExpr) right).getOp();
+				Interval i1 = tryGetIntervalForValue(current, r1);
+
+				if (i1 == null) 
+					throw new NullPointerException();
+				
+				else {
+					
+					if (right instanceof NegExpr) {
+						fallState.putIntervalForVar(varName, i1.negate());
+					}
+					
+					else throw new RuntimeException("unsupported operation "+right+" at "+sd);
+				}
+
+			}
+
+			else {
+				throw new RuntimeException("unhandled JimpleLocal "+left+ " at "+sd);
+			}
+			// ...
+		}
+		
+		else {
+			throw new RuntimeException("unhandled lhs "+left);
+		}
+		// ...
 	}
 
 	/**
