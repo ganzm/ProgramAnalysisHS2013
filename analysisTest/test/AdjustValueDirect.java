@@ -1,7 +1,7 @@
 
 /**
- * And example application you may want to analyze to test your analysis.
- *
+ * Call adjustValue with an integer literal for the value.
+ * This should be SAFE.
  */
 public class AdjustValueDirect {
 

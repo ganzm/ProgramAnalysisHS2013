@@ -26,4 +26,14 @@ public class AdjustValueTests extends ValidationTestBase {
 		testAnyProgram("AdjustValueIndirect", true, true);
 	}
 
+	@Test(timeout = 10000)
+	public void testAdjustValueDirectOverflow() {
+		testAnyProgram("AdjustValueDirectOverflow", false, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testAdjustValueDirectOverflowDebug() {
+		testAnyProgram("AdjustValueDirectOverflow", false, true);
+	}
+
 }

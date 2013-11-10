@@ -1,11 +1,11 @@
 
 /**
- * And example application you may want to analyze to test your analysis.
- *
+ * Call adjustValue with an integer variable for the value.
+ * This should be SAFE.
  */
 public class AdjustValueIndirect {
 
-	public static void adjustValueDirect() {
+	public static void adjustValueIndirect() {
 		AircraftControl ac = new AircraftControl();
 		int adjustedValue = 123;
 		ac.adjustValue(3, adjustedValue);
