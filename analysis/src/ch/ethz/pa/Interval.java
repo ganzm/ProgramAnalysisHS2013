@@ -36,11 +36,12 @@ public class Interval {
 	}
 
 	public static Interval subtract(Interval i1, Interval i2) {
-		// TODO Auto-generated method stub
+		// TODO: Handle overflow.
 		return new Interval(i1.lower - i2.upper, i1.upper - i2.lower);
 	}
 
 	public static Interval multiply(Interval i1, Interval i2) {
+		// TODO: Handle overflow.
 		int x1 = i1.lower * i2.lower;
 		int x2 = i1.lower * i2.upper;
 		int x3 = i1.upper * i2.lower;
@@ -58,7 +59,6 @@ public class Interval {
 		return lower == i.lower && upper == i.upper;
 	}
 
-	// TODO: Do you need to handle infinity or empty interval?
 	final int lower;
 	final int upper;
 
@@ -91,24 +91,28 @@ public class Interval {
 	}
 
 	public Interval limitToGreaterEqual(Interval other) {
+		if (this == EMPTY_INTERVAL || other == EMPTY_INTERVAL) return EMPTY_INTERVAL;
 		if (lower >= other.lower) return this;
 		if (upper >= other.lower) return new Interval(other.lower, upper);
 		return EMPTY_INTERVAL;
 	}
 
 	public Interval limitToLower(Interval other) {
+		if (this == EMPTY_INTERVAL || other == EMPTY_INTERVAL) return EMPTY_INTERVAL;
 		if (upper < other.upper) return this;
 		if (lower < other.upper) return new Interval(lower, other.upper-1);  
 		return EMPTY_INTERVAL;
 	}
 
 	public Interval limitToLowerEqual(Interval other) {
+		if (this == EMPTY_INTERVAL || other == EMPTY_INTERVAL) return EMPTY_INTERVAL;
 		if (upper <= other.upper) return this;
 		if (lower <= other.upper) return new Interval(lower, other.upper);  
 		return EMPTY_INTERVAL;
 	}
 
 	public Interval limitToGreater(Interval other) {
+		if (this == EMPTY_INTERVAL || other == EMPTY_INTERVAL) return EMPTY_INTERVAL;
 		if (lower > other.lower) return this;
 		if (upper > other.lower) return new Interval(other.lower+1, upper);
 		return EMPTY_INTERVAL;

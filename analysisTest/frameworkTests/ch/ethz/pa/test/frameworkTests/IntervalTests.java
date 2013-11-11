@@ -108,4 +108,17 @@ public class IntervalTests {
 		Assert.assertEquals(new Interval(1,2), new Interval(1,2).limitToLower(new Interval(4,5)));
 	}
 
+	@Test
+	public void testEmptyStaysEmpty() {
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.limitToLower(new Interval(5)));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToLower(Interval.EMPTY_INTERVAL));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.limitToGreater(new Interval(5)));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToGreater(Interval.EMPTY_INTERVAL));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.limitToLowerEqual(new Interval(5)));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToLowerEqual(Interval.EMPTY_INTERVAL));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.limitToGreaterEqual(new Interval(5)));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToGreaterEqual(Interval.EMPTY_INTERVAL));
+	}
+
+
 }
