@@ -3,9 +3,6 @@ package ch.ethz.pa;
 import java.util.List;
 import java.util.logging.Logger;
 
-import ch.ethz.pa.branches.Branch;
-import ch.ethz.pa.branches.GreaterEqualBranch;
-
 import soot.Unit;
 import soot.Value;
 import soot.jimple.BinopExpr;
@@ -16,9 +13,10 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.jimple.internal.JInvokeStmt;
-import soot.jimple.internal.JimpleLocal;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
+import ch.ethz.pa.branches.Branch;
+import ch.ethz.pa.branches.GreaterEqualBranch;
 
 /**
  * Implement your numerical analysis here.

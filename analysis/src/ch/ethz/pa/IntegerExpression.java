@@ -1,5 +1,6 @@
 package ch.ethz.pa;
 
+import soot.Local;
 import soot.Value;
 import soot.jimple.AddExpr;
 import soot.jimple.BinopExpr;
@@ -9,7 +10,6 @@ import soot.jimple.MulExpr;
 import soot.jimple.NegExpr;
 import soot.jimple.SubExpr;
 import soot.jimple.UnopExpr;
-import soot.jimple.internal.JimpleLocal;
 
 /**
  * Evaluates small step integer expressions.
@@ -76,8 +76,8 @@ public class IntegerExpression {
 		if (v instanceof IntConstant) {
 			IntConstant c = ((IntConstant) v);
 			return new Interval(c.value, c.value);
-		} else if (v instanceof JimpleLocal) {
-			JimpleLocal l = ((JimpleLocal) v);
+		} else if (v instanceof Local) {
+			Local l = ((Local) v);
 			return currentState.getIntervalForVar(l.getName());
 		}
 		return null;
