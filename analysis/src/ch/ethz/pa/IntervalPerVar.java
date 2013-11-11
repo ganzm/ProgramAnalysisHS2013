@@ -28,14 +28,14 @@ public class IntervalPerVar {
 		}
 	}
 	
-	void putIntervalForVar(String var, Interval i) {
+	public void putIntervalForVar(String var, Interval i) {
 		if (i == null) {
 			throw new NullPointerException();
 		}
 		values.put(var, i);
 	}
 	
-	Interval getIntervalForVar(String var) {
+	public Interval getIntervalForVar(String var) {
 		Interval interval = values.get(var);
 		if (interval == null) {
 			throw new NullPointerException(String.format("No interval for [%s]", var));

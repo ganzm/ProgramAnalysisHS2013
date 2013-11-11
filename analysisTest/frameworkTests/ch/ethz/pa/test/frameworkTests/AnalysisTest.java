@@ -18,10 +18,12 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.toolkits.graph.BriefUnitGraph;
 import ch.ethz.pa.Analysis;
+import ch.ethz.pa.Interval;
+import ch.ethz.pa.IntervalPerVar;
 
 public class AnalysisTest {
 	
-	private final JimpleBody simpleBody = createSimpleBody();
+	protected final JimpleBody simpleBody = createSimpleBody();
 
 	/**
 	 * Provides a body that consists of only a return statement.
@@ -51,10 +53,16 @@ public class AnalysisTest {
 	}
 	
 	Analysis analysis;
+	IntervalPerVar src1;
+	IntervalPerVar src2;
+	IntervalPerVar trg;
 	
 	@Before
 	public void setup() {
 		analysis = new Analysis(new BriefUnitGraph(simpleBody));
+		src1 = new IntervalPerVar();
+		src2 = new IntervalPerVar();
+		trg = new IntervalPerVar();
 	}
 	
 	@Test
@@ -81,6 +89,31 @@ public class AnalysisTest {
 	public void testHavingErrorFeedback() {
 		List<String> problems = new AnalysisWithOneProblemMock().getProblems();
 		Assert.assertEquals("expected a problem", 1, problems.size());
+	}
+	
+	private class AnalysisWithPublicMerge extends Analysis {
+		public AnalysisWithPublicMerge() {
+			super(new BriefUnitGraph(simpleBody));
+		}
+		@Override
+		public void merge(IntervalPerVar src1, IntervalPerVar src2, IntervalPerVar trg) {
+			super.merge(src1, src2, trg);
+		}
+		
+	}
+	
+	@Test
+	public void testMergeDisjunct() {
+		
+		AnalysisWithPublicMerge analysis = new AnalysisWithPublicMerge();
+		
+		src1.putIntervalForVar("A", new Interval(1));
+		src2.putIntervalForVar("A", new Interval(3));
+
+		analysis.merge(src1, src2, trg);
+		
+		Assert.assertTrue(trg.getIntervalForVar("A").covers(new Interval(1)));
+		Assert.assertTrue(trg.getIntervalForVar("A").covers(new Interval(3)));
 	}
 
 }
