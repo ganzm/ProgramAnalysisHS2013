@@ -2,19 +2,19 @@ package ch.ethz.pa;
 
 import java.util.logging.Logger;
 
+import soot.Local;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.SootMethod;
 import soot.Value;
+import soot.jimple.ArrayRef;
 import soot.jimple.BinopExpr;
 import soot.jimple.DefinitionStmt;
+import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.UnopExpr;
-import soot.jimple.internal.JArrayRef;
-import soot.jimple.internal.JInstanceFieldRef;
-import soot.jimple.internal.JVirtualInvokeExpr;
-import soot.jimple.internal.JimpleLocal;
+import soot.jimple.VirtualInvokeExpr;
 
 public class DefinitionStmtAnalyzer {
 
@@ -33,18 +33,18 @@ public class DefinitionStmtAnalyzer {
 		logger.info(left.getClass().getName() + " " + right.getClass().getName());
 
 		// You do not need to handle these cases:
-		if ((!(left instanceof StaticFieldRef)) && (!(left instanceof JimpleLocal)) && (!(left instanceof JArrayRef))
-				&& (!(left instanceof JInstanceFieldRef)))
+		if ((!(left instanceof StaticFieldRef)) && (!(left instanceof Local)) && (!(left instanceof ArrayRef))
+				&& (!(left instanceof InstanceFieldRef)))
 			unhandled("1: Assignment to non-variables is not handled.");
 		
-		else if ((left instanceof JArrayRef) && (!((((JArrayRef) left).getBase()) instanceof JimpleLocal)))
+		else if ((left instanceof ArrayRef) && (!((((ArrayRef) left).getBase()) instanceof Local)))
 			unhandled("2: Assignment to a non-local array variable is not handled.");
 		
 		// TODO: Handle other cases. For example:
 
-		else if (left instanceof JimpleLocal) {
+		else if (left instanceof Local) {
 			
-			JimpleLocal jimpleLocalLeft = (JimpleLocal) left;
+			Local jimpleLocalLeft = (Local) left;
 			String varName = jimpleLocalLeft.getName();
 			
 
@@ -57,8 +57,8 @@ public class DefinitionStmtAnalyzer {
 				fallState.putIntervalForVar(varName, new Interval(c.value, c.value));
 			} 
 			
-			else if (right instanceof JimpleLocal) {
-				JimpleLocal l = ((JimpleLocal) right);
+			else if (right instanceof Local) {
+				Local l = ((Local) right);
 				if (l.getType() instanceof RefLikeType) {
 					logger.warning("ignore right side "+l.getType());
 				}
@@ -73,8 +73,8 @@ public class DefinitionStmtAnalyzer {
 				fallState.putIntervalForVar(varName, result);
 			}
 			
-			else if (right instanceof JVirtualInvokeExpr) {
-				JVirtualInvokeExpr expr = (JVirtualInvokeExpr)right;
+			else if (right instanceof VirtualInvokeExpr) {
+				VirtualInvokeExpr expr = (VirtualInvokeExpr)right;
 				SootMethod method = expr.getMethodRef().resolve();
 				if (method.getName().equals("readSensor")) {
 					if (method.getDeclaringClass().getName().equals("AircraftControl")) {

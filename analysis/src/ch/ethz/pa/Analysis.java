@@ -10,9 +10,9 @@ import soot.jimple.DefinitionStmt;
 import soot.jimple.GeExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
-import soot.jimple.internal.JInvokeStmt;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 import ch.ethz.pa.branches.Branch;
@@ -61,8 +61,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			definitionStmtAnalyzer.analyze(current, (DefinitionStmt) s, fallState);
 		} 
 		
-		else if (s instanceof JInvokeStmt) {
-			flowThroughJInvokeStmt(current, (JInvokeStmt) s);
+		else if (s instanceof InvokeStmt) {
+			flowThroughJInvokeStmt(current, (InvokeStmt) s);
 		}
 		
 		else if (s instanceof IfStmt) {
@@ -112,7 +112,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		}
 	}
 
-	private void flowThroughJInvokeStmt(IntervalPerVar current, JInvokeStmt s) {
+	private void flowThroughJInvokeStmt(IntervalPerVar current, InvokeStmt s) {
 		// A method is called. e.g. AircraftControl.adjustValue
 
 		// You need to check the parameters here.
