@@ -23,8 +23,7 @@ public class IntervalPerVar {
 	public void copyFrom(IntervalPerVar other) {
 		values.clear();
 		for (Map.Entry<String, Interval> entry : other.values.entrySet()) {
-			Interval n = new Interval(0);
-			n.copyFrom(entry.getValue());
+			Interval n = entry.getValue();
 			values.put(entry.getKey(), n);
 		}
 	}

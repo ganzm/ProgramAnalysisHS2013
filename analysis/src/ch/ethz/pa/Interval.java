@@ -1,8 +1,20 @@
 package ch.ethz.pa;
 
-
+/**
+ * Interval is a read-only value type.
+ */
 public class Interval {
 	
+	public static final Interval EMPTY_INTERVAL = new Interval();
+	
+	/**
+	 * This is used to create special intervals, and 
+	 * is not intended for public use.
+	 */
+	private Interval() {
+		this(0);
+	};
+
 	public Interval(int start_value) {
 		lower = upper = start_value;
 	}
@@ -16,12 +28,6 @@ public class Interval {
 	@Override
 	public String toString() {
 		return String.format("[%d,%d]", lower, upper);
-	}
-	
-	public void copyFrom(Interval other) {
-		if (other.lower>other.upper) throw new RuntimeException("interval range corrupt");
-		lower = other.lower;
-		upper = other.upper;
 	}
 	
 	public static Interval plus(Interval i1, Interval i2) {
@@ -47,12 +53,14 @@ public class Interval {
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof Interval)) return false;
+		if (this == o) return true;
 		Interval i = (Interval)o;
 		return lower == i.lower && upper == i.upper;
 	}
 
 	// TODO: Do you need to handle infinity or empty interval?
-	int lower, upper;
+	final int lower;
+	final int upper;
 
 	public boolean covers(int value) {
 		return lower <= value && value <= upper;
@@ -85,8 +93,7 @@ public class Interval {
 	public Interval limitToGreaterEqual(Interval i2) {
 		if (lower >= i2.lower) return this;
 		if (upper >= i2.lower) return new Interval(i2.lower, upper);
-		// TODO Auto-generated method stub
-		return null;
+		return EMPTY_INTERVAL;
 	}
 
 	public Interval limitToLower(Interval i2) {

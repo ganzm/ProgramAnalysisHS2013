@@ -76,6 +76,7 @@ public class IntervalTests {
 	public void testLimitToGreaterEqual() {
 		Assert.assertEquals(new Interval(2,4), new Interval(2,4).limitToGreaterEqual(new Interval(1,3)));
 		Assert.assertEquals(new Interval(2,4), new Interval(1,4).limitToGreaterEqual(new Interval(2,3)));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(1,2).limitToGreaterEqual(new Interval(3,4)));
 	}
 
 }
