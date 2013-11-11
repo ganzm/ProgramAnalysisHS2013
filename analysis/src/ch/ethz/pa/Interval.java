@@ -90,24 +90,27 @@ public class Interval {
 		return TriState.Unknown;
 	}
 
-	public Interval limitToGreaterEqual(Interval i2) {
-		if (lower >= i2.lower) return this;
-		if (upper >= i2.lower) return new Interval(i2.lower, upper);
+	public Interval limitToGreaterEqual(Interval other) {
+		if (lower >= other.lower) return this;
+		if (upper >= other.lower) return new Interval(other.lower, upper);
 		return EMPTY_INTERVAL;
 	}
 
-	public Interval limitToLower(Interval i2) {
-		// TODO Auto-generated method stub
-		return null;
+	public Interval limitToLower(Interval other) {
+		if (upper < other.upper) return this;
+		if (lower < other.upper) return new Interval(lower, other.upper-1);  
+		return EMPTY_INTERVAL;
 	}
 
-	public Interval limitToLowerEqual(Interval i1) {
-		// TODO Auto-generated method stub
-		return null;
+	public Interval limitToLowerEqual(Interval other) {
+		if (upper <= other.upper) return this;
+		if (lower <= other.upper) return new Interval(lower, other.upper);  
+		return EMPTY_INTERVAL;
 	}
 
-	public Interval limitToGreater(Interval i1) {
-		// TODO Auto-generated method stub
-		return null;
+	public Interval limitToGreater(Interval other) {
+		if (lower > other.lower) return this;
+		if (upper > other.lower) return new Interval(other.lower+1, upper);
+		return EMPTY_INTERVAL;
 	}
 }
