@@ -71,5 +71,11 @@ public class IntervalTests {
 		Assert.assertEquals(TriState.False, Interval.greaterEqual(new Interval(1,2), new Interval(3,5)));
 		Assert.assertEquals(TriState.Unknown, Interval.greaterEqual(new Interval(1,3), new Interval(3,5)));		
 	}
+	
+	@Test
+	public void testLimitToGreaterEqual() {
+		Assert.assertEquals(new Interval(2,4), new Interval(2,4).limitToGreaterEqual(new Interval(1,3)));
+		Assert.assertEquals(new Interval(2,4), new Interval(1,4).limitToGreaterEqual(new Interval(2,3)));
+	}
 
 }

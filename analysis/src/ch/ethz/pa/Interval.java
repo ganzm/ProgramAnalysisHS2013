@@ -83,6 +83,8 @@ public class Interval {
 	}
 
 	public Interval limitToGreaterEqual(Interval i2) {
+		if (lower >= i2.lower) return this;
+		if (upper >= i2.lower) return new Interval(i2.lower, upper);
 		// TODO Auto-generated method stub
 		return null;
 	}
