@@ -11,7 +11,7 @@ public class BranchesAndLoops extends ValidationTestBase {
 		testAnyProgram("SimpleIfClause", SAFE, false);
 	}
 
-	@Test(timeout = 10000)
+	@Test
 	public void testSimpleIfClauseDebug() {
 		testAnyProgram("SimpleIfClause", SAFE, true);
 	}

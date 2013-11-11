@@ -2,6 +2,7 @@ package ch.ethz.pa;
 
 
 public class Interval {
+	
 	public Interval(int start_value) {
 		lower = upper = start_value;
 	}
@@ -74,10 +75,30 @@ public class Interval {
 		}
 		throw new RuntimeException("potential division by zero not supported");
 	}
-
+	
 	public static TriState greaterEqual(Interval i1, Interval i2) {
 		if (i1.lower >= i2.upper) return TriState.True;
 		if (i1.upper < i2.lower) return TriState.False;
 		return TriState.Unknown;
+	}
+
+	public Interval limitToGreaterEqual(Interval i2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Interval limitToLower(Interval i2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Interval limitToLowerEqual(Interval i1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Interval limitToGreater(Interval i1) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

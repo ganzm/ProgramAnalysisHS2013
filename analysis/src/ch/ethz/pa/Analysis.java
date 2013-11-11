@@ -3,14 +3,20 @@ package ch.ethz.pa;
 import java.util.List;
 import java.util.logging.Logger;
 
+import ch.ethz.pa.branches.Branch;
+import ch.ethz.pa.branches.GreaterEqualBranch;
+
 import soot.Unit;
 import soot.Value;
+import soot.jimple.BinopExpr;
 import soot.jimple.DefinitionStmt;
+import soot.jimple.GeExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.InvokeExpr;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.jimple.internal.JInvokeStmt;
+import soot.jimple.internal.JimpleLocal;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
@@ -67,7 +73,24 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			
 			Value condition = is.getCondition();
 			
-			throw new RuntimeException("unhandled if statement: "+op);
+			Branch branch;
+			
+			if (condition instanceof BinopExpr) {
+				
+				if (condition instanceof GeExpr) {
+					
+					branch = GreaterEqualBranch.createFrom((GeExpr) condition, current);
+					TriState result = branch.getConditionResult();
+					
+				}
+				
+				else
+					throw new RuntimeException("unhandled binop condition: "+condition);
+				
+			}
+			
+			else
+				throw new RuntimeException("unhandled condition: "+op);
 		}
 		
 		else if (s instanceof ReturnVoidStmt) {
