@@ -116,5 +116,13 @@ public class IntervalTests {
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.limitToGreaterEqual(new Interval(5)));
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToGreaterEqual(Interval.EMPTY_INTERVAL));
 	}
+	
+	@Test
+	public void testJoin() {
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.join(Interval.EMPTY_INTERVAL));
+		Assert.assertEquals(new Interval(1, 3), Interval.EMPTY_INTERVAL.join(new Interval(1, 3)));
+		Assert.assertEquals(new Interval(1, 3), new Interval(1, 3).join(Interval.EMPTY_INTERVAL));
+		Assert.assertEquals(new Interval(1, 5), new Interval(1, 2).join(new Interval(4, 5)));
+	}
 
 }
