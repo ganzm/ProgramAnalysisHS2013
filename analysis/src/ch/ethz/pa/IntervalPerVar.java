@@ -28,6 +28,21 @@ public class IntervalPerVar {
 		}
 	}
 	
+	public void mergeWith(IntervalPerVar other) {
+
+		for (Map.Entry<String, Interval> entry : other.values.entrySet()) {
+			
+			String otherName = entry.getKey();
+			Interval otherInterval = entry.getValue();
+			
+			Interval ownInterval = values.get(otherName);
+			Interval newInterval = ownInterval != null ? ownInterval.join(otherInterval) : otherInterval;
+			
+			values.put(otherName, newInterval);
+		}
+	}
+
+	
 	public void putIntervalForVar(String var, Interval i) {
 		if (i == null) {
 			throw new NullPointerException();
@@ -50,4 +65,5 @@ public class IntervalPerVar {
 	}
 	
 	private HashMap<String, Interval> values;
+
 }

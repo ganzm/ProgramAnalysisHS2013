@@ -117,4 +117,8 @@ public class Interval {
 		if (upper > other.lower) return new Interval(other.lower+1, upper);
 		return EMPTY_INTERVAL;
 	}
+
+	public Interval join(Interval otherInterval) {
+		return this;
+	}
 }
