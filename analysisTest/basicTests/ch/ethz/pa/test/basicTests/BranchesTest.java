@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import ch.ethz.pa.test.ValidationTestBase;
 
-public class BranchesAndLoopsTest extends ValidationTestBase {
+public class BranchesTest extends ValidationTestBase {
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause1() {
@@ -45,5 +45,16 @@ public class BranchesAndLoopsTest extends ValidationTestBase {
 	public void testSimpleIfClause2invDebug() {
 		testAnyProgram("SimpleIfClause2inv", UNSAFE, true);
 	}
+
+	@Test(timeout = 10000)
+	public void testSimpleIfClause3() {
+		testAnyProgram("SimpleIfClause3", SAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testSimpleIfClause3Debug() {
+		testAnyProgram("SimpleIfClause3", SAFE, true);
+	}
+
 
 }
