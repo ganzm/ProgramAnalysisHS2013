@@ -50,4 +50,16 @@ public class GreaterEqualBranch extends Branch {
 		return new GreaterEqualBranch(conditionResult);
 	}
 
+	@Override
+	public void restrictBranchState(IntervalPerVar branchState) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void restrictFallstate(IntervalPerVar fallState) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

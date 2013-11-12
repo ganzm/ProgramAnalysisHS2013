@@ -78,7 +78,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 				if (condition instanceof GeExpr) {
 					
 					branch = GreaterEqualBranch.createFrom((GeExpr) condition, current);
-					TriState result = branch.getConditionResult();
+					branch.restrictFallstate(fallState);
+					branch.restrictBranchState(branchState);
 					
 				}
 				
