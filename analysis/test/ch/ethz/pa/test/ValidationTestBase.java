@@ -11,9 +11,11 @@ public class ValidationTestBase {
 
 	private PrintStream originalOut;
 	private ByteArrayOutputStream redirectedOutStream;
-	
+
 	protected final static boolean SAFE = true;
 	protected final static boolean UNSAFE = false;
+
+	protected boolean defaultDebugFlag = false;
 
 	public ValidationTestBase() {
 		super();
@@ -22,10 +24,10 @@ public class ValidationTestBase {
 	private void redirectOutputStream() {
 		// backup output stream
 		originalOut = System.out;
-	
+
 		redirectedOutStream = new ByteArrayOutputStream();
 		System.setOut(new PrintStream(redirectedOutStream));
-	
+
 	}
 
 	private String restoreOutputStream() {
@@ -34,9 +36,13 @@ public class ValidationTestBase {
 		return new String(redirectedOutStream.toByteArray());
 	}
 
+	protected void testAnyProgram(String name, boolean expectedToBeSafe) {
+		testAnyProgram(name, expectedToBeSafe, defaultDebugFlag);
+	}
+
 	protected void testAnyProgram(String name, boolean expectedToBeSafe, boolean isDebug) {
 		String output = null;
-	
+
 		String[] args = null;
 		if (isDebug) {
 			args = new String[] { name, "-d" };
@@ -51,9 +57,9 @@ public class ValidationTestBase {
 			output = restoreOutputStream();
 			System.out.println("Verifier StdOut:\n" + output);
 		}
-		
+
 		String resultText = isDebug ? lastLineOf(output) : output;
-		
+
 		if (expectedToBeSafe) {
 			Assert.assertEquals(Verifier.PROGRAM_IS_SAFE, resultText);
 		} else {
@@ -63,6 +69,6 @@ public class ValidationTestBase {
 
 	private String lastLineOf(String text) {
 		String lines[] = text.split("\n");
-		return lines.length > 0 ? lines[lines.length-1] : "";
+		return lines.length > 0 ? lines[lines.length - 1] : "";
 	}
 }

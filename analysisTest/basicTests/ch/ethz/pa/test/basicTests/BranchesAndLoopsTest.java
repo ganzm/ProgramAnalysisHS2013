@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import ch.ethz.pa.test.ValidationTestBase;
 
-public class BranchesAndLoops extends ValidationTestBase {
+public class BranchesAndLoopsTest extends ValidationTestBase {
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause() {
