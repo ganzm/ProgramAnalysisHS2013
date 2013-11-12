@@ -1,32 +1,56 @@
 package ch.ethz.pa.branches;
 
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+import ch.ethz.pa.Interval;
 import ch.ethz.pa.IntervalPerVar;
-import ch.ethz.pa.TriState;
 
-public abstract class Branch {
+public class Branch {
 	
-	private final TriState conditionResult;
+	/**
+	 * Intervals restricted when the branch condition holds.
+	 */
+	private Map<String, Interval> branchOutRestrictions;
 	
-	public Branch(TriState conditionResult) {
-		this.conditionResult = conditionResult;
+	/**
+	 * Intervals restricted when the branch condition does not hold.
+	 */
+	private Map<String, Interval> fallOutRestrictions;
+	
+	public Branch() {
+		branchOutRestrictions = new TreeMap<String, Interval>();
+		fallOutRestrictions = new TreeMap<String, Interval>();
 	}
-
-	// TODO is this obsolete?
-	public TriState getConditionResult() {
-		return conditionResult;
+	
+	protected void restrictBranchOut(String name, Interval restrictedInterval) {
+		branchOutRestrictions.put(name, restrictedInterval);
+	}
+	
+	protected void restrictFallout(String name, Interval restrictedInterval) {
+		fallOutRestrictions.put(name, restrictedInterval);
 	}
 
 	/**
 	 * When branching, i.e., when the condition does hold,
 	 * apply the restrictions for affected intervals.
 	 */
-	public abstract void restrictBranchState(IntervalPerVar branchState);
+	public void restrictBranchState(IntervalPerVar branchState) {
+		for(Entry<String, Interval> restriction : branchOutRestrictions.entrySet()) {
+			branchState.putIntervalForVar(restriction.getKey(), restriction.getValue());
+		}
+	}
 
 	/**
 	 * When falling through, i.e., when the condition does not hold,
 	 * apply the restrictions for affected intervals.
 	 */
-	public abstract void restrictFallstate(IntervalPerVar fallState);
+	public void restrictFallstate(IntervalPerVar fallState) {
+		for(Entry<String, Interval> restriction : fallOutRestrictions.entrySet()) {
+			fallState.putIntervalForVar(restriction.getKey(), restriction.getValue());
+		}
+	}
 
 
 }
