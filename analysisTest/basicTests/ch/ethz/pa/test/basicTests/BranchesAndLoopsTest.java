@@ -7,13 +7,13 @@ import ch.ethz.pa.test.ValidationTestBase;
 public class BranchesAndLoopsTest extends ValidationTestBase {
 
 	@Test(timeout = 10000)
-	public void testSimpleIfClause() {
-		testAnyProgram("SimpleIfClause", SAFE, false);
+	public void testSimpleIfClause1() {
+		testAnyProgram("SimpleIfClause1", SAFE, false);
 	}
 
 	@Test
-	public void testSimpleIfClauseDebug() {
-		testAnyProgram("SimpleIfClause", SAFE, true);
+	public void testSimpleIfClause1Debug() {
+		testAnyProgram("SimpleIfClause1", SAFE, true);
 	}
 
 }

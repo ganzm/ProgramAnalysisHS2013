@@ -6,7 +6,6 @@ import soot.jimple.internal.JimpleLocal;
 import ch.ethz.pa.IntegerExpression;
 import ch.ethz.pa.Interval;
 import ch.ethz.pa.IntervalPerVar;
-import ch.ethz.pa.TriState;
 
 public class GreaterEqualBranch extends Branch {
 	
