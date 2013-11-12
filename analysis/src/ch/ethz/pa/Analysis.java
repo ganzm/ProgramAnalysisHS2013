@@ -8,6 +8,7 @@ import soot.Value;
 import soot.jimple.BinopExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.GeExpr;
+import soot.jimple.GtExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
@@ -68,16 +69,19 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		else if (s instanceof IfStmt) {
 			
 			IfStmt is = (IfStmt) s;
-			
 			Value condition = is.getCondition();
-			
 			Branch branch;
 			
 			if (condition instanceof BinopExpr) {
 				
 				if (condition instanceof GeExpr) {
-					
 					branch = GreaterEqualBranch.createFrom((GeExpr) condition, current);
+					branch.restrictFallstate(fallState);
+					branch.restrictBranchState(branchState);
+				}
+				
+				else if (condition instanceof GtExpr) {
+					branch = GreaterThanBranch.createFrom((GtExpr) condition, current);
 					branch.restrictFallstate(fallState);
 					branch.restrictBranchState(branchState);
 					
