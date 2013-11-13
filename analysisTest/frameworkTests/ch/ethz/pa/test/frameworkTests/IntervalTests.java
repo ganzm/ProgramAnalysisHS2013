@@ -120,6 +120,19 @@ public class IntervalTests {
 	}
 
 	@Test
+	public void testLimitToNotEqual() {
+		// disjunct sets
+		Assert.assertEquals(Interval.TOP_INTERVAL, new Interval(1).limitToNotEqual(new Interval(2)));
+
+		// equal or overlapping singleton and non-singleton intervals
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(2).limitToNotEqual(new Interval(2)));
+		Assert.assertEquals(Interval.TOP_INTERVAL, new Interval(1, 3).limitToNotEqual(new Interval(1, 3)));
+		Assert.assertEquals(Interval.TOP_INTERVAL, new Interval(2).limitToNotEqual(new Interval(1, 3)));
+		Assert.assertEquals(Interval.TOP_INTERVAL, new Interval(1, 3).limitToNotEqual(new Interval(2)));
+
+	}
+
+	@Test
 	public void testEmptyStaysEmpty() {
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.limitToLower(new Interval(5)));
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToLower(Interval.EMPTY_INTERVAL));

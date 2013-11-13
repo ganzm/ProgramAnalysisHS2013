@@ -8,6 +8,11 @@ public class Interval {
 	public static final Interval EMPTY_INTERVAL = new Interval();
 
 	/**
+	 * Given the integer data type, we have no Infinity.
+	 */
+	public static final Interval TOP_INTERVAL = new Interval(Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+	/**
 	 * This is used to create special intervals, and is not intended for public use.
 	 */
 	private Interval() {
@@ -27,7 +32,7 @@ public class Interval {
 
 	@Override
 	public String toString() {
-		return String.format("[%d,%d]", lower, upper);
+		return this != EMPTY_INTERVAL ? String.format("[%d,%d]", lower, upper) : "[]";
 	}
 
 	public static Interval plus(Interval i1, Interval i2) {
@@ -61,8 +66,17 @@ public class Interval {
 		return lower == i.lower && upper == i.upper;
 	}
 
-	final int lower;
-	final int upper;
+	/**
+	 * Since there are special Intervals (like {@link #EMPTY_INTERVAL}, we make the object immutable
+	 * and the fields private.
+	 */
+	private final int lower;
+
+	/**
+	 * Since there are special Intervals (like {@link #EMPTY_INTERVAL}, we make the object immutable
+	 * and the fields private.
+	 */
+	private final int upper;
 
 	public boolean covers(int value) {
 		return lower <= value && value <= upper;
@@ -143,6 +157,11 @@ public class Interval {
 	}
 
 	public Interval limitToNotEqual(Interval other) {
+		if (this == EMPTY_INTERVAL || other == EMPTY_INTERVAL)
+			return EMPTY_INTERVAL;
+		if (upper < other.lower || other.upper < lower)
+			return TOP_INTERVAL;
+
 		// TODO Auto-generated method stub
 		return EMPTY_INTERVAL;
 	}
