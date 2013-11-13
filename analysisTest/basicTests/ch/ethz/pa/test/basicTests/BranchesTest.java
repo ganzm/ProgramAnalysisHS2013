@@ -56,4 +56,43 @@ public class BranchesTest extends ValidationTestBase {
 		testAnyProgram("GoodSimpleIfClause3", SAFE, true);
 	}
 
+	@Test(timeout = 10000)
+	public void testSimpleIfEqualClause1() {
+		testAnyProgram("GoodSimpleIfEqualClause1", SAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testSimpleIfEqualClause1Debug() {
+		testAnyProgram("GoodSimpleIfEqualClause1", SAFE, true);
+	}
+
+	@Test(timeout = 10000)
+	public void testSimpleIfEqualClause2() {
+		testAnyProgram("GoodSimpleIfEqualClause2", SAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testSimpleIfEqualClause2Debug() {
+		testAnyProgram("GoodSimpleIfEqualClause2", SAFE, true);
+	}
+
+	@Test(timeout = 10000)
+	public void testBadSimpleIfEqualClause1() {
+		testAnyProgram("BadSimpleIfEqualClause1", SAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testBadSimpleIfEqualClause1Debug() {
+		testAnyProgram("BadSimpleIfEqualClause1", SAFE, true);
+	}
+
+	@Test(timeout = 10000)
+	public void testBadSimpleIfEqualClause2() {
+		testAnyProgram("BadSimpleIfEqualClause2", SAFE, false);
+	}
+
+	@Test(timeout = 10000)
+	public void testBadSimpleIfEqualClause2Debug() {
+		testAnyProgram("BadSimpleIfEqualClause2", SAFE, true);
+	}
 }
