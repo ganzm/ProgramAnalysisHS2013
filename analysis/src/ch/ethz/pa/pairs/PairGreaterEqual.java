@@ -1,15 +1,17 @@
-package ch.ethz.pa;
+package ch.ethz.pa.pairs;
 
 import soot.Value;
 import soot.jimple.internal.JimpleLocal;
-import ch.ethz.pa.branches.Pair;
+import ch.ethz.pa.IntegerExpression;
+import ch.ethz.pa.Interval;
+import ch.ethz.pa.IntervalPerVar;
 
 /**
  * @see Pair
  */
-public class PairGreaterThan extends Pair {
+public class PairGreaterEqual extends Pair {
 
-	public PairGreaterThan(Value a1, Value a2, IntervalPerVar current) {
+	public PairGreaterEqual(Value a1, Value a2, IntervalPerVar current) {
 
 		super();
 
@@ -18,8 +20,8 @@ public class PairGreaterThan extends Pair {
 
 		if (a1 instanceof JimpleLocal) {
 			String name1 = ((JimpleLocal) a1).getName();
-			leftArgumentBranchOut = new Restriction(name1, i1.limitToGreater(i2));
-			leftArgumentFallOut = new Restriction(name1, i1.limitToLowerEqual(i2));
+			leftArgumentBranchOut = new Restriction(name1, i1.limitToGreaterEqual(i2));
+			leftArgumentFallOut = new Restriction(name1, i1.limitToLower(i2));
 		}
 
 		if (a2 instanceof JimpleLocal) {

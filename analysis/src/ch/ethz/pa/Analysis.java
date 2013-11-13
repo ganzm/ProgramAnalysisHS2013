@@ -17,8 +17,10 @@ import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
-import ch.ethz.pa.branches.Pair;
-import ch.ethz.pa.branches.PairGreaterEqual;
+import ch.ethz.pa.pairs.Pair;
+import ch.ethz.pa.pairs.PairGreaterEqual;
+import ch.ethz.pa.pairs.PairGreaterThan;
+import ch.ethz.pa.pairs.PairNotEqual;
 
 /**
  * Implement your numerical analysis here.

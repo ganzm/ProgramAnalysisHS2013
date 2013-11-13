@@ -1,4 +1,4 @@
-package ch.ethz.pa.branches;
+package ch.ethz.pa.pairs;
 
 import ch.ethz.pa.Interval;
 import ch.ethz.pa.IntervalPerVar;
