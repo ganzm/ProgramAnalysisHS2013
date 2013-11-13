@@ -122,14 +122,19 @@ public class IntervalTests {
 	@Test
 	public void testLimitToNotEqual() {
 		// disjunct sets
-		Assert.assertEquals(Interval.TOP_INTERVAL, new Interval(1).limitToNotEqual(new Interval(2)));
+		Assert.assertEquals(new Interval(1, 2), new Interval(1, 2).limitToNotEqual(new Interval(3, 4)));
+		Assert.assertEquals(new Interval(3, 4), new Interval(3, 4).limitToNotEqual(new Interval(1, 2)));
 
-		// equal or overlapping singleton and non-singleton intervals
-		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(2).limitToNotEqual(new Interval(2)));
-		Assert.assertEquals(Interval.TOP_INTERVAL, new Interval(1, 3).limitToNotEqual(new Interval(1, 3)));
-		Assert.assertEquals(Interval.TOP_INTERVAL, new Interval(2).limitToNotEqual(new Interval(1, 3)));
-		Assert.assertEquals(Interval.TOP_INTERVAL, new Interval(1, 3).limitToNotEqual(new Interval(2)));
+		// overlapping sets
+		Assert.assertEquals(new Interval(1, 4), new Interval(1, 4).limitToNotEqual(new Interval(3, 6)));
+		Assert.assertEquals(new Interval(3, 6), new Interval(3, 6).limitToNotEqual(new Interval(1, 4)));
 
+		// equal singleton set
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(3).limitToNotEqual(new Interval(3)));
+
+		// enclosed sets
+		Assert.assertEquals(new Interval(2, 4), new Interval(2, 4).limitToNotEqual(new Interval(0, 6)));
+		Assert.assertEquals(new Interval(0, 6), new Interval(0, 6).limitToNotEqual(new Interval(2, 4)));
 	}
 
 	@Test
@@ -144,6 +149,8 @@ public class IntervalTests {
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToGreaterEqual(Interval.EMPTY_INTERVAL));
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.limitToEqual(new Interval(5)));
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToEqual(Interval.EMPTY_INTERVAL));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.limitToNotEqual(new Interval(5)));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToNotEqual(Interval.EMPTY_INTERVAL));
 	}
 
 	@Test

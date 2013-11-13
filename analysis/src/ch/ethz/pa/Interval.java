@@ -8,11 +8,6 @@ public class Interval {
 	public static final Interval EMPTY_INTERVAL = new Interval();
 
 	/**
-	 * Given the integer data type, we have no Infinity.
-	 */
-	public static final Interval TOP_INTERVAL = new Interval(Integer.MIN_VALUE, Integer.MAX_VALUE);
-
-	/**
 	 * This is used to create special intervals, and is not intended for public use.
 	 */
 	private Interval() {
@@ -159,11 +154,9 @@ public class Interval {
 	public Interval limitToNotEqual(Interval other) {
 		if (this == EMPTY_INTERVAL || other == EMPTY_INTERVAL)
 			return EMPTY_INTERVAL;
-		if (upper < other.lower || other.upper < lower)
-			return TOP_INTERVAL;
-
-		// TODO Auto-generated method stub
-		return EMPTY_INTERVAL;
+		if (upper == lower && upper == other.upper && lower == other.lower)
+			return EMPTY_INTERVAL;
+		return this;
 	}
 
 	public Interval join(Interval other) {

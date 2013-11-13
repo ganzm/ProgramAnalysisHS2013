@@ -78,21 +78,21 @@ public class BranchesTest extends ValidationTestBase {
 
 	@Test(timeout = 10000)
 	public void testBadSimpleIfEqualClause1() {
-		testAnyProgram("BadSimpleIfEqualClause1", SAFE, false);
+		testAnyProgram("BadSimpleIfEqualClause1", UNSAFE, false);
 	}
 
 	@Test(timeout = 10000)
 	public void testBadSimpleIfEqualClause1Debug() {
-		testAnyProgram("BadSimpleIfEqualClause1", SAFE, true);
+		testAnyProgram("BadSimpleIfEqualClause1", UNSAFE, true);
 	}
 
 	@Test(timeout = 10000)
 	public void testBadSimpleIfEqualClause2() {
-		testAnyProgram("BadSimpleIfEqualClause2", SAFE, false);
+		testAnyProgram("BadSimpleIfEqualClause2", UNSAFE, false);
 	}
 
 	@Test(timeout = 10000)
 	public void testBadSimpleIfEqualClause2Debug() {
-		testAnyProgram("BadSimpleIfEqualClause2", SAFE, true);
+		testAnyProgram("BadSimpleIfEqualClause2", UNSAFE, true);
 	}
 }
