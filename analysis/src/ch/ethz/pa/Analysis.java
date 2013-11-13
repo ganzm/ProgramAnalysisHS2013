@@ -84,12 +84,10 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 					branch = GreaterThanBranch.createFrom((GtExpr) condition, current);
 					branch.restrictFallstate(fallState);
 					branch.restrictBranchState(branchState);
-					
 				}
 				
 				else
 					throw new RuntimeException("unhandled binop condition: "+condition);
-				
 			}
 			
 			else

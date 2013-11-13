@@ -4,11 +4,11 @@
  * but on {@link PowerPlantControl} instead of {@link AircraftControl}.
  * This is probably SAFE.
  */
-public class AdjustUnrelatedValue {
+public class GoodAdjustValueDirectOverflow {
 
-	public static void adjustUnrelatedValue() {
-		PowerPlantControl ppc = new PowerPlantControl();
-		ppc.adjustValue(3, 1000);
+	public static void adjustValueDirectOverflow() {
+		AircraftControl ac = new AircraftControl();
+		ac.adjustValue(3, 1000);
 	}
 	
 }

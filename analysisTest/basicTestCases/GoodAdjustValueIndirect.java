@@ -3,7 +3,7 @@
  * Call adjustValue with an integer variable for the value.
  * This should be SAFE.
  */
-public class AdjustValueIndirect {
+public class GoodAdjustValueIndirect {
 
 	public static void adjustValueIndirect() {
 		AircraftControl ac = new AircraftControl();
