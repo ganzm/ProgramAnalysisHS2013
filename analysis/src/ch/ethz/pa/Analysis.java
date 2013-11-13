@@ -16,8 +16,8 @@ import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
-import ch.ethz.pa.branches.Branch;
-import ch.ethz.pa.branches.GreaterEqualBranch;
+import ch.ethz.pa.branches.Pair;
+import ch.ethz.pa.branches.PairGreaterEqual;
 
 /**
  * Implement your numerical analysis here.
@@ -25,16 +25,16 @@ import ch.ethz.pa.branches.GreaterEqualBranch;
 public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 	private final Logger logger = Logger.getLogger(Analysis.class.getSimpleName());
-	
+
 	private final ProblemReport problemReport;
 	private final DefinitionStmtAnalyzer definitionStmtAnalyzer;
-	
+
 	public Analysis(UnitGraph g) {
 		super(g);
-		
+
 		problemReport = new ProblemReport();
 		definitionStmtAnalyzer = new DefinitionStmtAnalyzer(problemReport);
-		
+
 		logger.info("UnitGraph: " + g.toString());
 	}
 
@@ -60,46 +60,50 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 		if (s instanceof DefinitionStmt) {
 			definitionStmtAnalyzer.analyze(current, (DefinitionStmt) s, fallState);
-		} 
-		
+		}
+
 		else if (s instanceof InvokeStmt) {
 			flowThroughJInvokeStmt(current, (InvokeStmt) s);
 		}
-		
+
 		else if (s instanceof IfStmt) {
-			
+
 			IfStmt is = (IfStmt) s;
 			Value condition = is.getCondition();
-			Branch branch;
-			
+
 			if (condition instanceof BinopExpr) {
-				
+
+				BinopExpr binopExpr = (BinopExpr) condition;
+
+				Value a1 = binopExpr.getOp1();
+				Value a2 = binopExpr.getOp2();
+
 				if (condition instanceof GeExpr) {
-					branch = GreaterEqualBranch.createFrom((GeExpr) condition, current);
-					branch.restrictFallstate(fallState);
-					branch.restrictBranchState(branchState);
+					Pair pair = new PairGreaterEqual(a1, a2, current);
+					pair.restrictFallstate(fallState);
+					pair.restrictBranchState(branchState);
 				}
-				
+
 				else if (condition instanceof GtExpr) {
-					branch = GreaterThanBranch.createFrom((GtExpr) condition, current);
-					branch.restrictFallstate(fallState);
-					branch.restrictBranchState(branchState);
+					Pair pair = new PairGreaterThan(a1, a2, current);
+					pair.restrictFallstate(fallState);
+					pair.restrictBranchState(branchState);
 				}
-				
+
 				else
-					throw new RuntimeException("unhandled binop condition: "+condition);
+					throw new RuntimeException("unhandled binop condition: " + condition);
 			}
-			
+
 			else
-				throw new RuntimeException("unhandled condition: "+op);
+				throw new RuntimeException("unhandled condition: " + op);
 		}
-		
+
 		else if (s instanceof ReturnVoidStmt) {
-			logger.warning("ignoring return void statement: "+op);
+			logger.warning("ignoring return void statement: " + op);
 		}
-		
+
 		else {
-			throw new RuntimeException("unhandled statement: "+op);
+			throw new RuntimeException("unhandled statement: " + op);
 		}
 
 		// TODO: Maybe avoid copying objects too much. Feel free to optimize.
@@ -122,15 +126,14 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		InvokeExpr expr = s.getInvokeExpr();
 		if (expr.getMethod().getName().equals("adjustValue")) {
 			// Check that is the method from the AircraftControl class.
-			if (expr.getMethod().getDeclaringClass().getName().equals("AircraftControl"))
-			{
-				// TODO: Check that the values are in the allowed range (we do this while computing fixpoint).
+			if (expr.getMethod().getDeclaringClass().getName().equals("AircraftControl")) {
+				// TODO: Check that the values are in the allowed range (we do
+				// this while computing fixpoint).
 				problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, current);
 				problemReport.checkInterval(expr.getArg(1), Config.legalValueInterval, current);
 			}
 		}
 	}
-
 
 	@Override
 	protected void copy(IntervalPerVar source, IntervalPerVar dest) {
@@ -145,7 +148,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 	@Override
 	protected void merge(IntervalPerVar src1, IntervalPerVar src2, IntervalPerVar trg) {
-		
+
 		trg.copyFrom(src1);
 		trg.mergeWith(src2);
 
@@ -159,6 +162,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 	/**
 	 * Register another problem found during analysis.
+	 * 
 	 * @param line
 	 */
 	public void addProblem(String line) {
@@ -167,6 +171,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 	/**
 	 * Returns a list with problems found during analysis.
+	 * 
 	 * @return
 	 */
 	public List<String> getProblems() {
