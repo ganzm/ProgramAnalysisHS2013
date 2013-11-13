@@ -1,4 +1,4 @@
-public class WrongReadTwice {
+public class BadReadTwice {
 
 	public void doRead() {
 		AircraftControl ac = new AircraftControl();

@@ -1,4 +1,4 @@
-public class ReadWriteSimple {
+public class GoodReadWriteSimple {
 
 	public void doRead() {
 		AircraftControl ac = new AircraftControl();

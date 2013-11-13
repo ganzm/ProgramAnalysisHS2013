@@ -1,4 +1,4 @@
-public class WrongWriteTwice {
+public class BadWriteTwice {
 
 	public void doWrite() {
 		AircraftControl ac = new AircraftControl();
@@ -9,8 +9,11 @@ public class WrongWriteTwice {
 		ac.adjustValue(4, 0);
 		ac.adjustValue(5, 0);
 		ac.adjustValue(6, 0);
+
+		// write 7 twice
 		ac.adjustValue(7, 0);
 		ac.adjustValue(7, 0);
+
 		ac.adjustValue(9, 0);
 		ac.adjustValue(10, 0);
 		ac.adjustValue(11, 0);
