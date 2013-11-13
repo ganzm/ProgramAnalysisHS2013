@@ -3,7 +3,7 @@
  * Read a value, take 1101 if above 100, then assigns it.
  * This is UNSAFE.
  */
-public class SimpleIfClause2inv {
+public class BadSimpleIfClause2inv {
 
 	public static void simpleIfClause() {
 		AircraftControl ac = new AircraftControl();

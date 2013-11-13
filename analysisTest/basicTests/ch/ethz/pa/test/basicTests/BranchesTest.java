@@ -8,53 +8,52 @@ public class BranchesTest extends ValidationTestBase {
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause1() {
-		testAnyProgram("SimpleIfClause1", SAFE, false);
+		testAnyProgram("GoodSimpleIfClause1", SAFE, false);
 	}
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause1Debug() {
-		testAnyProgram("SimpleIfClause1", SAFE, true);
+		testAnyProgram("GoodSimpleIfClause1", SAFE, true);
 	}
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause1inv() {
-		testAnyProgram("SimpleIfClause1inv", SAFE, false);
+		testAnyProgram("GoodSimpleIfClause1inv", SAFE, false);
 	}
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause1invDebug() {
-		testAnyProgram("SimpleIfClause1inv", SAFE, true);
+		testAnyProgram("GoodSimpleIfClause1inv", SAFE, true);
 	}
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause2() {
-		testAnyProgram("SimpleIfClause2", UNSAFE, false);
+		testAnyProgram("BadSimpleIfClause2", UNSAFE, false);
 	}
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause2Debug() {
-		testAnyProgram("SimpleIfClause2", UNSAFE, true);
+		testAnyProgram("BadSimpleIfClause2", UNSAFE, true);
 	}
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause2inv() {
-		testAnyProgram("SimpleIfClause2inv", UNSAFE, false);
+		testAnyProgram("BadSimpleIfClause2inv", UNSAFE, false);
 	}
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause2invDebug() {
-		testAnyProgram("SimpleIfClause2inv", UNSAFE, true);
+		testAnyProgram("BadSimpleIfClause2inv", UNSAFE, true);
 	}
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause3() {
-		testAnyProgram("SimpleIfClause3", SAFE, false);
+		testAnyProgram("GoodSimpleIfClause3", SAFE, false);
 	}
 
 	@Test(timeout = 10000)
 	public void testSimpleIfClause3Debug() {
-		testAnyProgram("SimpleIfClause3", SAFE, true);
+		testAnyProgram("GoodSimpleIfClause3", SAFE, true);
 	}
-
 
 }

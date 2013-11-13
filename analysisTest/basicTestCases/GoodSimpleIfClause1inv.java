@@ -3,7 +3,7 @@
  * Read a value, take 1100 if above 100, then assigns it.
  * This is SAFE.
  */
-public class SimpleIfClause1inv {
+public class GoodSimpleIfClause1inv {
 
 	public static void simpleIfClause() {
 		AircraftControl ac = new AircraftControl();
