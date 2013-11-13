@@ -3,7 +3,7 @@
  * Read a value, add 900 if below 100, then assigns it.
  * This is SAFE.
  */
-public class SimpleIfClause {
+public class SimpleIfClause1 {
 
 	public static void simpleIfClause() {
 		AircraftControl ac = new AircraftControl();

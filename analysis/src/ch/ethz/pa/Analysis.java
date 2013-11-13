@@ -8,6 +8,7 @@ import soot.Value;
 import soot.jimple.BinopExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.GeExpr;
+import soot.jimple.GtExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
@@ -68,17 +69,21 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		else if (s instanceof IfStmt) {
 			
 			IfStmt is = (IfStmt) s;
-			
 			Value condition = is.getCondition();
-			
 			Branch branch;
 			
 			if (condition instanceof BinopExpr) {
 				
 				if (condition instanceof GeExpr) {
-					
 					branch = GreaterEqualBranch.createFrom((GeExpr) condition, current);
-					TriState result = branch.getConditionResult();
+					branch.restrictFallstate(fallState);
+					branch.restrictBranchState(branchState);
+				}
+				
+				else if (condition instanceof GtExpr) {
+					branch = GreaterThanBranch.createFrom((GtExpr) condition, current);
+					branch.restrictFallstate(fallState);
+					branch.restrictBranchState(branchState);
 					
 				}
 				
@@ -142,8 +147,9 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 	@Override
 	protected void merge(IntervalPerVar src1, IntervalPerVar src2, IntervalPerVar trg) {
-		// TODO: join, widening, etc goes here.
+		
 		trg.copyFrom(src1);
+		trg.mergeWith(src2);
 
 		logger.info(String.format("Merge:\n    %s\n    %s\n    ============\n    %s\n", src1.toString(), src2.toString(), trg.toString()));
 	}
