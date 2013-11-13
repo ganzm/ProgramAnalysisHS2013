@@ -135,8 +135,11 @@ public class Interval {
 	}
 
 	public Interval limitToEqual(Interval other) {
-		// TODO Auto-generated method stub
-		return EMPTY_INTERVAL;
+		if (this == EMPTY_INTERVAL || other == EMPTY_INTERVAL)
+			return EMPTY_INTERVAL;
+		if (upper < other.lower || other.upper < lower)
+			return EMPTY_INTERVAL;
+		return new Interval(Math.max(lower, other.lower), Math.min(upper, other.upper));
 	}
 
 	public Interval limitToNotEqual(Interval other) {

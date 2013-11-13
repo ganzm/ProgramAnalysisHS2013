@@ -106,6 +106,20 @@ public class IntervalTests {
 	}
 
 	@Test
+	public void testLimitToEqual() {
+		// disjunct sets
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(1).limitToEqual(new Interval(2)));
+
+		// enclosing sets (back and forth)
+		Assert.assertEquals(new Interval(2, 3), new Interval(2, 3).limitToEqual(new Interval(1, 4)));
+		Assert.assertEquals(new Interval(2, 3), new Interval(1, 4).limitToEqual(new Interval(2, 3)));
+
+		// overlapping sets (back and forth)
+		Assert.assertEquals(new Interval(2, 3), new Interval(2, 4).limitToEqual(new Interval(1, 3)));
+		Assert.assertEquals(new Interval(2, 3), new Interval(1, 3).limitToEqual(new Interval(2, 4)));
+	}
+
+	@Test
 	public void testEmptyStaysEmpty() {
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.limitToLower(new Interval(5)));
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToLower(Interval.EMPTY_INTERVAL));
@@ -115,8 +129,10 @@ public class IntervalTests {
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToLowerEqual(Interval.EMPTY_INTERVAL));
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.limitToGreaterEqual(new Interval(5)));
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToGreaterEqual(Interval.EMPTY_INTERVAL));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.limitToEqual(new Interval(5)));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, new Interval(5).limitToEqual(Interval.EMPTY_INTERVAL));
 	}
-	
+
 	@Test
 	public void testJoin() {
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.join(Interval.EMPTY_INTERVAL));
