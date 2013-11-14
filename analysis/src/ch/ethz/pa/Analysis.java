@@ -8,6 +8,7 @@ import soot.Value;
 import soot.jimple.BinopExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.GeExpr;
+import soot.jimple.GotoStmt;
 import soot.jimple.GtExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.InvokeExpr;
@@ -109,6 +110,10 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 		else if (s instanceof ReturnVoidStmt) {
 			logger.warning("ignoring return void statement: " + op);
+		}
+
+		else if (s instanceof GotoStmt) {
+			logger.warning("ignoring goto statement: " + op);
 		}
 
 		else {
