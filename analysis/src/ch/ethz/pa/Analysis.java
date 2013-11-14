@@ -13,6 +13,7 @@ import soot.jimple.GtExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
+import soot.jimple.LtExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
@@ -92,6 +93,11 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 				else if (condition instanceof GtExpr) {
 					new PairGreaterThan(a1, a2, current).restrict(branchState);
 					new PairLowerEqual(a1, a2, current).restrict(fallState);
+				}
+
+				else if (condition instanceof LtExpr) {
+					new PairLowerThan(a1, a2, current).restrict(branchState);
+					new PairGreaterEqual(a1, a2, current).restrict(fallState);
 				}
 
 				else if (condition instanceof NeExpr) {
