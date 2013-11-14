@@ -1,7 +1,7 @@
 /**
  * Read two values, then compute a rough average. This is SAFE.
  */
-public class SimpleWhile {
+public class GoodSimpleWhile1 {
 
 	public static void simpleIfClause() {
 		AircraftControl ac = new AircraftControl();
