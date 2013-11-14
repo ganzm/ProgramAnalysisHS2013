@@ -11,7 +11,7 @@ public class ArgumentTest extends ValidationTestBase {
 		testAnyProgram("BadSimpleArgumentUsage1", UNSAFE, NO_DEBUG);
 	}
 
-	@Test(timeout = 10000)
+	@Test
 	public void testBadSimpleArgumentUsage1Debug() {
 		testAnyProgram("BadSimpleArgumentUsage1", UNSAFE, DEBUG);
 	}

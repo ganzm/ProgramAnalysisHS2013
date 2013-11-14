@@ -5,7 +5,15 @@ package ch.ethz.pa;
  */
 public class Interval {
 
+	/**
+	 * The bottom element of the interval domain.
+	 */
 	public static final Interval EMPTY_INTERVAL = new Interval();
+
+	/**
+	 * The top element of the interval domain.
+	 */
+	public static final Interval TOP_INTERVAL = new Interval(Integer.MIN_VALUE, Integer.MAX_VALUE);
 
 	/**
 	 * This is used to create special intervals, and is not intended for public use.
