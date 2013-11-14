@@ -8,102 +8,102 @@ public class ComputeValues extends ValidationTestBase {
 
 	@Test(timeout = 10000)
 	public void testIncrementValue() {
-		testAnyProgram("IncrementValue", UNSAFE, false);
+		testAnyProgram("IncrementValue", UNSAFE, NO_DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testIncrementValueDebug() {
-		testAnyProgram("IncrementValue", UNSAFE, true);
+		testAnyProgram("IncrementValue", UNSAFE, DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testIncrementLargeValue() {
-		testAnyProgram("IncrementLargeValue", UNSAFE, false);
+		testAnyProgram("IncrementLargeValue", UNSAFE, NO_DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testIncrementLargeValueDebug() {
-		testAnyProgram("IncrementLargeValue", UNSAFE, true);
+		testAnyProgram("IncrementLargeValue", UNSAFE, DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testDecrementLargeValue() {
-		testAnyProgram("DecrementLargeValue", UNSAFE, false);
+		testAnyProgram("DecrementLargeValue", UNSAFE, NO_DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testDecrementLargeValueDebug() {
-		testAnyProgram("DecrementLargeValue", UNSAFE, true);
+		testAnyProgram("DecrementLargeValue", UNSAFE, DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testIncrementHighValue() {
-		testAnyProgram("IncrementHighValue", SAFE, false);
+		testAnyProgram("IncrementHighValue", SAFE, NO_DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testIncrementHighValueDebug() {
-		testAnyProgram("IncrementHighValue", SAFE, true);
+		testAnyProgram("IncrementHighValue", SAFE, DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testDoubleHighValue() {
-		testAnyProgram("DoubleHighValue", SAFE, false);
+		testAnyProgram("DoubleHighValue", SAFE, NO_DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testDoubleHighValueDebug() {
-		testAnyProgram("DoubleHighValue", SAFE, true);
+		testAnyProgram("DoubleHighValue", SAFE, DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testDoubleLargeValue() {
-		testAnyProgram("DoubleLargeValue", UNSAFE, false);
+		testAnyProgram("DoubleLargeValue", UNSAFE, NO_DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testDoubleLargeValueDebug() {
-		testAnyProgram("DoubleLargeValue", UNSAFE, true);
+		testAnyProgram("DoubleLargeValue", UNSAFE, DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testHalfSensorValue() {
-		testAnyProgram("HalfSensorValue", SAFE, false);
+		testAnyProgram("HalfSensorValue", SAFE, NO_DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testHalfSensorValueDebug() {
-		testAnyProgram("HalfSensorValue", SAFE, true);
+		testAnyProgram("HalfSensorValue", SAFE, DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testMultiplyTwoSensorValues() {
-		testAnyProgram("MultiplyTwoSensorValues", UNSAFE, false);
+		testAnyProgram("MultiplyTwoSensorValues", UNSAFE, NO_DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testMultiplyTwoSensorValuesDebug() {
-		testAnyProgram("MultiplyTwoSensorValues", UNSAFE, true);
+		testAnyProgram("MultiplyTwoSensorValues", UNSAFE, DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testInvertSensorValue() {
-		testAnyProgram("InvertSensorValue", SAFE, false);
+		testAnyProgram("InvertSensorValue", SAFE, NO_DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testInvertSensorValueDebug() {
-		testAnyProgram("InvertSensorValue", SAFE, true);
+		testAnyProgram("InvertSensorValue", SAFE, DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testSubtractFromMinusOne() {
-		testAnyProgram("SubtractFromMinusOne", UNSAFE, false);
+		testAnyProgram("SubtractFromMinusOne", UNSAFE, NO_DEBUG);
 	}
 
 	@Test(timeout = 10000)
 	public void testSubtractFromMinusOneDebug() {
-		testAnyProgram("SubtractFromMinusOne", UNSAFE, true);
+		testAnyProgram("SubtractFromMinusOne", UNSAFE, DEBUG);
 	}
 
 }
