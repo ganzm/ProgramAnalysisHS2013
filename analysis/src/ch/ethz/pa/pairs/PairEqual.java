@@ -6,12 +6,9 @@ import ch.ethz.pa.IntegerExpression;
 import ch.ethz.pa.Interval;
 import ch.ethz.pa.IntervalPerVar;
 
-/**
- * @see Pair
- */
-public class PairGreaterThan extends Pair {
+public class PairEqual extends Pair {
 
-	public PairGreaterThan(Value a1, Value a2, IntervalPerVar current) {
+	public PairEqual(Value a1, Value a2, IntervalPerVar current) {
 
 		super();
 
@@ -20,14 +17,14 @@ public class PairGreaterThan extends Pair {
 
 		if (a1 instanceof JimpleLocal) {
 			String name1 = ((JimpleLocal) a1).getName();
-			leftArgumentRestriction = new Restriction(name1, i1.limitToGreater(i2));
-			// leftArgumentFallOut = new Restriction(name1, i1.limitToLowerEqual(i2));
+			leftArgumentRestriction = new Restriction(name1, i1.limitToEqual(i2));
 		}
 
 		if (a2 instanceof JimpleLocal) {
 			String name2 = ((JimpleLocal) a2).getName();
-			rightArgumentRestriction = new Restriction(name2, i2.limitToLowerEqual(i1));
-			// rightArgumentFallOut = new Restriction(name2, i2.limitToGreater(i1));
+			rightArgumentRestriction = new Restriction(name2, i2.limitToEqual(i1));
 		}
+
 	}
+
 }

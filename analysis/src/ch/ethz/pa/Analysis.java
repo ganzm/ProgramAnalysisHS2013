@@ -18,9 +18,11 @@ import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
-import ch.ethz.pa.pairs.Pair;
+import ch.ethz.pa.pairs.PairEqual;
 import ch.ethz.pa.pairs.PairGreaterEqual;
 import ch.ethz.pa.pairs.PairGreaterThan;
+import ch.ethz.pa.pairs.PairLowerEqual;
+import ch.ethz.pa.pairs.PairLowerThan;
 import ch.ethz.pa.pairs.PairNotEqual;
 
 /**
@@ -83,21 +85,18 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 				Value a2 = binopExpr.getOp2();
 
 				if (condition instanceof GeExpr) {
-					Pair pair = new PairGreaterEqual(a1, a2, current);
-					pair.restrictFallstate(fallState);
-					pair.restrictBranchState(branchState);
+					new PairGreaterEqual(a1, a2, current).restrict(branchState);
+					new PairLowerThan(a1, a2, current).restrict(fallState);
 				}
 
 				else if (condition instanceof GtExpr) {
-					Pair pair = new PairGreaterThan(a1, a2, current);
-					pair.restrictFallstate(fallState);
-					pair.restrictBranchState(branchState);
+					new PairGreaterThan(a1, a2, current).restrict(branchState);
+					new PairLowerEqual(a1, a2, current).restrict(fallState);
 				}
 
 				else if (condition instanceof NeExpr) {
-					Pair pair = new PairNotEqual(a1, a2, current);
-					pair.restrictFallstate(fallState);
-					pair.restrictBranchState(branchState);
+					new PairNotEqual(a1, a2, current).restrict(branchState);
+					new PairEqual(a1, a2, current).restrict(fallState);
 				}
 
 				else

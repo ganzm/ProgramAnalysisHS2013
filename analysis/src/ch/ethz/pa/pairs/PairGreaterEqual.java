@@ -20,14 +20,12 @@ public class PairGreaterEqual extends Pair {
 
 		if (a1 instanceof JimpleLocal) {
 			String name1 = ((JimpleLocal) a1).getName();
-			leftArgumentBranchOut = new Restriction(name1, i1.limitToGreaterEqual(i2));
-			leftArgumentFallOut = new Restriction(name1, i1.limitToLower(i2));
+			leftArgumentRestriction = new Restriction(name1, i1.limitToGreaterEqual(i2));
 		}
 
 		if (a2 instanceof JimpleLocal) {
 			String name2 = ((JimpleLocal) a2).getName();
-			rightArgumentBranchOut = new Restriction(name2, i2.limitToLowerEqual(i1));
-			rightArgumentFallOut = new Restriction(name2, i2.limitToGreater(i1));
+			rightArgumentRestriction = new Restriction(name2, i2.limitToLowerEqual(i1));
 		}
 	}
 }
