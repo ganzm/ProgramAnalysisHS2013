@@ -201,6 +201,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	@Override
 	protected void merge(Unit op, IntervalPerVar src1, IntervalPerVar src2, IntervalPerVar trg) {
 		merge(src1, src2, trg);
+		// TODO this could be a convenient point for widening - we have a store and we know the unit
 	}
 
 	@Override
