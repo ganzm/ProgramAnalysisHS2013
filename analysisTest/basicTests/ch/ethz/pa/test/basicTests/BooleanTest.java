@@ -25,4 +25,14 @@ public class BooleanTest extends ValidationTestBase {
 	public void testBadSimpleBooleanCondition2Debug() {
 		testAnyProgram("BadSimpleBooleanCondition2", UNSAFE, DEBUG);
 	}
+
+	@Test(timeout = 10000)
+	public void testGoodUnreachableCode1() {
+		testAnyProgram("GoodUnreachableCode1", SAFE, NO_DEBUG);
+	}
+
+	@Test
+	public void testGoodUnreachableCode1Debug() {
+		testAnyProgram("GoodUnreachableCode1", SAFE, DEBUG);
+	}
 }
