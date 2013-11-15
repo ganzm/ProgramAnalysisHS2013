@@ -35,7 +35,11 @@ public class Interval {
 
 	@Override
 	public String toString() {
-		return this != EMPTY_INTERVAL ? String.format("[%d,%d]", lower, upper) : "[]";
+		if (this == EMPTY_INTERVAL)
+			return "[]";
+		if (this.upper == this.lower)
+			return String.format("[%d]", lower);
+		return String.format("[%d,%d]", lower, upper);
 	}
 
 	public static Interval plus(Interval i1, Interval i2) {
@@ -101,6 +105,28 @@ public class Interval {
 			return new Interval(i1.lower / i2.upper, i1.upper / i2.upper);
 		}
 		throw new RuntimeException("potential division by zero not supported");
+	}
+
+	public static Interval remainder(Interval i1, Interval i2) {
+		// empty intervals
+		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
+			return EMPTY_INTERVAL;
+
+		// divisor is distinct
+		if (i2.lower == i2.upper) {
+			final int divisor = i2.upper;
+
+			if (i1.upper - i1.lower >= divisor)
+				// exceed range -> full interval
+				return new Interval(0, divisor - 1);
+
+			if (i1.lower % divisor <= i1.upper % divisor)
+				// no wrap-around -> compute bounds
+				return new Interval(i1.lower % divisor, i1.upper % divisor);
+		}
+
+		// default: return the full range
+		return new Interval(0, i2.upper - 1);
 	}
 
 	public static TriState greaterEqual(Interval i1, Interval i2) {

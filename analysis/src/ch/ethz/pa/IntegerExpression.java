@@ -8,6 +8,7 @@ import soot.jimple.DivExpr;
 import soot.jimple.IntConstant;
 import soot.jimple.MulExpr;
 import soot.jimple.NegExpr;
+import soot.jimple.RemExpr;
 import soot.jimple.SubExpr;
 import soot.jimple.UnopExpr;
 
@@ -17,42 +18,47 @@ import soot.jimple.UnopExpr;
 public class IntegerExpression {
 
 	public static Interval evalBinop(BinopExpr binop, IntervalPerVar current) {
-		
+
 		Value r1 = binop.getOp1();
 		Value r2 = binop.getOp2();
-	
+
 		Interval i1 = IntegerExpression.tryGetIntervalForValue(current, r1);
 		Interval i2 = IntegerExpression.tryGetIntervalForValue(current, r2);
-	
+
 		Interval result;
-	
-		if (i1 == null) 
+
+		if (i1 == null)
 			throw new NullPointerException();
-		
-		else if (i2 == null) 
+
+		else if (i2 == null)
 			throw new NullPointerException();
-		
+
 		else {
 			// Implement transformers.
-			
+
 			if (binop instanceof AddExpr) {
 				result = Interval.plus(i1, i2);
 			}
-			
+
 			else if (binop instanceof SubExpr) {
 				result = Interval.subtract(i1, i2);
-			} 
-			
+			}
+
 			else if (binop instanceof MulExpr) {
 				result = Interval.multiply(i1, i2);
-			} 
-			
+			}
+
 			else if (binop instanceof DivExpr) {
 				result = Interval.divide(i1, i2);
-			} 
-			
-			else throw new RuntimeException("unsupported expression "+binop);
-			
+			}
+
+			else if (binop instanceof RemExpr) {
+				result = Interval.remainder(i1, i2);
+			}
+
+			else
+				throw new RuntimeException("unsupported expression " + binop);
+
 		}
 		return result;
 	}
@@ -61,14 +67,14 @@ public class IntegerExpression {
 		Interval result;
 		Value r1 = unop.getOp();
 		Interval i1 = IntegerExpression.tryGetIntervalForValue(current, r1);
-	
-		if (i1 == null) 
+
+		if (i1 == null)
 			throw new NullPointerException();
-		
+
 		if (unop instanceof NegExpr) {
 			result = i1.negate();
-		}
-		else throw new RuntimeException("unsupported expression "+unop);
+		} else
+			throw new RuntimeException("unsupported expression " + unop);
 		return result;
 	}
 

@@ -106,4 +106,14 @@ public class ComputeValues extends ValidationTestBase {
 		testAnyProgram("SubtractFromMinusOne", UNSAFE, DEBUG);
 	}
 
+	@Test(timeout = 10000)
+	public void testSimpleModuloValue() {
+		testAnyProgram("SimpleModulo", SAFE, NO_DEBUG);
+	}
+
+	@Test(timeout = 10000)
+	public void testSimpleModuloDebug() {
+		testAnyProgram("SimpleModulo", SAFE, DEBUG);
+	}
+
 }

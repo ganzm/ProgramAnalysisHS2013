@@ -46,6 +46,14 @@ public class IntervalTests {
 	}
 
 	@Test
+	public void testRemainder() {
+		Assert.assertEquals(new Interval(7 % 33), Interval.remainder(new Interval(7), new Interval(33)));
+		Assert.assertEquals(new Interval(3, 399), Interval.remainder(new Interval(3, 399), new Interval(400)));
+		Assert.assertEquals(new Interval(0, 499), Interval.remainder(new Interval(505, 1400), new Interval(500)));
+		Assert.assertEquals(new Interval(5, 400), Interval.remainder(new Interval(1005, 1400), new Interval(500)));
+	}
+
+	@Test
 	public void testSubtract() {
 		Assert.assertEquals(new Interval(-3, 4), Interval.subtract(new Interval(-1, 5), new Interval(1, 2)));
 	}
