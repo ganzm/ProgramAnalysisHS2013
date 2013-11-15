@@ -108,25 +108,64 @@ public class Interval {
 	}
 
 	public static Interval remainder(Interval i1, Interval i2) {
-		// empty intervals
+		// if empty intervals appear, the result is empty as well
 		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
 			return EMPTY_INTERVAL;
 
-		// divisor is distinct
-		if (i2.lower == i2.upper) {
-			final int divisor = i2.upper;
-
-			if (i1.upper - i1.lower >= divisor)
-				// exceed range -> full interval
-				return new Interval(0, divisor - 1);
-
-			if (i1.lower % divisor <= i1.upper % divisor)
-				// no wrap-around -> compute bounds
-				return new Interval(i1.lower % divisor, i1.upper % divisor);
+		// if 0 is a possible divisor, we post a division by zero and return empty
+		if (i2.lower <= 0 && 0 <= i2.upper) {
+			// TODO report division by zero
+			return EMPTY_INTERVAL;
 		}
 
+		// from here on, consider only the absolute magnitude of the divisor
+		// (the sign of the divisor does not matter)
+		final int minDivisor = Math.min(Math.abs(i2.lower), Math.abs(i2.upper));
+		final int maxDivisor = Math.max(Math.abs(i2.lower), Math.abs(i2.upper));
+
+		// special case: the dividend crosses zero
+		// (here, we have to consider that java preserves the sign of the dividend)
+		if (i1.lower < 0 && 0 < i1.upper) {
+
+			// dividend potentially exceeds the divisor magnitude on both sides
+			if (i1.lower <= -minDivisor && minDivisor <= i1.upper)
+				return new Interval(Math.max(-maxDivisor, i1.lower), Math.min(maxDivisor, i1.upper));
+
+			// dividend potentially exceeds divisor on lower side, but never on upper
+			if (i1.lower <= -minDivisor && i1.upper < minDivisor)
+				return new Interval(Math.max(-maxDivisor, i1.lower), i1.upper);
+
+			// dividend potentially exceeds divisor on lower side, but never on upper
+			if (-minDivisor < i1.lower && minDivisor <= i1.upper)
+				return new Interval(i1.lower, Math.min(maxDivisor, i1.upper));
+
+			// otherwise, dividend magnitude is always below the divisor magnitude
+			return i1;
+		}
+
+		final int dividendRange = i1.upper - i1.lower + 1;
+
+		// special case: the range of the dividend equals or exceeds the the minimum divisor
+		// then anything between 0 and the actual upper divisor is possible
+		if (dividendRange >= minDivisor)
+			return i1.lower < 0 ? new Interval(1 - maxDivisor, 0) : new Interval(0, maxDivisor - 1);
+
+		// special case: the divisor is unique
+		// (and as found out previously, the dividend range is below the divisor range)
+		if (minDivisor == maxDivisor) {
+			final int remainderFromLower = i1.lower % maxDivisor;
+			final int remainderFromUpper = i1.upper % maxDivisor;
+			if (remainderFromLower <= remainderFromUpper)
+				return new Interval(remainderFromLower, remainderFromUpper);
+			return new Interval(0, maxDivisor - 1);
+		}
+
+		// special case: the dividend is normalized
+		if (i1.lower >= 0 && i1.upper < minDivisor)
+			return i1;
+
 		// default: return the full range
-		return new Interval(0, i2.upper - 1);
+		return new Interval(0, maxDivisor - 1);
 	}
 
 	public static TriState greaterEqual(Interval i1, Interval i2) {

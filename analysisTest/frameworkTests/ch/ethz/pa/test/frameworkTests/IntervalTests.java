@@ -47,10 +47,44 @@ public class IntervalTests {
 
 	@Test
 	public void testRemainder() {
-		Assert.assertEquals(new Interval(7 % 33), Interval.remainder(new Interval(7), new Interval(33)));
-		Assert.assertEquals(new Interval(3, 399), Interval.remainder(new Interval(3, 399), new Interval(400)));
-		Assert.assertEquals(new Interval(0, 499), Interval.remainder(new Interval(505, 1400), new Interval(500)));
-		Assert.assertEquals(new Interval(5, 400), Interval.remainder(new Interval(1005, 1400), new Interval(500)));
+
+		// conformance with java's sign convention implementation
+		for (int dividend : new int[] { -27, -7, 7, 27 }) {
+			for (int divisor : new int[] { -15, 15 }) {
+				Assert.assertEquals(new Interval(dividend % divisor), Interval.remainder(new Interval(dividend), new Interval(divisor)));
+			}
+		}
+
+		// dividend crosses zero
+		// twice, once with positive, then with negative dividend
+		// (this is critical because of java's sign convention)
+		for (Interval divisor : new Interval[] { new Interval(100, 150), new Interval(-150, -100) }) {
+			// dividend is within minimum divisor magnitude
+			Assert.assertEquals(new Interval(-80, 90), Interval.remainder(new Interval(-80, 90), divisor));
+			// dividend within minimum and maximum divisor magnitude
+			Assert.assertEquals(new Interval(-110, 120), Interval.remainder(new Interval(-110, 120), divisor));
+			// dividend exceeds negative divisor magnitude
+			Assert.assertEquals(new Interval(-150, 90), Interval.remainder(new Interval(-170, 90), divisor));
+			Assert.assertEquals(new Interval(-150, 120), Interval.remainder(new Interval(-170, 120), divisor));
+			// dividend exceeds positive divisor magnitude
+			Assert.assertEquals(new Interval(-80, 150), Interval.remainder(new Interval(-80, 170), divisor));
+			Assert.assertEquals(new Interval(-110, 150), Interval.remainder(new Interval(-110, 170), divisor));
+			// dividend exceed divisor completely
+			Assert.assertEquals(new Interval(-150, 150), Interval.remainder(new Interval(-170, 170), divisor));
+		}
+
+		// simple cases where divisor is unique (has only one element) and dividend is positive
+		Assert.assertEquals(new Interval(3, 79), Interval.remainder(new Interval(3, 79), new Interval(100)));
+		Assert.assertEquals(new Interval(3, 79), Interval.remainder(new Interval(203, 279), new Interval(100)));
+		Assert.assertEquals(new Interval(0, 99), Interval.remainder(new Interval(0, 99), new Interval(100)));
+		Assert.assertEquals(new Interval(0, 99), Interval.remainder(new Interval(200, 299), new Interval(100)));
+
+		// simple cases where divisor is unique (has only one element) and dividend is negative
+		Assert.assertEquals(new Interval(-79, -3), Interval.remainder(new Interval(-79, -3), new Interval(100)));
+		Assert.assertEquals(new Interval(-79, -3), Interval.remainder(new Interval(-279, -203), new Interval(100)));
+		Assert.assertEquals(new Interval(-99, 0), Interval.remainder(new Interval(-99, 0), new Interval(100)));
+		Assert.assertEquals(new Interval(-99, 0), Interval.remainder(new Interval(-299, -200), new Interval(100)));
+
 	}
 
 	@Test
