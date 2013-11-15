@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import ch.ethz.pa.Interval;
-import ch.ethz.pa.TriState;
 
 public class IntervalTests {
 
@@ -107,15 +106,6 @@ public class IntervalTests {
 	@Test(expected = Exception.class)
 	public void testInvalidIntervalThrowsException() {
 		new Interval(5, 4);
-	}
-
-	@Test
-	public void testGreaterEqual() {
-		Assert.assertEquals(TriState.True, Interval.greaterEqual(new Interval(5), new Interval(5)));
-		Assert.assertEquals(TriState.False, Interval.greaterEqual(new Interval(4), new Interval(5)));
-		Assert.assertEquals(TriState.True, Interval.greaterEqual(new Interval(5, 7), new Interval(3, 5)));
-		Assert.assertEquals(TriState.False, Interval.greaterEqual(new Interval(1, 2), new Interval(3, 5)));
-		Assert.assertEquals(TriState.Unknown, Interval.greaterEqual(new Interval(1, 3), new Interval(3, 5)));
 	}
 
 	@Test

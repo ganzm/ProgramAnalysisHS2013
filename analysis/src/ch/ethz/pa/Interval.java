@@ -182,14 +182,6 @@ public class Interval {
 		return dividend.lower < 0 ? new Interval(1 - maxDivisor, 0) : new Interval(0, maxDivisor - 1);
 	}
 
-	public static TriState greaterEqual(Interval i1, Interval i2) {
-		if (i1.lower >= i2.upper)
-			return TriState.True;
-		if (i1.upper < i2.lower)
-			return TriState.False;
-		return TriState.Unknown;
-	}
-
 	public Interval limitToGreaterEqual(Interval other) {
 		if (this == EMPTY_INTERVAL || other == EMPTY_INTERVAL)
 			return EMPTY_INTERVAL;
