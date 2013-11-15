@@ -32,7 +32,7 @@ public class Verifier {
 
 		String analyzedClass = args[0];
 		SootClass c = loadClass(analyzedClass);
-		
+
 		List<String> problemsFound = new LinkedList<String>();
 
 		/* Use the following to iterate over the class methods. */
@@ -41,7 +41,11 @@ public class Verifier {
 			analysis.run();
 			problemsFound.addAll(analysis.getProblems());
 		}
-		
+
+		for (String problem : problemsFound) {
+			logger.info(problem);
+		}
+
 		System.out.print(problemsFound.size() == 0 ? PROGRAM_IS_SAFE : PROGRAM_IS_UNSAFE);
 
 		return 0;

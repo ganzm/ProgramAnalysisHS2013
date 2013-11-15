@@ -40,7 +40,7 @@ public class ProblemReport {
 			}
 
 			if (!range.covers(interval)) {
-				addProblem(atStatement, String.format("sensor index [%s] out of range", interval));
+				addProblem(atStatement, String.format("sensor index %s out of range", interval));
 			}
 		}
 
