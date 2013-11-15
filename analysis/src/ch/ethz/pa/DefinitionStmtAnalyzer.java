@@ -41,8 +41,6 @@ public class DefinitionStmtAnalyzer {
 		else if ((left instanceof ArrayRef) && (!((((ArrayRef) left).getBase()) instanceof Local)))
 			unhandled("2: Assignment to a non-local array variable is not handled.");
 
-		// TODO: Handle other cases. For example:
-
 		else if (left instanceof Local) {
 
 			Local jimpleLocalLeft = (Local) left;
@@ -77,7 +75,7 @@ public class DefinitionStmtAnalyzer {
 				SootMethod method = expr.getMethodRef().resolve();
 				if (method.getName().equals("readSensor")) {
 					if (method.getDeclaringClass().getName().equals("AircraftControl")) {
-						problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, current);
+						problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, current, sd);
 						fallState.putIntervalForVar(varName, new Interval(-999, 999));
 					}
 				}

@@ -148,8 +148,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			if (expr.getMethod().getDeclaringClass().getName().equals("AircraftControl")) {
 				// TODO: Check that the values are in the allowed range (we do
 				// this while computing fixpoint).
-				problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, current);
-				problemReport.checkInterval(expr.getArg(1), Config.legalValueInterval, current);
+				problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, current, s);
+				problemReport.checkInterval(expr.getArg(1), Config.legalValueInterval, current, s);
 			}
 		}
 	}
@@ -177,15 +177,6 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	@Override
 	protected IntervalPerVar newInitialFlow() {
 		return new IntervalPerVar();
-	}
-
-	/**
-	 * Register another problem found during analysis.
-	 * 
-	 * @param line
-	 */
-	public void addProblem(String line) {
-		problemReport.addProblem(line);
 	}
 
 	/**

@@ -71,25 +71,6 @@ public class AnalysisTest {
 		Assert.assertEquals("expected an empty list", 0, problems.size());
 	}
 
-	/**
-	 * Create an {@link Analysis} with one problem.
-	 * 
-	 * @author cfuchs
-	 * 
-	 */
-	private class AnalysisWithOneProblemMock extends Analysis {
-		public AnalysisWithOneProblemMock() {
-			super(new BriefUnitGraph(simpleBody));
-			super.addProblem("Houston we have a problem");
-		}
-	}
-
-	@Test
-	public void testHavingErrorFeedback() {
-		List<String> problems = new AnalysisWithOneProblemMock().getProblems();
-		Assert.assertEquals("expected a problem", 1, problems.size());
-	}
-
 	private class AnalysisWithPublicMerge extends Analysis {
 		public AnalysisWithPublicMerge() {
 			super(new BriefUnitGraph(simpleBody));
