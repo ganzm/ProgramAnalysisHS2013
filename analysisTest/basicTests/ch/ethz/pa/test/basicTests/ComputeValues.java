@@ -107,13 +107,13 @@ public class ComputeValues extends ValidationTestBase {
 	}
 
 	@Test(timeout = 10000)
-	public void testSimpleModuloValue() {
-		testAnyProgram("SimpleModulo", SAFE, NO_DEBUG);
+	public void testGoodSimpleRemainder1() {
+		testAnyProgram("GoodSimpleRemainder1", SAFE, NO_DEBUG);
 	}
 
 	@Test(timeout = 10000)
-	public void testSimpleModuloDebug() {
-		testAnyProgram("SimpleModulo", SAFE, DEBUG);
+	public void testGoodSimpleRemainder1Debug() {
+		testAnyProgram("GoodSimpleRemainder1", SAFE, DEBUG);
 	}
 
 }

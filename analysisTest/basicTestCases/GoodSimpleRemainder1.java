@@ -1,7 +1,7 @@
 /**
  * Add 999 to a sensor value, compute modulo 1000, then adjust. This is SAFE.
  */
-public class SimpleModulo {
+public class GoodSimpleRemainder1 {
 
 	public static void multiplyTwoSensorValues() {
 		AircraftControl ac = new AircraftControl();
