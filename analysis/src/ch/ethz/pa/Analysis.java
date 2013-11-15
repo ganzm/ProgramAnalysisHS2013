@@ -199,6 +199,11 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	}
 
 	@Override
+	protected void merge(Unit op, IntervalPerVar src1, IntervalPerVar src2, IntervalPerVar trg) {
+		merge(src1, src2, trg);
+	}
+
+	@Override
 	protected IntervalPerVar newInitialFlow() {
 		return new IntervalPerVar();
 	}
