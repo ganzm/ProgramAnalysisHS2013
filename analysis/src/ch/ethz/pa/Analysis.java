@@ -57,7 +57,16 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 	@Override
 	protected void flowThrough(IntervalPerVar current, Unit op, List<IntervalPerVar> fallOut, List<IntervalPerVar> branchOuts) {
-		// TODO: This can be optimized.
+
+		// entrance check: do nothing on unreachable code
+		// (unreachable is where any intervals are empty)
+		if (current.hasEmptyIntervals()) {
+			copyToMany(current, fallOut);
+			copyToMany(current, branchOuts);
+			return;
+		}
+
+		// This could be optimized.
 		logger.info("Operation: " + op + "   - " + op.getClass().getName() + "\n      state: " + current);
 
 		Stmt s = (Stmt) op;
@@ -131,15 +140,20 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 			throw new RuntimeException("unhandled statement: " + op);
 		}
 
-		// TODO: Maybe avoid copying objects too much. Feel free to optimize.
-		for (IntervalPerVar fnext : fallOut) {
-			if (fallState != null) {
-				fnext.copyFrom(fallState);
-			}
-		}
-		for (IntervalPerVar fnext : branchOuts) {
-			if (branchState != null) {
-				fnext.copyFrom(branchState);
+		copyToMany(fallState, fallOut);
+		copyToMany(branchState, branchOuts);
+	}
+
+	/**
+	 * Transfers the {@link source} store to each of the {@link targets}.
+	 * 
+	 * @param source
+	 * @param targets
+	 */
+	private void copyToMany(IntervalPerVar source, List<IntervalPerVar> targets) {
+		for (IntervalPerVar fnext : targets) {
+			if (source != null) {
+				fnext.copyFrom(source);
 			}
 		}
 	}
@@ -152,8 +166,6 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		if (expr.getMethod().getName().equals("adjustValue")) {
 			// Check that is the method from the AircraftControl class.
 			if (expr.getMethod().getDeclaringClass().getName().equals("AircraftControl")) {
-				// TODO: Check that the values are in the allowed range (we do
-				// this while computing fixpoint).
 				problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, current, s);
 				problemReport.checkInterval(expr.getArg(1), Config.legalValueInterval, current, s);
 			}
@@ -165,9 +177,15 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		dest.copyFrom(source);
 	}
 
+	/**
+	 * Creates an empty store of type {@link IntervalPerVar}.
+	 * <p/>
+	 * 
+	 * Our convention is that an {@link Interval} is only considered <b>Bottom</b> if it equals the
+	 * {@link Interval#EMPTY_INTERVAL}.
+	 */
 	@Override
 	protected IntervalPerVar entryInitialFlow() {
-		// TODO: How do you model the entry point?
 		return new IntervalPerVar();
 	}
 
