@@ -2,9 +2,6 @@ package ch.ethz.pa;
 
 import java.util.logging.Logger;
 
-import ch.ethz.pa.intervals.Interval;
-import ch.ethz.pa.intervals.IntervalPerVar;
-
 import soot.IntegerType;
 import soot.Local;
 import soot.RefLikeType;
@@ -20,6 +17,8 @@ import soot.jimple.ParameterRef;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.UnopExpr;
 import soot.jimple.VirtualInvokeExpr;
+import ch.ethz.pa.intervals.Interval;
+import ch.ethz.pa.intervals.IntervalPerVar;
 
 public class DefinitionStmtAnalyzer {
 
@@ -64,7 +63,6 @@ public class DefinitionStmtAnalyzer {
 					logger.warning("ignore right side " + l.getType());
 				} else {
 					fallState.putIntervalForVar(varName, current.getIntervalForVar(l.getName()));
-					throw new RuntimeException("hit unexpected type " + l.getType());
 				}
 			}
 
