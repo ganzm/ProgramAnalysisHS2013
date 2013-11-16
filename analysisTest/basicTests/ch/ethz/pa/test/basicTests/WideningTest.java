@@ -16,4 +16,14 @@ public class WideningTest extends ValidationTestBase {
 		testAnyProgram("BadWidening1", UNSAFE, DEBUG);
 	}
 
+	@Test(timeout = 10000)
+	public void testGoodWidening2() {
+		testAnyProgram("GoodWidening2", SAFE, NO_DEBUG);
+	}
+
+	@Test(timeout = 10000)
+	public void testGoodWidening2Debug() {
+		testAnyProgram("GoodWidening2", SAFE, DEBUG);
+	}
+
 }
