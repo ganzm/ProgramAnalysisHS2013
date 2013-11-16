@@ -45,4 +45,24 @@ public class DivisionByZeroTest extends ValidationTestBase {
 	public void testBadRemainderByZero1Debug() {
 		testAnyProgram("BadRemainderByZero1", UNSAFE, DEBUG);
 	}
+
+	@Test(timeout = 10000)
+	public void testGoodRemainderByZero2() {
+		testAnyProgram("GoodRemainderByZero2", SAFE, NO_DEBUG);
+	}
+
+	@Test(timeout = 10000)
+	public void testGoodRemainderByZero2Debug() {
+		testAnyProgram("GoodRemainderByZero2", SAFE, DEBUG);
+	}
+
+	@Test(timeout = 10000)
+	public void testGoodRemainderByZero3() {
+		testAnyProgram("GoodRemainderByZero3", SAFE, NO_DEBUG);
+	}
+
+	@Test(timeout = 10000)
+	public void testGoodRemainderByZero3Debug() {
+		testAnyProgram("GoodRemainderByZero3", SAFE, DEBUG);
+	}
 }
