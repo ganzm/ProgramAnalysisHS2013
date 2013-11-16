@@ -71,7 +71,12 @@ public class IntervalPerVarHistoryTest {
 	public void testMonotonyWithManyRecords() {
 		IntervalPerVar previousStore = null;
 		for (int i = 0; i < 100; i++) {
-			IntervalPerVar nextStore = newStoreWithEntry(VARIABLE_A, new Interval(4, 10 + i));
+			Interval nextInterval = new Interval(4, 10 + i);
+			if (previousStore != null) {
+				// since Soot will merge with previous state, we also can do that
+				nextInterval = nextInterval.join(previousStore.getIntervalForVar(VARIABLE_A));
+			}
+			IntervalPerVar nextStore = newStoreWithEntry(VARIABLE_A, nextInterval);
 			history.considerWidening(LABEL1, nextStore);
 			if (previousStore != null) {
 				Assert.assertTrue(stepIsMonotone(VARIABLE_A, previousStore, nextStore));
