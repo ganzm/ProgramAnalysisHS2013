@@ -209,6 +209,14 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		intervalPerVarHistory.recordAndConsiderWidening(op, trg);
 	}
 
+	/**
+	 * Initialize a new store.
+	 * <p/>
+	 * 
+	 * In general we would need to initialize values here. But since the Java compiler does not
+	 * permit accessing uninitialized variables in the source code, we do not need to distinguish
+	 * between "null" and "empty" here.
+	 */
 	@Override
 	protected IntervalPerVar newInitialFlow() {
 		return new IntervalPerVar();
