@@ -112,6 +112,9 @@ public class Interval {
 	}
 
 	public Interval negate() {
+		if (lower == Integer.MIN_VALUE) {
+			return TOP_INTERVAL;
+		}
 		return new Interval(-upper, -lower);
 	}
 

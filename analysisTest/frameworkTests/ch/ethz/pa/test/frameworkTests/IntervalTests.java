@@ -219,4 +219,34 @@ public class IntervalTests {
 			Assert.assertTrue(new Interval(6, 10).goesHigherThan(new Interval(lower, 9)));
 		}
 	}
+
+	private Interval minus1(final Interval positiveRange) {
+		return Interval.plus(positiveRange, new Interval(-1));
+	}
+
+	private Interval plus1(final Interval positiveRange) {
+		return Interval.plus(positiveRange, new Interval(1));
+	}
+
+	@Test
+	public void testOverflow() {
+
+		final Interval positiveRange = new Interval(1, Integer.MAX_VALUE);
+		final Interval negativeRange = new Interval(Integer.MIN_VALUE, -1);
+
+		// by addition
+		Assert.assertEquals(positiveRange, plus1(minus1(positiveRange)));
+		Assert.assertEquals(negativeRange, minus1(plus1(negativeRange)));
+		Assert.assertEquals(Interval.TOP_INTERVAL, Interval.plus(positiveRange, new Interval(1)));
+		Assert.assertEquals(Interval.TOP_INTERVAL, Interval.plus(negativeRange, new Interval(-1)));
+		Assert.assertEquals(Interval.TOP_INTERVAL, Interval.plus(Interval.TOP_INTERVAL, new Interval(1)));
+		Assert.assertEquals(Interval.TOP_INTERVAL, Interval.plus(Interval.TOP_INTERVAL, new Interval(-1)));
+
+		// by negation
+		Assert.assertEquals(Integer.MIN_VALUE, -Integer.MIN_VALUE);
+		Assert.assertEquals(new Interval(-Integer.MAX_VALUE, -1), positiveRange.negate());
+		Assert.assertEquals(Interval.TOP_INTERVAL, negativeRange.negate());
+		Assert.assertEquals(new Interval(0, Integer.MAX_VALUE), plus1(negativeRange).negate());
+	}
+
 }
