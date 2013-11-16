@@ -36,12 +36,14 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 
 	private final ProblemReport problemReport;
 	private final DefinitionStmtAnalyzer definitionStmtAnalyzer;
+	private final IntervalPerVarHistory<Unit> intervalPerVarHistory;
 
 	public Analysis(UnitGraph g) {
 		super(g);
 
 		problemReport = new ProblemReport();
 		definitionStmtAnalyzer = new DefinitionStmtAnalyzer(problemReport);
+		intervalPerVarHistory = new IntervalPerVarHistory<Unit>();
 
 		logger.info("UnitGraph: " + g.toString());
 	}
@@ -201,7 +203,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	@Override
 	protected void merge(Unit op, IntervalPerVar src1, IntervalPerVar src2, IntervalPerVar trg) {
 		merge(src1, src2, trg);
-		// TODO this could be a convenient point for widening - we have a store and we know the unit
+		intervalPerVarHistory.recordAndConsiderWidening(op, trg);
 	}
 
 	@Override
