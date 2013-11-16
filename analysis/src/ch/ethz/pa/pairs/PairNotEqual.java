@@ -3,8 +3,8 @@ package ch.ethz.pa.pairs;
 import soot.Value;
 import soot.jimple.internal.JimpleLocal;
 import ch.ethz.pa.IntegerExpression;
-import ch.ethz.pa.Interval;
-import ch.ethz.pa.IntervalPerVar;
+import ch.ethz.pa.intervals.Interval;
+import ch.ethz.pa.intervals.IntervalPerVar;
 
 public class PairNotEqual extends Pair {
 

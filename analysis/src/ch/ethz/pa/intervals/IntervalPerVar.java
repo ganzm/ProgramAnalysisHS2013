@@ -1,4 +1,4 @@
-package ch.ethz.pa;
+package ch.ethz.pa.intervals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 
 public class IntervalPerVar {
 

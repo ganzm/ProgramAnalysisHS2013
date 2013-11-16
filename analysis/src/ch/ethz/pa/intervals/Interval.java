@@ -1,4 +1,4 @@
-package ch.ethz.pa;
+package ch.ethz.pa.intervals;
 
 /**
  * Interval is a read-only value type.

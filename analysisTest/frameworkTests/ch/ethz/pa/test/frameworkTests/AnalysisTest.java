@@ -17,8 +17,8 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.toolkits.graph.BriefUnitGraph;
 import ch.ethz.pa.Analysis;
-import ch.ethz.pa.Interval;
-import ch.ethz.pa.IntervalPerVar;
+import ch.ethz.pa.intervals.Interval;
+import ch.ethz.pa.intervals.IntervalPerVar;
 
 public class AnalysisTest {
 

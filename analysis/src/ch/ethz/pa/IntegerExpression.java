@@ -1,5 +1,7 @@
 package ch.ethz.pa;
 
+import ch.ethz.pa.intervals.Interval;
+import ch.ethz.pa.intervals.IntervalPerVar;
 import soot.Local;
 import soot.Value;
 import soot.jimple.AddExpr;

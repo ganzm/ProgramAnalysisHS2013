@@ -3,7 +3,7 @@ package ch.ethz.pa.test.frameworkTests;
 import org.junit.Assert;
 import org.junit.Test;
 
-import ch.ethz.pa.Interval;
+import ch.ethz.pa.intervals.Interval;
 
 public class IntervalTests {
 

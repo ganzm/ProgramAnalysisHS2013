@@ -1,7 +1,8 @@
-package ch.ethz.pa;
+package ch.ethz.pa.intervals;
 
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class IntervalPerVarHistory<TAnchor> {
 

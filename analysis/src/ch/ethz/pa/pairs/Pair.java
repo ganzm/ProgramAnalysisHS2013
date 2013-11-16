@@ -1,7 +1,7 @@
 package ch.ethz.pa.pairs;
 
-import ch.ethz.pa.Interval;
-import ch.ethz.pa.IntervalPerVar;
+import ch.ethz.pa.intervals.Interval;
+import ch.ethz.pa.intervals.IntervalPerVar;
 
 /**
  * A {@link Pair} of restrictions applying to the left and right side of a <i>satisfied</i>

@@ -2,6 +2,9 @@ package ch.ethz.pa;
 
 import java.util.logging.Logger;
 
+import ch.ethz.pa.intervals.Interval;
+import ch.ethz.pa.intervals.IntervalPerVar;
+
 import soot.IntegerType;
 import soot.Local;
 import soot.RefLikeType;

@@ -1,5 +1,7 @@
 package ch.ethz.pa;
 
+import ch.ethz.pa.intervals.Interval;
+
 /**
  * Keep any kind of global configuration.
  */

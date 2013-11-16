@@ -5,9 +5,9 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.ethz.pa.Interval;
-import ch.ethz.pa.IntervalPerVar;
-import ch.ethz.pa.IntervalPerVarHistory;
+import ch.ethz.pa.intervals.Interval;
+import ch.ethz.pa.intervals.IntervalPerVar;
+import ch.ethz.pa.intervals.IntervalPerVarHistory;
 
 /**
  * Test the widening by {@link IntervalPerVarHistory}.
