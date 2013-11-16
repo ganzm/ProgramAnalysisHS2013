@@ -39,9 +39,21 @@ public class HistoryPerAnchor {
 		}
 	}
 
+	/**
+	 * Core method. This looks at a sequence of intervals. If widening is considered, a wider
+	 * interval will be added to the sequence.
+	 * 
+	 * @param history
+	 * @return true if widening was applied
+	 */
 	private boolean considerAddingWidening(Deque<Interval> history) {
-		// TODO Auto-generated method stub
-		return false;
+		// simple solution: widen after 5 iterations.
+		if (history.size() < 4 || history.getLast().equals(Interval.TOP_INTERVAL)) {
+			return false;
+		}
+
+		history.add(Interval.TOP_INTERVAL);
+		return true;
 	}
 
 	private Deque<Interval> provideHistory(String name) {

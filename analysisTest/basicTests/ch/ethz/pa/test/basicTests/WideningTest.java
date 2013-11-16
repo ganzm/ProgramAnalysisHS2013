@@ -6,14 +6,14 @@ import ch.ethz.pa.test.ValidationTestBase;
 
 public class WideningTest extends ValidationTestBase {
 
-	@Test(timeout = 1000)
-	public void testWidening1() {
-		testAnyProgram("Widening1", SAFE, NO_DEBUG);
+	@Test(timeout = 10000)
+	public void testBadWidening1() {
+		testAnyProgram("BadWidening1", UNSAFE, NO_DEBUG);
 	}
 
-	@Test(timeout = 1000)
-	public void testWidening1Debug() {
-		testAnyProgram("Widening1", SAFE, DEBUG);
+	@Test(timeout = 10000)
+	public void testBadWidening1Debug() {
+		testAnyProgram("BadWidening1", UNSAFE, DEBUG);
 	}
 
 }

@@ -43,6 +43,8 @@ public class Interval {
 	}
 
 	public static Interval plus(Interval i1, Interval i2) {
+		if (i1.equals(TOP_INTERVAL) || i2.equals(TOP_INTERVAL))
+			return TOP_INTERVAL;
 		// TODO: Handle overflow.
 		return new Interval(i1.lower + i2.lower, i1.upper + i2.upper);
 	}

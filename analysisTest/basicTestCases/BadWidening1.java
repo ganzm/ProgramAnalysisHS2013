@@ -1,8 +1,7 @@
 /**
- * Test widening
- * 
+ * Increment an unrelated sensor value for undertermined many times. This is UNSAFE.
  */
-public class Widening1 {
+public class BadWidening1 {
 
 	public static void doWidening() {
 		AircraftControl ac = new AircraftControl();
