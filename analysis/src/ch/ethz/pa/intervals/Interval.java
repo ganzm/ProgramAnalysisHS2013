@@ -43,10 +43,26 @@ public class Interval {
 	}
 
 	public static Interval plus(Interval i1, Interval i2) {
-		if (i1.equals(TOP_INTERVAL) || i2.equals(TOP_INTERVAL))
-			return TOP_INTERVAL;
-		// TODO: Handle overflow.
-		return new Interval(i1.lower + i2.lower, i1.upper + i2.upper);
+		boolean overflow[] = new boolean[] { false };
+		int newLower = addCheckOverflow(i1.lower, i2.lower, overflow);
+		int newUpper = addCheckOverflow(i1.upper, i2.upper, overflow);
+		return overflow[0] ? TOP_INTERVAL : new Interval(newLower, newUpper);
+	}
+
+	/**
+	 * Perform integer addition and check for overflow.
+	 * 
+	 * @param a1
+	 * @param a2
+	 * @param overflow
+	 *            set true on overflow, unchanged otherwise
+	 * @return
+	 */
+	private static int addCheckOverflow(int a1, int a2, boolean[] overflow) {
+		int result = a1 + a2;
+		if ((a2 > 0 && result < a1) || (a2 < 0 && result > a1))
+			overflow[0] = true;
+		return result;
 	}
 
 	public static Interval subtract(Interval i1, Interval i2) {
@@ -246,5 +262,25 @@ public class Interval {
 		if (other == EMPTY_INTERVAL)
 			return this;
 		return new Interval(Math.min(lower, other.lower), Math.max(upper, other.upper));
+	}
+
+	/**
+	 * Returns true if this interval pushes the lower bound compared to the {@link other} interval.
+	 * 
+	 * @param other
+	 * @return
+	 */
+	public boolean goesLowerThan(Interval other) {
+		return lower < other.lower;
+	}
+
+	/**
+	 * Returns true if this interval pushes the upper bound compared to the {@link other} interval.
+	 * 
+	 * @param other
+	 * @return
+	 */
+	public boolean goesHigherThan(Interval other) {
+		return upper > other.upper;
 	}
 }

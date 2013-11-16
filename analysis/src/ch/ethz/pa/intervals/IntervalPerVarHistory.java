@@ -3,7 +3,12 @@ package ch.ethz.pa.intervals;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * Tracks history of all stores at all (relevant) program points. Per program point, the task is
+ * delegated to {@link HistoryPerAnchor}.
+ * 
+ * @param <TAnchor>
+ */
 public class IntervalPerVarHistory<TAnchor> {
 
 	private Map<TAnchor, HistoryPerAnchor> histories;

@@ -8,14 +8,20 @@ import java.util.TreeMap;
 
 import ch.ethz.pa.intervals.IntervalPerVar.Pair;
 
+/**
+ * Tracks history of a store and all its intervals for one program point. Per interval, the task is
+ * delegated to {@link IntervalHistory}.
+ * 
+ * @param <TAnchor>
+ */
 public class HistoryPerAnchor {
 
 	final private Deque<IntervalPerVar> storeHistories;
-	final private Map<String, Deque<Interval>> intervalHistories;
+	final private Map<String, IntervalHistory> intervalHistories;
 
 	public HistoryPerAnchor() {
 		storeHistories = new LinkedList<IntervalPerVar>();
-		intervalHistories = new TreeMap<String, Deque<Interval>>();
+		intervalHistories = new TreeMap<String, IntervalHistory>();
 	}
 
 	public void recordAndConsiderWidening(IntervalPerVar intervalPerVar) {
@@ -31,35 +37,17 @@ public class HistoryPerAnchor {
 		}
 
 		for (Pair pair : delta) {
-			Deque<Interval> history = provideHistory(pair.name);
-			history.add(pair.interval);
-			if (considerAddingWidening(history)) {
-				storeHistories.getLast().putIntervalForVar(pair.name, history.getLast());
+			IntervalHistory history = provideHistory(pair.name);
+			if (history.add(pair.interval)) {
+				storeHistories.getLast().putIntervalForVar(pair.name, history.getLatestInterval());
 			}
 		}
 	}
 
-	/**
-	 * Core method. This looks at a sequence of intervals. If widening is considered, a wider
-	 * interval will be added to the sequence.
-	 * 
-	 * @param history
-	 * @return true if widening was applied
-	 */
-	private boolean considerAddingWidening(Deque<Interval> history) {
-		// simple solution: widen after 5 iterations.
-		if (history.size() < 4 || history.getLast().equals(Interval.TOP_INTERVAL)) {
-			return false;
-		}
-
-		history.add(Interval.TOP_INTERVAL);
-		return true;
-	}
-
-	private Deque<Interval> provideHistory(String name) {
-		Deque<Interval> result = intervalHistories.get(name);
+	private IntervalHistory provideHistory(String name) {
+		IntervalHistory result = intervalHistories.get(name);
 		if (result == null) {
-			result = new LinkedList<Interval>();
+			result = new IntervalHistory();
 			intervalHistories.put(name, result);
 		}
 		return result;

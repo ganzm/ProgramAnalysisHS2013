@@ -200,4 +200,23 @@ public class IntervalTests {
 		Assert.assertEquals(new Interval(1, 5), new Interval(1, 2).join(new Interval(4, 5)));
 	}
 
+	@Test
+	public void testGoesLower() {
+		// the loop makes sure that the result is independent from the upper bound
+		for (int upper : new int[] { 5, 6, 7 }) {
+			Assert.assertTrue(new Interval(2, 6).goesLowerThan(new Interval(3, upper)));
+			Assert.assertFalse(new Interval(3, 6).goesLowerThan(new Interval(3, upper)));
+			Assert.assertFalse(new Interval(4, 6).goesLowerThan(new Interval(3, upper)));
+		}
+	}
+
+	@Test
+	public void testGoesHigher() {
+		// the loop makes sure that the result is independent from the lower bound
+		for (int lower : new int[] { 5, 6, 7 }) {
+			Assert.assertFalse(new Interval(6, 8).goesHigherThan(new Interval(lower, 9)));
+			Assert.assertFalse(new Interval(6, 9).goesHigherThan(new Interval(lower, 9)));
+			Assert.assertTrue(new Interval(6, 10).goesHigherThan(new Interval(lower, 9)));
+		}
+	}
 }
