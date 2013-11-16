@@ -6,17 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import ch.ethz.pa.intervals.Interval;
-import ch.ethz.pa.intervals.IntervalPerVar;
-
 import soot.PrimType;
 import soot.Value;
 import soot.jimple.IntConstant;
 import soot.jimple.Stmt;
+import ch.ethz.pa.intervals.Interval;
+import ch.ethz.pa.intervals.IntervalPerVar;
 
 public class ProblemReport {
 
-	private final Map<Stmt, String> problems = new HashMap<Stmt, String>();
+	private final Map<Object, String> problems = new HashMap<Object, String>();
 
 	/**
 	 * Assert the given value is in the given range, otherwise report a problem.
@@ -37,7 +36,7 @@ public class ProblemReport {
 
 		else if (value.getType() instanceof PrimType) {
 
-			Interval interval = IntegerExpression.tryGetIntervalForValue(current, value);
+			Interval interval = IntegerExpressionAnalyzer.tryGetIntervalForValue(current, value);
 			if (interval == null) {
 				throw new RuntimeException("unhandled case: no value for " + value);
 			}
@@ -58,7 +57,7 @@ public class ProblemReport {
 	 * 
 	 * @param line
 	 */
-	public void addProblem(Stmt atStatement, String line) {
+	public void addProblem(Object atStatement, String line) {
 		problems.put(atStatement, line);
 	}
 
@@ -69,7 +68,7 @@ public class ProblemReport {
 	 */
 	public List<String> getProblems() {
 		List<String> result = new ArrayList<String>(problems.size());
-		for (Entry<Stmt, String> problem : problems.entrySet()) {
+		for (Entry<Object, String> problem : problems.entrySet()) {
 			result.add(String.format("%s (at %s)", problem.getValue(), problem.getKey()));
 		}
 		return result;

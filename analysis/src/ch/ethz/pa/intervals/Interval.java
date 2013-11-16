@@ -118,14 +118,26 @@ public class Interval {
 		return new Interval(-upper, -lower);
 	}
 
-	public static Interval divide(Interval i1, Interval i2) {
+	/**
+	 * Determine the interval covering the result of a division. If division by zero is possible,
+	 * this returns the {@link #EMPTY_INTERVAL} and sets the flag {@link divisionByZero}.
+	 * 
+	 * @param i1
+	 * @param i2
+	 * @param divisionByZero
+	 *            set if division by zero is possible, otherwise unchanged
+	 * @return
+	 */
+	public static Interval divide(Interval i1, Interval i2, boolean[] divisionByZero) {
 		if (i2.upper < 0) {
 			return new Interval(i1.upper / i2.lower, i1.lower / i2.lower);
 		}
 		if (i2.lower > 0) {
 			return new Interval(i1.lower / i2.upper, i1.upper / i2.upper);
 		}
-		throw new RuntimeException("potential division by zero not supported");
+
+		divisionByZero[0] = true;
+		return EMPTY_INTERVAL;
 	}
 
 	public static Interval remainder(Interval dividend, Interval divisor) {

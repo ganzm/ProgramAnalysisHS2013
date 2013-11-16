@@ -25,9 +25,11 @@ public class DefinitionStmtAnalyzer {
 	private final Logger logger = Logger.getLogger(DefinitionStmtAnalyzer.class.getSimpleName());
 
 	private final ProblemReport problemReport;
+	private final IntegerExpressionAnalyzer integerExpressionAnalyzer;
 
 	public DefinitionStmtAnalyzer(ProblemReport problemReport) {
 		this.problemReport = problemReport;
+		this.integerExpressionAnalyzer = new IntegerExpressionAnalyzer(problemReport);
 	}
 
 	public void analyze(IntervalPerVar current, DefinitionStmt sd, IntervalPerVar fallState) {
@@ -67,7 +69,7 @@ public class DefinitionStmtAnalyzer {
 			}
 
 			else if (right instanceof BinopExpr) {
-				Interval result = IntegerExpression.evalBinop((BinopExpr) right, current);
+				Interval result = integerExpressionAnalyzer.evalBinop((BinopExpr) right, current);
 				fallState.putIntervalForVar(varName, result);
 			}
 
@@ -83,7 +85,7 @@ public class DefinitionStmtAnalyzer {
 			}
 
 			else if (right instanceof UnopExpr) {
-				Interval result = IntegerExpression.evalUnop((UnopExpr) right, current);
+				Interval result = IntegerExpressionAnalyzer.evalUnop((UnopExpr) right, current);
 				fallState.putIntervalForVar(varName, result);
 			}
 

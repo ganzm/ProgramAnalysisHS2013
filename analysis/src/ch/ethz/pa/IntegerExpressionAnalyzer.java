@@ -1,7 +1,5 @@
 package ch.ethz.pa;
 
-import ch.ethz.pa.intervals.Interval;
-import ch.ethz.pa.intervals.IntervalPerVar;
 import soot.Local;
 import soot.Value;
 import soot.jimple.AddExpr;
@@ -13,19 +11,27 @@ import soot.jimple.NegExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.SubExpr;
 import soot.jimple.UnopExpr;
+import ch.ethz.pa.intervals.Interval;
+import ch.ethz.pa.intervals.IntervalPerVar;
 
 /**
  * Evaluates small step integer expressions.
  */
-public class IntegerExpression {
+public class IntegerExpressionAnalyzer {
 
-	public static Interval evalBinop(BinopExpr binop, IntervalPerVar current) {
+	private final ProblemReport problemReport;
+
+	public IntegerExpressionAnalyzer(ProblemReport problemReport) {
+		this.problemReport = problemReport;
+	}
+
+	public Interval evalBinop(BinopExpr binop, IntervalPerVar current) {
 
 		Value r1 = binop.getOp1();
 		Value r2 = binop.getOp2();
 
-		Interval i1 = IntegerExpression.tryGetIntervalForValue(current, r1);
-		Interval i2 = IntegerExpression.tryGetIntervalForValue(current, r2);
+		Interval i1 = IntegerExpressionAnalyzer.tryGetIntervalForValue(current, r1);
+		Interval i2 = IntegerExpressionAnalyzer.tryGetIntervalForValue(current, r2);
 
 		Interval result;
 
@@ -51,7 +57,12 @@ public class IntegerExpression {
 			}
 
 			else if (binop instanceof DivExpr) {
-				result = Interval.divide(i1, i2);
+				boolean[] divisionByZero = new boolean[] { false };
+				result = Interval.divide(i1, i2, divisionByZero);
+				if (divisionByZero[0]) {
+					problemReport.addProblem(binop, "division by zero");
+
+				}
 			}
 
 			else if (binop instanceof RemExpr) {
@@ -68,7 +79,7 @@ public class IntegerExpression {
 	static public Interval evalUnop(UnopExpr unop, IntervalPerVar current) {
 		Interval result;
 		Value r1 = unop.getOp();
-		Interval i1 = IntegerExpression.tryGetIntervalForValue(current, r1);
+		Interval i1 = IntegerExpressionAnalyzer.tryGetIntervalForValue(current, r1);
 
 		if (i1 == null)
 			throw new NullPointerException();

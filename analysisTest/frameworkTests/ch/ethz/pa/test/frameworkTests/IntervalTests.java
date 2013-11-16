@@ -40,8 +40,9 @@ public class IntervalTests {
 
 	@Test
 	public void testDivide() {
-		Assert.assertEquals(new Interval(-8, 4), Interval.divide(new Interval(-80, 40), new Interval(2, 10)));
-		Assert.assertEquals(new Interval(-12, 4), Interval.divide(new Interval(-20, 60), new Interval(-5, -2)));
+		boolean[] flag = new boolean[] { false };
+		Assert.assertEquals(new Interval(-8, 4), Interval.divide(new Interval(-80, 40), new Interval(2, 10), flag));
+		Assert.assertEquals(new Interval(-12, 4), Interval.divide(new Interval(-20, 60), new Interval(-5, -2), flag));
 	}
 
 	@Test

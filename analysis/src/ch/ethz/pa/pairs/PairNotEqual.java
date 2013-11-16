@@ -2,7 +2,7 @@ package ch.ethz.pa.pairs;
 
 import soot.Value;
 import soot.jimple.internal.JimpleLocal;
-import ch.ethz.pa.IntegerExpression;
+import ch.ethz.pa.IntegerExpressionAnalyzer;
 import ch.ethz.pa.intervals.Interval;
 import ch.ethz.pa.intervals.IntervalPerVar;
 
@@ -12,8 +12,8 @@ public class PairNotEqual extends Pair {
 
 		super();
 
-		Interval i1 = IntegerExpression.tryGetIntervalForValue(current, a1);
-		Interval i2 = IntegerExpression.tryGetIntervalForValue(current, a2);
+		Interval i1 = IntegerExpressionAnalyzer.tryGetIntervalForValue(current, a1);
+		Interval i2 = IntegerExpressionAnalyzer.tryGetIntervalForValue(current, a2);
 
 		if (a1 instanceof JimpleLocal) {
 			String name1 = ((JimpleLocal) a1).getName();
