@@ -61,12 +61,15 @@ public class IntegerExpressionAnalyzer {
 				result = Interval.divide(i1, i2, divisionByZero);
 				if (divisionByZero[0]) {
 					problemReport.addProblem(binop, "division by zero");
-
 				}
 			}
 
 			else if (binop instanceof RemExpr) {
-				result = Interval.remainder(i1, i2);
+				boolean[] divisionByZero = new boolean[] { false };
+				result = Interval.remainder(i1, i2, divisionByZero);
+				if (divisionByZero[0]) {
+					problemReport.addProblem(binop, "division by zero");
+				}
 			}
 
 			else

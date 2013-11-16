@@ -140,7 +140,16 @@ public class Interval {
 		return EMPTY_INTERVAL;
 	}
 
-	public static Interval remainder(Interval dividend, Interval divisor) {
+	/**
+	 * Determine the interval covering the result of a remainder computation. If division by zero is
+	 * possible, this returns the {@link #EMPTY_INTERVAL} and sets the flag {@link divisionByZero}.
+	 * 
+	 * @param dividend
+	 * @param divisor
+	 * @param divisionByZero
+	 * @return
+	 */
+	public static Interval remainder(Interval dividend, Interval divisor, boolean[] divisionByZero) {
 
 		// -------------------------------------------------
 		// EXCEPTIONAL CASES WHERE THE INPUT IS UNSOUND
@@ -151,7 +160,7 @@ public class Interval {
 
 		// if 0 is a possible divisor, we post a division by zero and return empty
 		if (divisor.lower <= 0 && 0 <= divisor.upper) {
-			// TODO report division by zero
+			divisionByZero[0] = true;
 			return EMPTY_INTERVAL;
 		}
 

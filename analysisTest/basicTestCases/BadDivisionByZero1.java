@@ -1,5 +1,5 @@
 /**
- * Divide 100 by a reading, limit the result and assign. This is SAFE.
+ * Divide 100 by a reading, limit the result and assign. This is UNSAFE.
  */
 public class BadDivisionByZero1 {
 	public static void trinaryTest() {
