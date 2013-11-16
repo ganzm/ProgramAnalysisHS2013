@@ -15,4 +15,24 @@ public class DivisionByZeroTest extends ValidationTestBase {
 	public void testBadDivisionByZero1Debug() {
 		testAnyProgram("BadDivisionByZero1", UNSAFE, DEBUG);
 	}
+
+	@Test(timeout = 10000)
+	public void testGoodDivisionByZero2() {
+		testAnyProgram("GoodDivisionByZero2", SAFE, NO_DEBUG);
+	}
+
+	@Test(timeout = 10000)
+	public void testGoodDivisionByZero2Debug() {
+		testAnyProgram("GoodDivisionByZero2", SAFE, DEBUG);
+	}
+
+	@Test(timeout = 10000)
+	public void testGoodDivisionByZero3() {
+		testAnyProgram("GoodDivisionByZero3", SAFE, NO_DEBUG);
+	}
+
+	@Test(timeout = 10000)
+	public void testGoodDivisionByZero3Debug() {
+		testAnyProgram("GoodDivisionByZero3", SAFE, DEBUG);
+	}
 }
