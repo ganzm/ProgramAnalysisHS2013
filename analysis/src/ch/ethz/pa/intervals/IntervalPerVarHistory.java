@@ -4,13 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Tracks history of all stores at all (relevant) program points. Per program point, the task is
- * delegated to {@link HistoryPerAnchor}.
+ * Tracks history of all stores at all (relevant) program points. Per program point, the task of
+ * tracking the evolution of a single store is delegated to {@link HistoryPerAnchor}.
  * 
  * @param <TAnchor>
  */
 public class IntervalPerVarHistory<TAnchor> {
 
+	/**
+	 * References to next-level delegates which handle history per program point.
+	 */
 	private Map<TAnchor, HistoryPerAnchor> histories;
 
 	public IntervalPerVarHistory() {
@@ -26,14 +29,13 @@ public class IntervalPerVarHistory<TAnchor> {
 	 * @param store
 	 *            the actual store to add and to widen
 	 */
-	public void recordAndConsiderWidening(TAnchor anchor, IntervalPerVar store) {
+	public void considerWidening(TAnchor anchor, IntervalPerVar store) {
 		HistoryPerAnchor history = provideHistory(anchor);
-		history.recordAndConsiderWidening(store);
+		history.considerWidening(store);
 	}
 
 	/**
-	 * Lookup the chain of history for the given {@link anchor}. If there is none yet, create a new
-	 * history chain.
+	 * Lookup the internal dictionary, fill in a new entry if needed.
 	 * 
 	 * @param anchor
 	 * @return
@@ -47,5 +49,4 @@ public class IntervalPerVarHistory<TAnchor> {
 		}
 		return result;
 	}
-
 }

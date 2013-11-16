@@ -55,10 +55,10 @@ public class IntervalPerVarHistoryTest {
 	@Test
 	public void testSimpleRecording() {
 		IntervalPerVar store1 = newStoreWithEntry(VARIABLE_A, new Interval(4, 10));
-		history.recordAndConsiderWidening(LABEL1, store1);
+		history.considerWidening(LABEL1, store1);
 
 		IntervalPerVar store2 = newStoreWithEntry(VARIABLE_A, new Interval(4, 14));
-		history.recordAndConsiderWidening(LABEL1, store2);
+		history.considerWidening(LABEL1, store2);
 
 		Assert.assertTrue(stepIsMonotone(VARIABLE_A, store1, store2));
 	}
@@ -72,7 +72,7 @@ public class IntervalPerVarHistoryTest {
 		IntervalPerVar previousStore = null;
 		for (int i = 0; i < 100; i++) {
 			IntervalPerVar nextStore = newStoreWithEntry(VARIABLE_A, new Interval(4, 10 + i));
-			history.recordAndConsiderWidening(LABEL1, nextStore);
+			history.considerWidening(LABEL1, nextStore);
 			if (previousStore != null) {
 				Assert.assertTrue(stepIsMonotone(VARIABLE_A, previousStore, nextStore));
 			}

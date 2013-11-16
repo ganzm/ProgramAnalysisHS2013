@@ -206,7 +206,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	@Override
 	protected void merge(Unit op, IntervalPerVar src1, IntervalPerVar src2, IntervalPerVar trg) {
 		merge(src1, src2, trg);
-		intervalPerVarHistory.recordAndConsiderWidening(op, trg);
+		intervalPerVarHistory.considerWidening(op, trg);
 	}
 
 	/**

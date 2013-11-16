@@ -4,10 +4,16 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+/**
+ * Tracks the history of one {@link Interval}.
+ */
 public class IntervalHistory {
 
 	public final static int ITERATIONS_BEFORE_WIDENING = 5;
 
+	/**
+	 * The actual evolution of the interval.
+	 */
 	private final Deque<Interval> history;
 
 	public IntervalHistory() {
@@ -15,7 +21,14 @@ public class IntervalHistory {
 		history = new LinkedList<Interval>();
 	}
 
-	public boolean add(Interval interval) {
+	/**
+	 * Receive the next state of the tracked {@link interval}. Returns true when widening was
+	 * applied. In that case, the widened interval can be fetched by {@link #getLatestInterval()}.
+	 * 
+	 * @param interval
+	 * @return true if widening was applied
+	 */
+	public boolean recordAndConsiderWidening(Interval interval) {
 		if (recordAndCheckDifference(interval)) {
 			if (considerAddingWidening()) {
 				return true;
@@ -25,9 +38,10 @@ public class IntervalHistory {
 	}
 
 	/**
+	 * Just record the new interval, if not already covered by the current last state.
 	 * 
 	 * @param interval
-	 * @return true if there was an older, different store
+	 * @return true if there was an older, more narrow interval
 	 */
 	private boolean recordAndCheckDifference(Interval interval) {
 
@@ -36,7 +50,7 @@ public class IntervalHistory {
 			return false;
 		}
 
-		if (history.getLast().equals(interval)) {
+		if (history.getLast().covers(interval)) {
 			return false;
 		}
 
@@ -45,8 +59,8 @@ public class IntervalHistory {
 	}
 
 	/**
-	 * Core method. This looks at a sequence of intervals. If widening is considered, a wider
-	 * interval will be added to the sequence.
+	 * Core widening method. This looks at a sequence of intervals. If widening is considered, a
+	 * wider interval will be added to the sequence.
 	 * 
 	 * @return true if widening was applied
 	 */
@@ -86,6 +100,12 @@ public class IntervalHistory {
 		return recordAndCheckDifference(modifiedInterval);
 	}
 
+	/**
+	 * Return the latest interval. If the state recorded before caused widening, this returns the
+	 * widened interval.
+	 * 
+	 * @return
+	 */
 	public Interval getLatestInterval() {
 		return history.getLast();
 	}

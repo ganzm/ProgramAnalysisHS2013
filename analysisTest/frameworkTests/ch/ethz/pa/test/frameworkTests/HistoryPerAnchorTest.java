@@ -29,7 +29,7 @@ public class HistoryPerAnchorTest {
 
 	/**
 	 * Test that repeated calling of
-	 * {@link HistoryPerAnchor#recordAndConsiderWidening(IntervalPerVar)} does not lead to widening
+	 * {@link HistoryPerAnchor#considerWidening(IntervalPerVar)} does not lead to widening
 	 * when the interval is unchanged.
 	 */
 	@Test
@@ -37,15 +37,16 @@ public class HistoryPerAnchorTest {
 		IntervalPerVar lastStore = null;
 		for (int i = 0; i < 100; i++) {
 			lastStore = storeWithInterval(1, 10);
-			historyPerAnchor.recordAndConsiderWidening(lastStore);
+			historyPerAnchor.considerWidening(lastStore);
 		}
 		Assert.assertEquals(new Interval(1, 10), lastStore.getIntervalForVar(INTERVAL_NAME));
 	}
 
 	/**
 	 * Test that repeated calling of
-	 * {@link HistoryPerAnchor#recordAndConsiderWidening(IntervalPerVar)} does not lead to widening
-	 * when the interval is unchanged.
+	 * {@link HistoryPerAnchor#considerWidening(IntervalPerVar)} does not lead to widening
+	 * when the number of changes does not exceed the threshold
+	 * {@link IntervalHistory#ITERATIONS_BEFORE_WIDENING}.
 	 */
 	@Test
 	public void testNoWideningUpperBeforeIterationLimit() {
@@ -54,10 +55,74 @@ public class HistoryPerAnchorTest {
 		int upper = 10;
 		for (int i = 0; i < IntervalHistory.ITERATIONS_BEFORE_WIDENING; i++) {
 			lastStore = storeWithInterval(1, ++upper);
-			historyPerAnchor.recordAndConsiderWidening(lastStore);
+			historyPerAnchor.considerWidening(lastStore);
 		}
 
 		Assert.assertEquals(new Interval(1, upper), lastStore.getIntervalForVar(INTERVAL_NAME));
+	}
+
+	/**
+	 * Test that repeated calling of
+	 * {@link HistoryPerAnchor#considerWidening(IntervalPerVar)} does not lead to widening
+	 * when the number of changes does not exceed the threshold
+	 * {@link IntervalHistory#ITERATIONS_BEFORE_WIDENING}.
+	 */
+	@Test
+	public void testNoWideningLowerBeforeIterationLimit() {
+		IntervalPerVar lastStore = null;
+
+		int lower = 2;
+		final int upper = 5;
+		for (int i = 0; i < IntervalHistory.ITERATIONS_BEFORE_WIDENING; i++) {
+			lastStore = storeWithInterval(--lower, upper);
+			historyPerAnchor.considerWidening(lastStore);
+		}
+
+		Assert.assertEquals(new Interval(lower, upper), lastStore.getIntervalForVar(INTERVAL_NAME));
+	}
+
+	/**
+	 * Test that repeated calling of
+	 * {@link HistoryPerAnchor#considerWidening(IntervalPerVar)} does lead to some widening
+	 * when the interval is unchanged.
+	 */
+	@Test
+	public void testWideningUpperOnIterationLimit() {
+		IntervalPerVar lastStore = null;
+
+		final int lower = 2;
+		int upper = 10;
+		for (int i = 0; i <= IntervalHistory.ITERATIONS_BEFORE_WIDENING; i++) {
+			lastStore = storeWithInterval(lower, ++upper);
+			historyPerAnchor.considerWidening(lastStore);
+		}
+
+		Interval resultingInterval = lastStore.getIntervalForVar(INTERVAL_NAME);
+		Assert.assertFalse("widening expected", !resultingInterval.equals(new Interval(lower, upper)));
+		Assert.assertTrue("widening incorrect", resultingInterval.covers(new Interval(lower, upper)));
+		Assert.assertTrue("widening too imprecise", new Interval(lower, Integer.MAX_VALUE).covers(resultingInterval));
+	}
+
+	/**
+	 * Test that repeated calling of
+	 * {@link HistoryPerAnchor#considerWidening(IntervalPerVar)} does lead to some widening
+	 * when the interval is unchanged.
+	 */
+	@Test
+	public void testWideningLowerOnIterationLimit() {
+		IntervalPerVar lastStore = null;
+
+		int lower = 2;
+		final int upper = 10;
+		for (int i = 0; i <= IntervalHistory.ITERATIONS_BEFORE_WIDENING; i++) {
+			lastStore = storeWithInterval(--lower, upper);
+			historyPerAnchor.considerWidening(lastStore);
+		}
+
+		Interval resultingInterval = lastStore.getIntervalForVar(INTERVAL_NAME);
+		Assert.assertFalse("widening expected", !resultingInterval.equals(new Interval(lower, upper)));
+		Assert.assertTrue("widening incorrect", resultingInterval.covers(new Interval(lower, upper)));
+		Assert.assertTrue("widening too imprecise", new Interval(Integer.MIN_VALUE, upper).covers(resultingInterval));
 	}
 
 }
