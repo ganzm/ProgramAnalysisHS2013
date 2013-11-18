@@ -1,7 +1,10 @@
 package ch.ethz.pa;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import soot.PrimType;
 import soot.Value;
@@ -12,7 +15,9 @@ import ch.ethz.pa.intervals.IntervalPerVar;
 
 public class ProblemReport {
 
-	private final List<Problem> problems = new ArrayList<Problem>();
+	private static final Logger logger = Logger.getLogger(ProblemReport.class.getSimpleName());
+
+	private final Set<Problem> problems = new HashSet<Problem>();
 
 	/**
 	 * Assert the given value is in the given range, otherwise report a problem.
@@ -55,7 +60,9 @@ public class ProblemReport {
 	 * @param line
 	 */
 	public void addProblem(Object atStatement, String line) {
-		problems.add(new Problem(atStatement, line));
+		if (!problems.add(new Problem(atStatement, line))) {
+			logger.fine("Problem already reported for Statement " + atStatement);
+		}
 	}
 
 	/**
