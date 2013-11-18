@@ -17,6 +17,7 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.toolkits.graph.BriefUnitGraph;
 import ch.ethz.pa.Analysis;
+import ch.ethz.pa.StateContainer;
 import ch.ethz.pa.intervals.Interval;
 import ch.ethz.pa.intervals.IntervalPerVar;
 
@@ -52,16 +53,11 @@ public class AnalysisTest {
 	}
 
 	Analysis analysis;
-	IntervalPerVar src1;
-	IntervalPerVar src2;
-	IntervalPerVar trg;
 
 	@Before
 	public void setup() {
 		analysis = new Analysis(new BriefUnitGraph(simpleBody));
-		src1 = new IntervalPerVar();
-		src2 = new IntervalPerVar();
-		trg = new IntervalPerVar();
+
 	}
 
 	@Test
@@ -77,7 +73,7 @@ public class AnalysisTest {
 		}
 
 		@Override
-		public void merge(IntervalPerVar src1, IntervalPerVar src2, IntervalPerVar trg) {
+		public void merge(StateContainer src1, StateContainer src2, StateContainer trg) {
 			super.merge(src1, src2, trg);
 		}
 
@@ -85,14 +81,19 @@ public class AnalysisTest {
 
 	@Test
 	public void testMergeDisjunct() {
+		StateContainer st1 = new StateContainer();
+		StateContainer st2 = new StateContainer();
 
 		AnalysisWithPublicMerge analysis = new AnalysisWithPublicMerge();
 
-		src1.putIntervalForVar("A", new Interval(1));
-		src2.putIntervalForVar("A", new Interval(3));
+		st1.getIntervalPerVar().putIntervalForVar("A", new Interval(1));
+		st2.getIntervalPerVar().putIntervalForVar("A", new Interval(3));
 
-		analysis.merge(src1, src2, trg);
+		StateContainer trgContainer = new StateContainer();
 
+		analysis.merge(st1, st2, trgContainer);
+
+		IntervalPerVar trg = trgContainer.getIntervalPerVar();
 		Assert.assertTrue(trg.getIntervalForVar("A").covers(new Interval(1)));
 		Assert.assertTrue(trg.getIntervalForVar("A").covers(new Interval(3)));
 	}

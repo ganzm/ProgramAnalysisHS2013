@@ -27,6 +27,11 @@ public class StateContainer {
 	}
 
 	@Override
+	public String toString() {
+		return intervalPerVar.toString();
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
