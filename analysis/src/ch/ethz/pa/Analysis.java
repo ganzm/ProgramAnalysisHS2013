@@ -33,7 +33,7 @@ import ch.ethz.pa.pairs.PairNotEqual;
 /**
  * Implement your numerical analysis here.
  */
-public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
+public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 
 	private final Logger logger = Logger.getLogger(Analysis.class.getSimpleName());
 
@@ -61,11 +61,12 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	}
 
 	@Override
-	protected void flowThrough(IntervalPerVar current, Unit op, List<IntervalPerVar> fallOut, List<IntervalPerVar> branchOuts) {
+	protected void flowThrough(StateContainer current, Unit op, List<StateContainer> fallOut, List<StateContainer> branchOuts) {
 
+		IntervalPerVar currentInerval = current.getIntervalPerVar();
 		// entrance check: do nothing on unreachable code
 		// (unreachable is where any intervals are empty)
-		if (current.hasEmptyIntervals()) {
+		if (currentInerval.hasEmptyIntervals()) {
 			copyToMany(current, fallOut);
 			copyToMany(current, branchOuts);
 			return;
@@ -75,17 +76,19 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 		logger.info("Operation: " + op + "   - " + op.getClass().getName() + "\n      state: " + current);
 
 		Stmt s = (Stmt) op;
-		IntervalPerVar fallState = new IntervalPerVar();
+		StateContainer fallState = new StateContainer();
 		fallState.copyFrom(current);
-		IntervalPerVar branchState = new IntervalPerVar();
+		IntervalPerVar fallStateInterval = fallState.getIntervalPerVar();
+		StateContainer branchState = new StateContainer();
 		branchState.copyFrom(current);
+		IntervalPerVar branchStateInterval = branchState.getIntervalPerVar();
 
 		if (s instanceof DefinitionStmt) {
-			definitionStmtAnalyzer.analyze(current, (DefinitionStmt) s, fallState);
+			definitionStmtAnalyzer.analyze(currentInerval, (DefinitionStmt) s, fallState.getIntervalPerVar());
 		}
 
 		else if (s instanceof InvokeStmt) {
-			flowThroughJInvokeStmt(current, (InvokeStmt) s);
+			flowThroughJInvokeStmt(currentInerval, (InvokeStmt) s);
 		}
 
 		else if (s instanceof IfStmt) {
@@ -101,28 +104,28 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 				Value a2 = binopExpr.getOp2();
 
 				if (condition instanceof GeExpr) {
-					new PairGreaterEqual(a1, a2, current).restrict(branchState);
-					new PairLowerThan(a1, a2, current).restrict(fallState);
+					new PairGreaterEqual(a1, a2, currentInerval).restrict(branchStateInterval);
+					new PairLowerThan(a1, a2, currentInerval).restrict(fallStateInterval);
 				}
 
 				else if (condition instanceof GtExpr) {
-					new PairGreaterThan(a1, a2, current).restrict(branchState);
-					new PairLowerEqual(a1, a2, current).restrict(fallState);
+					new PairGreaterThan(a1, a2, currentInerval).restrict(branchStateInterval);
+					new PairLowerEqual(a1, a2, currentInerval).restrict(fallStateInterval);
 				}
 
 				else if (condition instanceof LtExpr) {
-					new PairLowerThan(a1, a2, current).restrict(branchState);
-					new PairGreaterEqual(a1, a2, current).restrict(fallState);
+					new PairLowerThan(a1, a2, currentInerval).restrict(branchStateInterval);
+					new PairGreaterEqual(a1, a2, currentInerval).restrict(fallStateInterval);
 				}
 
 				else if (condition instanceof NeExpr) {
-					new PairNotEqual(a1, a2, current).restrict(branchState);
-					new PairEqual(a1, a2, current).restrict(fallState);
+					new PairNotEqual(a1, a2, currentInerval).restrict(branchStateInterval);
+					new PairEqual(a1, a2, currentInerval).restrict(fallStateInterval);
 				}
 
 				else if (condition instanceof LeExpr) {
-					new PairLowerEqual(a1, a2, current).restrict(branchState);
-					new PairGreaterThan(a1, a2, current).restrict(fallState);
+					new PairLowerEqual(a1, a2, currentInerval).restrict(branchStateInterval);
+					new PairGreaterThan(a1, a2, currentInerval).restrict(fallStateInterval);
 				}
 
 				else
@@ -155,8 +158,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	 * @param source
 	 * @param targets
 	 */
-	private void copyToMany(IntervalPerVar source, List<IntervalPerVar> targets) {
-		for (IntervalPerVar fnext : targets) {
+	private void copyToMany(StateContainer source, List<StateContainer> targets) {
+		for (StateContainer fnext : targets) {
 			if (source != null) {
 				fnext.copyFrom(source);
 			}
@@ -178,7 +181,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	}
 
 	@Override
-	protected void copy(IntervalPerVar source, IntervalPerVar dest) {
+	protected void copy(StateContainer source, StateContainer dest) {
 		dest.copyFrom(source);
 	}
 
@@ -190,23 +193,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	 * {@link Interval#EMPTY_INTERVAL}.
 	 */
 	@Override
-	protected IntervalPerVar entryInitialFlow() {
-		return new IntervalPerVar();
-	}
-
-	@Override
-	protected void merge(IntervalPerVar src1, IntervalPerVar src2, IntervalPerVar trg) {
-
-		trg.copyFrom(src1);
-		trg.mergeWith(src2);
-
-		logger.info(String.format("Merge:\n    %s\n    %s\n    ============\n    %s\n", src1.toString(), src2.toString(), trg.toString()));
-	}
-
-	@Override
-	protected void merge(Unit op, IntervalPerVar src1, IntervalPerVar src2, IntervalPerVar trg) {
-		merge(src1, src2, trg);
-		intervalPerVarHistory.considerWidening(op, trg);
+	protected StateContainer entryInitialFlow() {
+		return new StateContainer();
 	}
 
 	/**
@@ -218,8 +206,23 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	 * between "null" and "empty" here.
 	 */
 	@Override
-	protected IntervalPerVar newInitialFlow() {
-		return new IntervalPerVar();
+	protected StateContainer newInitialFlow() {
+		return new StateContainer();
+	}
+
+	@Override
+	protected void merge(StateContainer src1, StateContainer src2, StateContainer trg) {
+
+		trg.copyFrom(src1);
+		trg.mergeWith(src2);
+
+		logger.info(String.format("Merge:\n    %s\n    %s\n    ============\n    %s\n", src1.toString(), src2.toString(), trg.toString()));
+	}
+
+	@Override
+	protected void merge(Unit op, StateContainer src1, StateContainer src2, StateContainer trg) {
+		merge(src1, src2, trg);
+		intervalPerVarHistory.considerWidening(op, trg.getIntervalPerVar());
 	}
 
 	/**
