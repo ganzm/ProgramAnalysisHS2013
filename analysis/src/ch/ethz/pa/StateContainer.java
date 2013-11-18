@@ -10,8 +10,11 @@ public class StateContainer {
 
 	private IntervalPerVar intervalPerVar;
 
+	private final AirCraftRefPerVar refPerVar;
+
 	public StateContainer() {
 		this.intervalPerVar = new IntervalPerVar();
+		this.refPerVar = new AirCraftRefPerVar();
 	}
 
 	public IntervalPerVar getIntervalPerVar() {
@@ -20,10 +23,12 @@ public class StateContainer {
 
 	public void copyFrom(StateContainer src1) {
 		intervalPerVar.copyFrom(src1.getIntervalPerVar());
+		refPerVar.copyFrom(src1.getRefPerVar());
 	}
 
 	public void mergeWith(StateContainer src2) {
 		intervalPerVar.mergeWith(src2.getIntervalPerVar());
+		refPerVar.mergeWith(src2.getRefPerVar());
 	}
 
 	@Override
@@ -54,5 +59,9 @@ public class StateContainer {
 		} else if (!intervalPerVar.equals(other.intervalPerVar))
 			return false;
 		return true;
+	}
+
+	public AirCraftRefPerVar getRefPerVar() {
+		return refPerVar;
 	}
 }

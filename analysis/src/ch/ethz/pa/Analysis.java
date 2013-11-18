@@ -3,6 +3,7 @@ package ch.ethz.pa;
 import java.util.List;
 import java.util.logging.Logger;
 
+import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.BinopExpr;
@@ -18,6 +19,8 @@ import soot.jimple.LtExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
+import soot.jimple.internal.JimpleLocal;
+import soot.jimple.internal.JimpleLocalBox;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 import ch.ethz.pa.intervals.Interval;
@@ -62,6 +65,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 
 	@Override
 	protected void flowThrough(StateContainer current, Unit op, List<StateContainer> fallOut, List<StateContainer> branchOuts) {
+		// This could be optimized.
+		logger.info("Operation: " + op + "   - " + op.getClass().getName() + "\n      state: " + current);
 
 		IntervalPerVar currentInerval = current.getIntervalPerVar();
 		// entrance check: do nothing on unreachable code
@@ -72,9 +77,6 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 			return;
 		}
 
-		// This could be optimized.
-		logger.info("Operation: " + op + "   - " + op.getClass().getName() + "\n      state: " + current);
-
 		Stmt s = (Stmt) op;
 		StateContainer fallState = new StateContainer();
 		fallState.copyFrom(current);
@@ -84,11 +86,11 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 		IntervalPerVar branchStateInterval = branchState.getIntervalPerVar();
 
 		if (s instanceof DefinitionStmt) {
-			definitionStmtAnalyzer.analyze(currentInerval, (DefinitionStmt) s, fallState.getIntervalPerVar());
+			definitionStmtAnalyzer.analyze(current, (DefinitionStmt) s, fallState);
 		}
 
 		else if (s instanceof InvokeStmt) {
-			flowThroughJInvokeStmt(currentInerval, (InvokeStmt) s);
+			flowThroughJInvokeStmt(current, (InvokeStmt) s);
 		}
 
 		else if (s instanceof IfStmt) {
@@ -166,17 +168,51 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 		}
 	}
 
-	private void flowThroughJInvokeStmt(IntervalPerVar current, InvokeStmt s) {
+	private void flowThroughJInvokeStmt(StateContainer current, InvokeStmt s) {
+		IntervalPerVar currentIntervalPerVar = current.getIntervalPerVar();
 		// A method is called. e.g. AircraftControl.adjustValue
 
 		// You need to check the parameters here.
 		InvokeExpr expr = s.getInvokeExpr();
-		if (expr.getMethod().getName().equals("adjustValue")) {
-			// Check that is the method from the AircraftControl class.
-			if (expr.getMethod().getDeclaringClass().getName().equals("AircraftControl")) {
-				problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, current, s);
-				problemReport.checkInterval(expr.getArg(1), Config.legalValueInterval, current, s);
+		SootMethod method = expr.getMethod();
+
+		// Check that is the method from the AircraftControl class.
+		if (method.getDeclaringClass().getName().equals("AircraftControl")) {
+			if (method.getName().equals("readSensor")) {
+				flowThrougReadSensorInvoke(current, s, expr);
+			} else if (method.getName().equals("adjustValue")) {
+
+				flowThrougAdjustValueInvoke(current, s, expr);
+
+				problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, currentIntervalPerVar, s);
+				problemReport.checkInterval(expr.getArg(1), Config.legalValueInterval, currentIntervalPerVar, s);
 			}
+		}
+	}
+
+	private void flowThrougReadSensorInvoke(StateContainer current, InvokeStmt s, InvokeExpr expr) {
+		// try to get name of the member variable which does the invoke statement
+		Value arg0 = expr.getArg(0);
+		JimpleLocalBox localBox = (JimpleLocalBox) expr.getUseBoxes().get(0);
+		Value value = localBox.getValue();
+		JimpleLocal localValue = (JimpleLocal) value;
+
+		AirCraftControlRef acRef = current.getRefPerVar().getExistingRef(localValue.getName());
+		if (!acRef.readSensorMethodCalled(arg0)) {
+			problemReport.addProblem(s, "readSensor already called with " + arg0);
+		}
+	}
+
+	private void flowThrougAdjustValueInvoke(StateContainer current, InvokeStmt s, InvokeExpr expr) {
+		// try to get name of the member variable which does the invoke statement
+		Value arg0 = expr.getArg(0);
+		JimpleLocalBox localBox = (JimpleLocalBox) expr.getUseBoxes().get(0);
+		Value value = localBox.getValue();
+		JimpleLocal localValue = (JimpleLocal) value;
+
+		AirCraftControlRef acRef = current.getRefPerVar().getExistingRef(localValue.getName());
+		if (!acRef.adjustValueMethodCalled(arg0)) {
+			problemReport.addProblem(s, "adjustValue already called with " + arg0);
 		}
 	}
 

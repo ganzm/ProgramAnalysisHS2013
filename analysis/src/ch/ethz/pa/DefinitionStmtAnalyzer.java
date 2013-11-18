@@ -32,7 +32,10 @@ public class DefinitionStmtAnalyzer {
 		this.integerExpressionAnalyzer = new IntegerExpressionAnalyzer(problemReport);
 	}
 
-	public void analyze(IntervalPerVar current, DefinitionStmt sd, IntervalPerVar fallState) {
+	public void analyze(StateContainer current, DefinitionStmt sd, StateContainer fallState) {
+
+		IntervalPerVar currentInterval = current.getIntervalPerVar();
+		IntervalPerVar fallStateInterval = fallState.getIntervalPerVar();
 
 		Value left = sd.getLeftOp();
 		Value right = sd.getRightOp();
@@ -51,12 +54,21 @@ public class DefinitionStmtAnalyzer {
 			String varName = jimpleLocalLeft.getName();
 
 			if (jimpleLocalLeft.getType() instanceof RefType) {
-				logger.warning("ignoring assignments to complex type: " + sd);
+
+				String variableName = jimpleLocalLeft.getName();
+				if (right.getType() instanceof RefType) {
+					RefType rightRefType = ((RefType) right.getType());
+					String className = rightRefType.getClassName();
+					className.toString();
+					if ("AircraftControl".equals(className)) {
+						fallState.getRefPerVar().newVariable(variableName);
+					}
+				}
 			}
 
 			else if (right instanceof IntConstant) {
 				IntConstant c = ((IntConstant) right);
-				fallState.putIntervalForVar(varName, new Interval(c.value, c.value));
+				fallStateInterval.putIntervalForVar(varName, new Interval(c.value, c.value));
 			}
 
 			else if (right instanceof Local) {
@@ -64,13 +76,13 @@ public class DefinitionStmtAnalyzer {
 				if (l.getType() instanceof RefLikeType) {
 					logger.warning("ignore right side " + l.getType());
 				} else {
-					fallState.putIntervalForVar(varName, current.getIntervalForVar(l.getName()));
+					fallStateInterval.putIntervalForVar(varName, currentInterval.getIntervalForVar(l.getName()));
 				}
 			}
 
 			else if (right instanceof BinopExpr) {
-				Interval result = integerExpressionAnalyzer.evalBinop((BinopExpr) right, current);
-				fallState.putIntervalForVar(varName, result);
+				Interval result = integerExpressionAnalyzer.evalBinop((BinopExpr) right, currentInterval);
+				fallStateInterval.putIntervalForVar(varName, result);
 			}
 
 			else if (right instanceof VirtualInvokeExpr) {
@@ -78,15 +90,15 @@ public class DefinitionStmtAnalyzer {
 				SootMethod method = expr.getMethodRef().resolve();
 				if (method.getName().equals("readSensor")) {
 					if (method.getDeclaringClass().getName().equals("AircraftControl")) {
-						problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, current, sd);
-						fallState.putIntervalForVar(varName, new Interval(-999, 999));
+						problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, currentInterval, sd);
+						fallStateInterval.putIntervalForVar(varName, new Interval(-999, 999));
 					}
 				}
 			}
 
 			else if (right instanceof UnopExpr) {
-				Interval result = IntegerExpressionAnalyzer.evalUnop((UnopExpr) right, current);
-				fallState.putIntervalForVar(varName, result);
+				Interval result = IntegerExpressionAnalyzer.evalUnop((UnopExpr) right, currentInterval);
+				fallStateInterval.putIntervalForVar(varName, result);
 			}
 
 			else if (right instanceof ParameterRef) {
@@ -94,7 +106,7 @@ public class DefinitionStmtAnalyzer {
 				ParameterRef param = (ParameterRef) right;
 
 				if (param.getType() instanceof IntegerType) {
-					fallState.putIntervalForVar(varName, Interval.TOP_INTERVAL);
+					fallStateInterval.putIntervalForVar(varName, Interval.TOP_INTERVAL);
 				}
 
 				else

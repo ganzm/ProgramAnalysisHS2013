@@ -57,10 +57,10 @@ public class ProblemReport {
 	/**
 	 * Register another problem found during analysis.
 	 * 
-	 * @param line
+	 * @param message
 	 */
-	public void addProblem(Object atStatement, String line) {
-		if (!problems.add(new Problem(atStatement, line))) {
+	public void addProblem(Object atStatement, String message) {
+		if (!problems.add(new Problem(atStatement, message))) {
 			logger.fine("Problem already reported for Statement " + atStatement);
 		}
 	}
