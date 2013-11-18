@@ -230,4 +230,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<IntervalPerVar> {
 	public List<String> getProblems() {
 		return problemReport.getProblems();
 	}
+
+	public ProblemReport getProblemReport() {
+		return problemReport;
+	}
 }

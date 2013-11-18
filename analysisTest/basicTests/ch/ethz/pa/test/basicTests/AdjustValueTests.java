@@ -8,42 +8,21 @@ public class AdjustValueTests extends ValidationTestBase {
 
 	@Test(timeout = 10000)
 	public void testAdjustValueDirect() {
-		testAnyProgram("GoodAdjustValueDirect", SAFE, NO_DEBUG);
-	}
-
-	@Test(timeout = 10000)
-	public void testAdjustValueDirectDebug() {
-		testAnyProgram("GoodAdjustValueDirect", SAFE, DEBUG);
+		testAnyProgram("GoodAdjustValueDirect", SAFE);
 	}
 
 	@Test(timeout = 10000)
 	public void testAdjustValueIndirect() {
-		testAnyProgram("GoodAdjustValueIndirect", SAFE, NO_DEBUG);
-	}
-
-	@Test(timeout = 10000)
-	public void testAdjustValueIndirectDebug() {
-		testAnyProgram("GoodAdjustValueIndirect", SAFE, DEBUG);
+		testAnyProgram("GoodAdjustValueIndirect", SAFE);
 	}
 
 	@Test(timeout = 10000)
 	public void testAdjustValueDirectOverflow() {
-		testAnyProgram("GoodAdjustValueDirectOverflow", UNSAFE, NO_DEBUG);
-	}
-
-	@Test(timeout = 10000)
-	public void testAdjustValueDirectOverflowDebug() {
-		testAnyProgram("GoodAdjustValueDirectOverflow", UNSAFE, DEBUG);
+		testAnyProgram("GoodAdjustValueDirectOverflow", UNSAFE);
 	}
 
 	@Test(timeout = 10000)
 	public void testAdjustUnrelatedValue() {
-		testAnyProgram("GoodAdjustUnrelatedValue", SAFE, NO_DEBUG);
+		testAnyProgram("GoodAdjustUnrelatedValue", SAFE);
 	}
-
-	@Test(timeout = 10000)
-	public void testAdjustUnrelatedValueDebug() {
-		testAnyProgram("GoodAdjustUnrelatedValue", SAFE, DEBUG);
-	}
-
 }

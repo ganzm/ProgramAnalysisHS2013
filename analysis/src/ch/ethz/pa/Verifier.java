@@ -18,20 +18,25 @@ public class Verifier {
 	public static final String PROGRAM_IS_UNSAFE = "Program is UNSAFE";
 
 	public static void main(String[] args) {
-		System.exit(intMain(args));
-	}
-
-	public static int intMain(String[] args) {
-		initLogging(args);
-		logger.info("Logger initialized");
+		LoggerUtil.iniSilent();
 
 		if (args.length < 1) {
 			System.err.println("Usage: java -classpath soot-2.5.0.jar:./bin ch.ethz.pa.Verifier <class to test>");
-			return -1;
+			System.exit(-1);
 		}
+
+		List<String> result = intMain(args);
+
+		System.out.print(result.size() == 0 ? PROGRAM_IS_SAFE : PROGRAM_IS_UNSAFE);
+		System.exit(0);
+	}
+
+	public static List<String> intMain(String[] args) {
 
 		String analyzedClass = args[0];
 		SootClass c = loadClass(analyzedClass);
+
+		logger.info("Analyzing Class " + c);
 
 		List<String> problemsFound = new LinkedList<String>();
 
@@ -42,28 +47,7 @@ public class Verifier {
 			problemsFound.addAll(analysis.getProblems());
 		}
 
-		for (String problem : problemsFound) {
-			logger.info(problem);
-		}
-
-		System.out.print(problemsFound.size() == 0 ? PROGRAM_IS_SAFE : PROGRAM_IS_UNSAFE);
-
-		return 0;
-	}
-
-	private static void initLogging(String[] args) {
-		boolean isDebug = false;
-		for (String arg : args) {
-			if ("-d".equals(arg) || "-dbg".equals(arg)) {
-				isDebug = true;
-			}
-		}
-
-		if (isDebug) {
-			LoggerUtil.iniDebug();
-		} else {
-			LoggerUtil.iniSilent();
-		}
+		return problemsFound;
 	}
 
 	private static SootClass loadClass(String name) {

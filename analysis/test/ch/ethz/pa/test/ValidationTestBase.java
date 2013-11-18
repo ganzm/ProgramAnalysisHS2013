@@ -1,16 +1,17 @@
 package ch.ethz.pa.test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.util.List;
+import java.util.logging.Logger;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 
 import ch.ethz.pa.Verifier;
+import ch.ethz.pa.logging.LoggerUtil;
 
 public class ValidationTestBase {
 
-	private PrintStream originalOut;
-	private ByteArrayOutputStream redirectedOutStream;
+	private final Logger logger = Logger.getLogger(ValidationTestBase.class.getSimpleName());
 
 	protected final static boolean SAFE = true;
 	protected final static boolean UNSAFE = false;
@@ -24,54 +25,22 @@ public class ValidationTestBase {
 		super();
 	}
 
-	private void redirectOutputStream() {
-		// backup output stream
-		originalOut = System.out;
-
-		redirectedOutStream = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(redirectedOutStream));
-
-	}
-
-	private String restoreOutputStream() {
-		System.out.close();
-		System.setOut(originalOut);
-		return new String(redirectedOutStream.toByteArray());
+	@BeforeClass
+	public static void beforeClass() {
+		LoggerUtil.iniDebug();
 	}
 
 	protected void testAnyProgram(String name, boolean expectedToBeSafe) {
-		testAnyProgram(name, expectedToBeSafe, defaultDebugFlag);
-	}
+		List<String> problemList = Verifier.intMain(new String[] { name });
 
-	protected void testAnyProgram(String name, boolean expectedToBeSafe, boolean isDebug) {
-		String output = null;
-
-		String[] args = null;
-		if (isDebug) {
-			args = new String[] { name, "-d" };
-		} else {
-			args = new String[] { name };
+		for (String problem : problemList) {
+			logger.info("Problem " + problem);
 		}
-		redirectOutputStream();
-		try {
-			int retVal = Verifier.intMain(args);
-			Assert.assertEquals(0, retVal);
-		} finally {
-			output = restoreOutputStream();
-			System.out.println("Verifier StdOut:\n" + output);
-		}
-
-		String resultText = isDebug ? lastLineOf(output) : output;
 
 		if (expectedToBeSafe) {
-			Assert.assertEquals(Verifier.PROGRAM_IS_SAFE, resultText);
+			Assert.assertEquals(0, problemList.size());
 		} else {
-			Assert.assertEquals(Verifier.PROGRAM_IS_UNSAFE, resultText);
+			Assert.assertTrue(0 < problemList.size());
 		}
-	}
-
-	private String lastLineOf(String text) {
-		String lines[] = text.split("\n");
-		return lines.length > 0 ? lines[lines.length - 1] : "";
 	}
 }

@@ -8,12 +8,6 @@ public class DoNothingTest extends ValidationTestBase {
 
 	@Test(timeout = 10000)
 	public void testDoNothing() {
-		testAnyProgram("DoNothing", SAFE, NO_DEBUG);
+		testAnyProgram("DoNothing", SAFE);
 	}
-
-	@Test(timeout = 10000)
-	public void testDoNothingDebug() {
-		testAnyProgram("DoNothing", SAFE, DEBUG);
-	}
-
 }
