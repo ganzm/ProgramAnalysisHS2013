@@ -26,4 +26,9 @@ public class ReadWriteOnceTest extends ValidationTestBase {
 		testAnyProgram("GoodReadTwice", SAFE);
 	}
 
+	@Test(timeout = 10000)
+	public void testBadAliasedDoubleRead() {
+		testAnyProgram("BadAliasedDoubleRead", UNSAFE);
+	}
+
 }

@@ -18,6 +18,7 @@ import soot.jimple.ParameterRef;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.UnopExpr;
 import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.internal.JimpleLocal;
 import ch.ethz.pa.intervals.Interval;
 import ch.ethz.pa.intervals.IntervalPerVar;
 
@@ -60,9 +61,25 @@ public class DefinitionStmtAnalyzer {
 				if (right.getType() instanceof RefType) {
 					RefType rightRefType = ((RefType) right.getType());
 					String className = rightRefType.getClassName();
-					className.toString();
+
 					if ("AircraftControl".equals(className)) {
-						fallState.getRefPerVar().newVariable(variableName);
+
+						boolean aliasedVarDetected = false;
+
+						if (right instanceof JimpleLocal) {
+							// check for local aliasing
+							String rightName = ((JimpleLocal) right).getName();
+							AirCraftControlRef existing = current.getRefPerVar().tryGetExistingRef(rightName);
+							if (existing != null) {
+								fallState.getRefPerVar().doAliasing(variableName, rightName);
+								aliasedVarDetected = true;
+							}
+						}
+						if (!aliasedVarDetected) {
+							// no aliasing detected
+							// unknown AirCraftControl variable is assigned
+							fallState.getRefPerVar().newVariable(variableName);
+						}
 					}
 				}
 			}

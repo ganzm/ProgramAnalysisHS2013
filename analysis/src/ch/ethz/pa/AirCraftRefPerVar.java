@@ -14,6 +14,10 @@ public class AirCraftRefPerVar {
 		aircraftcontrolRefs.put(variableName, new AirCraftControlRef());
 	}
 
+	public AirCraftControlRef tryGetExistingRef(String name) {
+		return aircraftcontrolRefs.get(name);
+	}
+
 	public AirCraftControlRef getExistingRef(String name) {
 		AirCraftControlRef result = aircraftcontrolRefs.get(name);
 		if (result == null) {
@@ -40,5 +44,22 @@ public class AirCraftRefPerVar {
 
 			aircraftcontrolRefs.put(otherName, newRef);
 		}
+	}
+
+	/**
+	 * call this when the following happens:
+	 * 
+	 * variableBeingAssigned = variableBeingAliased
+	 * 
+	 * 
+	 * now both References share the same object
+	 * 
+	 * @param variableBeingAssigned
+	 * @param variableBeingAliased
+	 */
+	public void doAliasing(String variableBeingAssigned, String variableBeingAliased) {
+		logger.fine("Variable aliasing: " + variableBeingAssigned + " = " + variableBeingAliased);
+		AirCraftControlRef tmp = getExistingRef(variableBeingAliased);
+		aircraftcontrolRefs.put(variableBeingAssigned, tmp);
 	}
 }
