@@ -4,8 +4,11 @@ public class BadReadTwice {
 		AircraftControl ac = new AircraftControl();
 		ac.readSensor(0);
 		ac.readSensor(1);
+
+		// Problem here
 		ac.readSensor(2);
 		ac.readSensor(2);
+
 		ac.readSensor(4);
 		ac.readSensor(5);
 		ac.readSensor(6);

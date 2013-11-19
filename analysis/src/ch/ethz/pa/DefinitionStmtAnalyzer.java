@@ -2,6 +2,7 @@ package ch.ethz.pa;
 
 import java.util.logging.Logger;
 
+import soot.BooleanType;
 import soot.IntegerType;
 import soot.Local;
 import soot.RefLikeType;
@@ -105,7 +106,11 @@ public class DefinitionStmtAnalyzer {
 
 				ParameterRef param = (ParameterRef) right;
 
-				if (param.getType() instanceof IntegerType) {
+				if (param.getType() instanceof BooleanType) {
+					// handle BooleanType before IntegerType because
+					throw new RuntimeException("boolean type assignment not handled");
+
+				} else if (param.getType() instanceof IntegerType) {
 					fallStateInterval.putIntervalForVar(varName, Interval.TOP_INTERVAL);
 				}
 
