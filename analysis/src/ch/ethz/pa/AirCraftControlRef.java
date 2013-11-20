@@ -17,6 +17,11 @@ public class AirCraftControlRef {
 		this(new HashSet<Value>(), new HashSet<Value>());
 	}
 
+	@Override
+	public String toString() {
+		return "Adjusted " + adjustValueMethodCalls + " Reads " + readSensorMethodCalls;
+	}
+
 	public AirCraftControlRef(Set<Value> adjustValueMethodCalls, Set<Value> readSensorMethodCalls) {
 		this.adjustValueMethodCalls = adjustValueMethodCalls;
 		this.readSensorMethodCalls = readSensorMethodCalls;

@@ -66,92 +66,100 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 	@Override
 	protected void flowThrough(StateContainer current, Unit op, List<StateContainer> fallOut, List<StateContainer> branchOuts) {
 		// This could be optimized.
-		logger.info("Operation: " + op + "   - " + op.getClass().getName() + "\n      state: " + current);
+		logger.info("===================================\n\tOperation: " + op + "   - " + op.getClass().getName() + "\n\tState: " + current);
+		try {
 
-		IntervalPerVar currentInerval = current.getIntervalPerVar();
-		// entrance check: do nothing on unreachable code
-		// (unreachable is where any intervals are empty)
-		if (currentInerval.hasEmptyIntervals()) {
-			copyToMany(current, fallOut);
-			copyToMany(current, branchOuts);
-			return;
-		}
+			IntervalPerVar currentInerval = current.getIntervalPerVar();
+			// entrance check: do nothing on unreachable code
+			// (unreachable is where any intervals are empty)
+			if (currentInerval.hasEmptyIntervals()) {
+				copyToMany(current, fallOut);
+				copyToMany(current, branchOuts);
+				return;
+			}
 
-		Stmt s = (Stmt) op;
-		StateContainer fallState = new StateContainer();
-		fallState.copyFrom(current);
-		IntervalPerVar fallStateInterval = fallState.getIntervalPerVar();
-		StateContainer branchState = new StateContainer();
-		branchState.copyFrom(current);
-		IntervalPerVar branchStateInterval = branchState.getIntervalPerVar();
+			Stmt s = (Stmt) op;
+			StateContainer fallState = new StateContainer();
+			fallState.copyFrom(current);
+			IntervalPerVar fallStateInterval = fallState.getIntervalPerVar();
+			StateContainer branchState = new StateContainer();
+			branchState.copyFrom(current);
+			IntervalPerVar branchStateInterval = branchState.getIntervalPerVar();
 
-		if (s instanceof DefinitionStmt) {
-			definitionStmtAnalyzer.analyze(current, (DefinitionStmt) s, fallState);
-		}
+			if (s instanceof DefinitionStmt) {
+				definitionStmtAnalyzer.analyze(current, (DefinitionStmt) s, fallState);
+			}
 
-		else if (s instanceof InvokeStmt) {
-			flowThroughJInvokeStmt(current, (InvokeStmt) s);
-		}
+			else if (s instanceof InvokeStmt) {
+				flowThroughJInvokeStmt(current, (InvokeStmt) s);
+			}
 
-		else if (s instanceof IfStmt) {
+			else if (s instanceof IfStmt) {
 
-			IfStmt is = (IfStmt) s;
-			Value condition = is.getCondition();
+				IfStmt is = (IfStmt) s;
+				Value condition = is.getCondition();
 
-			if (condition instanceof BinopExpr) {
+				if (condition instanceof BinopExpr) {
 
-				BinopExpr binopExpr = (BinopExpr) condition;
+					BinopExpr binopExpr = (BinopExpr) condition;
 
-				Value a1 = binopExpr.getOp1();
-				Value a2 = binopExpr.getOp2();
+					Value a1 = binopExpr.getOp1();
+					Value a2 = binopExpr.getOp2();
 
-				if (condition instanceof GeExpr) {
-					new PairGreaterEqual(a1, a2, currentInerval).restrict(branchStateInterval);
-					new PairLowerThan(a1, a2, currentInerval).restrict(fallStateInterval);
-				}
+					if (condition instanceof GeExpr) {
+						new PairGreaterEqual(a1, a2, currentInerval).restrict(branchStateInterval);
+						new PairLowerThan(a1, a2, currentInerval).restrict(fallStateInterval);
+					}
 
-				else if (condition instanceof GtExpr) {
-					new PairGreaterThan(a1, a2, currentInerval).restrict(branchStateInterval);
-					new PairLowerEqual(a1, a2, currentInerval).restrict(fallStateInterval);
-				}
+					else if (condition instanceof GtExpr) {
+						new PairGreaterThan(a1, a2, currentInerval).restrict(branchStateInterval);
+						new PairLowerEqual(a1, a2, currentInerval).restrict(fallStateInterval);
+					}
 
-				else if (condition instanceof LtExpr) {
-					new PairLowerThan(a1, a2, currentInerval).restrict(branchStateInterval);
-					new PairGreaterEqual(a1, a2, currentInerval).restrict(fallStateInterval);
-				}
+					else if (condition instanceof LtExpr) {
+						new PairLowerThan(a1, a2, currentInerval).restrict(branchStateInterval);
+						new PairGreaterEqual(a1, a2, currentInerval).restrict(fallStateInterval);
+					}
 
-				else if (condition instanceof NeExpr) {
-					new PairNotEqual(a1, a2, currentInerval).restrict(branchStateInterval);
-					new PairEqual(a1, a2, currentInerval).restrict(fallStateInterval);
-				}
+					else if (condition instanceof NeExpr) {
+						new PairNotEqual(a1, a2, currentInerval).restrict(branchStateInterval);
+						new PairEqual(a1, a2, currentInerval).restrict(fallStateInterval);
+					}
 
-				else if (condition instanceof LeExpr) {
-					new PairLowerEqual(a1, a2, currentInerval).restrict(branchStateInterval);
-					new PairGreaterThan(a1, a2, currentInerval).restrict(fallStateInterval);
+					else if (condition instanceof LeExpr) {
+						new PairLowerEqual(a1, a2, currentInerval).restrict(branchStateInterval);
+						new PairGreaterThan(a1, a2, currentInerval).restrict(fallStateInterval);
+					}
+
+					else
+						throw new RuntimeException("unhandled binop condition: " + condition);
 				}
 
 				else
-					throw new RuntimeException("unhandled binop condition: " + condition);
+					throw new RuntimeException("unhandled condition: " + op);
 			}
 
-			else
-				throw new RuntimeException("unhandled condition: " + op);
-		}
+			else if (s instanceof ReturnVoidStmt) {
+				logger.warning("ignoring return void statement: " + op);
+			}
 
-		else if (s instanceof ReturnVoidStmt) {
-			logger.warning("ignoring return void statement: " + op);
-		}
+			else if (s instanceof GotoStmt) {
+				// Unconditional branch
+				GotoStmt gotoStmt = (GotoStmt) s;
+				Unit targetStmt = gotoStmt.getTarget();
+				flowThrough(current, targetStmt, fallOut, branchOuts);
+				return;
+			}
 
-		else if (s instanceof GotoStmt) {
-			logger.warning("ignoring goto statement: " + op);
-		}
+			else {
+				throw new RuntimeException("unhandled statement: " + op);
+			}
 
-		else {
-			throw new RuntimeException("unhandled statement: " + op);
+			copyToMany(fallState, fallOut);
+			copyToMany(branchState, branchOuts);
+		} finally {
+			logger.info("\n\tFallouts(" + fallOut.size() + "): " + fallOut + "\n\tBranchOuts(" + branchOuts.size() + "): " + branchOuts);
 		}
-
-		copyToMany(fallState, fallOut);
-		copyToMany(branchState, branchOuts);
 	}
 
 	/**
