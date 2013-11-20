@@ -11,6 +11,7 @@ import soot.jimple.NegExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.SubExpr;
 import soot.jimple.UnopExpr;
+import soot.jimple.internal.JXorExpr;
 import ch.ethz.pa.intervals.Interval;
 import ch.ethz.pa.intervals.IntervalPerVar;
 
@@ -70,9 +71,9 @@ public class IntegerExpressionAnalyzer {
 				if (divisionByZero[0]) {
 					problemReport.addProblem(binop, "division by zero");
 				}
-			}
-
-			else
+			} else if (binop instanceof JXorExpr) {
+				result = Interval.xor(i1, i2);
+			} else
 				throw new RuntimeException("unsupported expression " + binop);
 
 		}

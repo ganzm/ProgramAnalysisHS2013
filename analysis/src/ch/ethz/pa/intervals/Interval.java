@@ -307,4 +307,15 @@ public class Interval {
 	public boolean goesHigherThan(Interval other) {
 		return upper > other.upper;
 	}
+
+	/**
+	 * XOr for Intervals
+	 * 
+	 * @param i1
+	 * @param i2
+	 * @return
+	 */
+	public static Interval xor(Interval i1, Interval i2) {
+		throw new RuntimeException("TODO - implement Interval XOR Operation");
+	}
 }
