@@ -32,6 +32,11 @@ public class AirCraftRefPerVar {
 		return result;
 	}
 
+	/**
+	 * clears this and copies all values from the argument AirCraftRefPerVar
+	 * 
+	 * @param refPerVar
+	 */
 	public void copyFrom(AirCraftRefPerVar refPerVar) {
 		aircraftcontrolRefs.clear();
 		for (Map.Entry<String, AirCraftControlRef> entry : refPerVar.aircraftcontrolRefs.entrySet()) {
