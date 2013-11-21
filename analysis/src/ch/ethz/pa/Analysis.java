@@ -147,8 +147,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 				// Unconditional branch
 				GotoStmt gotoStmt = (GotoStmt) s;
 				Unit targetStmt = gotoStmt.getTarget();
-				flowThrough(current, targetStmt, fallOut, branchOuts);
-				return;
+
+				logger.fine("Goto " + targetStmt);
 			}
 
 			else {
