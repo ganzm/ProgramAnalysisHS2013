@@ -16,11 +16,6 @@ public class ValidationTestBase {
 	protected final static boolean SAFE = true;
 	protected final static boolean UNSAFE = false;
 
-	protected final static boolean DEBUG = true;
-	protected final static boolean NO_DEBUG = false;
-
-	protected boolean defaultDebugFlag = false;
-
 	public ValidationTestBase() {
 		super();
 	}
