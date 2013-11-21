@@ -33,6 +33,29 @@ public class Interval {
 		upper = u;
 	}
 
+	/**
+	 * returns the number of points included in the interval
+	 * 
+	 * e.g.
+	 * 
+	 * [1,2] returns 2
+	 * 
+	 * [10,10] returns 1
+	 * 
+	 * [-1, 3] returns 5
+	 * 
+	 * [-2, -1] returns 2
+	 * 
+	 * @return
+	 */
+	public int getNumberOfNumbersInInterval() {
+		if (this == EMPTY_INTERVAL || this == TOP_INTERVAL) {
+			return Integer.MAX_VALUE;
+		}
+
+		return upper - lower + 1;
+	}
+
 	@Override
 	public String toString() {
 		if (this == EMPTY_INTERVAL)
@@ -316,6 +339,7 @@ public class Interval {
 	 * @return
 	 */
 	public static Interval xor(Interval i1, Interval i2) {
-		throw new RuntimeException("TODO - implement Interval XOR Operation");
+		// TODO this is inprecise
+		return TOP_INTERVAL;
 	}
 }

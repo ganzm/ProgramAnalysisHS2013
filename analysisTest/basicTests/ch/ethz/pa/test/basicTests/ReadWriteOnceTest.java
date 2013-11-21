@@ -16,7 +16,7 @@ public class ReadWriteOnceTest extends ValidationTestBase {
 		testAnyProgram("BadWriteTwice", UNSAFE);
 	}
 
-	@Test(timeout = 10000)
+	@Test
 	public void testWrongReadeTwice() {
 		testAnyProgram("BadReadTwice", UNSAFE);
 	}

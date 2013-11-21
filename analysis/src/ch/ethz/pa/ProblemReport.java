@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import soot.PrimType;
 import soot.Value;
-import soot.jimple.IntConstant;
 import soot.jimple.Stmt;
 import ch.ethz.pa.intervals.Interval;
 import ch.ethz.pa.intervals.IntervalPerVar;
@@ -28,29 +26,13 @@ public class ProblemReport {
 	 * @param atStatement
 	 */
 	public void checkInterval(Value value, Interval range, IntervalPerVar current, Stmt atStatement) {
-
-		if (value instanceof IntConstant) {
-			IntConstant c = ((IntConstant) value);
-			if (!range.covers(c.value)) {
-				addProblem(atStatement, "index out of range");
-			}
+		Interval interval = IntegerExpressionAnalyzer.getIntervalForValue(current, value);
+		if (interval == null) {
+			throw new RuntimeException("unhandled case: no value for " + value);
 		}
 
-		else if (value.getType() instanceof PrimType) {
-
-			Interval interval = IntegerExpressionAnalyzer.tryGetIntervalForValue(current, value);
-			if (interval == null) {
-				throw new RuntimeException("unhandled case: no value for " + value);
-			}
-
-			if (!range.covers(interval)) {
-				addProblem(atStatement, String.format("sensor index %s out of range", interval));
-			}
-		}
-
-		else {
-			// TODO probably there are other cases as well
-			throw new RuntimeException("hit unexpected type " + value.getType());
+		if (!range.covers(interval)) {
+			addProblem(atStatement, String.format("sensor index %s out of range", interval));
 		}
 	}
 

@@ -31,16 +31,21 @@ public class ValidationTestBase {
 	}
 
 	protected void testAnyProgram(String name, boolean expectedToBeSafe) {
+
+		long startTime = System.currentTimeMillis();
 		List<String> problemList = Verifier.intMain(new String[] { name });
+		long endTime = System.currentTimeMillis();
 
 		for (String problem : problemList) {
 			logger.info("Problem " + problem);
 		}
 
 		if (expectedToBeSafe) {
-			Assert.assertEquals(0, problemList.size());
+			Assert.assertEquals("Expected SAFE", 0, problemList.size());
 		} else {
-			Assert.assertTrue(0 < problemList.size());
+			Assert.assertTrue("Expected UNSAFE", 0 < problemList.size());
 		}
+
+		Assert.assertTrue("Violated Timing Constraints of 10s", endTime - startTime < 10000);
 	}
 }

@@ -33,7 +33,7 @@ public class StateContainer {
 
 	@Override
 	public String toString() {
-		return intervalPerVar.toString();
+		return "Intervals{" + intervalPerVar.toString() + "} Refs{" + refPerVar.toString() + "}";
 	}
 
 	@Override

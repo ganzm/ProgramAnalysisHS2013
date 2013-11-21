@@ -7,7 +7,13 @@ import java.util.logging.Logger;
 public class AirCraftRefPerVar {
 
 	private final Logger logger = Logger.getLogger(AirCraftRefPerVar.class.getSimpleName());
+
 	private final Map<String, AirCraftControlRef> aircraftcontrolRefs = new HashMap<String, AirCraftControlRef>();
+
+	@Override
+	public String toString() {
+		return aircraftcontrolRefs.toString();
+	}
 
 	public void newVariable(String variableName) {
 		logger.fine("New AirCraftControl reference " + variableName);

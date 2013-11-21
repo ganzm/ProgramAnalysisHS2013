@@ -200,27 +200,31 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 
 	private void flowThrougReadSensorInvoke(StateContainer current, InvokeStmt s, InvokeExpr expr) {
 		// try to get name of the member variable which does the invoke statement
-		Value arg0 = expr.getArg(0);
+		Value readIntArgument = expr.getArg(0);
 		JimpleLocalBox localBox = (JimpleLocalBox) expr.getUseBoxes().get(0);
-		Value value = localBox.getValue();
-		JimpleLocal localValue = (JimpleLocal) value;
+		Value receiverValue = localBox.getValue();
+		JimpleLocal receiverLocal = (JimpleLocal) receiverValue;
 
-		AirCraftControlRef acRef = current.getRefPerVar().getExistingRef(localValue.getName());
-		if (!acRef.readSensorMethodCalled(arg0)) {
-			problemReport.addProblem(s, "readSensor already called with " + arg0);
+		AirCraftControlRef acRef = current.getRefPerVar().getExistingRef(receiverLocal.getName());
+
+		Interval readIntArgumentInterval = IntegerExpressionAnalyzer.getIntervalForValue(current.getIntervalPerVar(), readIntArgument);
+		if (!acRef.readSensorMethodCalled(readIntArgumentInterval)) {
+			problemReport.addProblem(s, "readSensor already called with " + readIntArgument);
 		}
 	}
 
 	private void flowThrougAdjustValueInvoke(StateContainer current, InvokeStmt s, InvokeExpr expr) {
 		// try to get name of the member variable which does the invoke statement
-		Value arg0 = expr.getArg(0);
+		Value invokeIntArg0 = expr.getArg(0);
 		JimpleLocalBox localBox = (JimpleLocalBox) expr.getUseBoxes().get(0);
-		Value value = localBox.getValue();
-		JimpleLocal localValue = (JimpleLocal) value;
+		Value receiverValue = localBox.getValue();
+		JimpleLocal receiverLocal = (JimpleLocal) receiverValue;
 
-		AirCraftControlRef acRef = current.getRefPerVar().getExistingRef(localValue.getName());
-		if (!acRef.adjustValueMethodCalled(arg0)) {
-			problemReport.addProblem(s, "adjustValue already called with " + arg0);
+		AirCraftControlRef acRef = current.getRefPerVar().getExistingRef(receiverLocal.getName());
+
+		Interval interval = IntegerExpressionAnalyzer.getIntervalForValue(current.getIntervalPerVar(), invokeIntArg0);
+		if (!acRef.adjustValueMethodCalled(interval)) {
+			problemReport.addProblem(s, "adjustValue already called with " + interval);
 		}
 	}
 

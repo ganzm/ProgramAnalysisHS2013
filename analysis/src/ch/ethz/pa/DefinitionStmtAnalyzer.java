@@ -19,6 +19,7 @@ import soot.jimple.StaticFieldRef;
 import soot.jimple.UnopExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.internal.JimpleLocal;
+import soot.jimple.internal.JimpleLocalBox;
 import ch.ethz.pa.intervals.Interval;
 import ch.ethz.pa.intervals.IntervalPerVar;
 
@@ -106,10 +107,33 @@ public class DefinitionStmtAnalyzer {
 			else if (right instanceof VirtualInvokeExpr) {
 				VirtualInvokeExpr expr = (VirtualInvokeExpr) right;
 				SootMethod method = expr.getMethodRef().resolve();
-				if (method.getName().equals("readSensor")) {
-					if (method.getDeclaringClass().getName().equals("AircraftControl")) {
-						problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, currentInterval, sd);
+				if (method.getDeclaringClass().getName().equals("AircraftControl")) {
+
+					// try to get name of the member variable which does the invoke statement
+					JimpleLocalBox localBox = (JimpleLocalBox) expr.getUseBoxes().get(0);
+					Value receiverValue = localBox.getValue();
+					JimpleLocal receiverLocal = (JimpleLocal) receiverValue;
+
+					AirCraftRefPerVar refPerVar = current.getRefPerVar();
+					AirCraftControlRef acRef = refPerVar.getExistingRef(receiverLocal.getName());
+
+					if (method.getName().equals("readSensor")) {
+						Value sensorArg = expr.getArg(0);
+
+						problemReport.checkInterval(sensorArg, Config.legalSensorInterval, currentInterval, sd);
 						fallStateInterval.putIntervalForVar(varName, new Interval(-999, 999));
+
+						Interval readIntArgument = IntegerExpressionAnalyzer.getIntervalForValue(currentInterval, sensorArg);
+
+						if (!acRef.readSensorMethodCalled(readIntArgument)) {
+							problemReport.addProblem(sd, "readSensor already called with " + readIntArgument);
+						}
+					} else if (method.getName().equals("adjustSensor")) {
+						Value sensorArg = expr.getArg(0);
+						Interval readIntArgument = IntegerExpressionAnalyzer.getIntervalForValue(currentInterval, sensorArg);
+						if (!acRef.adjustValueMethodCalled(readIntArgument)) {
+							problemReport.addProblem(sd, "adjustSensor already called with " + readIntArgument);
+						}
 					}
 				}
 			}

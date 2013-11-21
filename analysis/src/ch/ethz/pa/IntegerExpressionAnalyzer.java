@@ -106,4 +106,14 @@ public class IntegerExpressionAnalyzer {
 		return null;
 	}
 
+	public static Interval getIntervalForValue(IntervalPerVar intervalPerVar, Value value) {
+		Interval result = tryGetIntervalForValue(intervalPerVar, value);
+
+		if (result == null) {
+			throw new RuntimeException("Interval not found for Value " + value);
+		}
+
+		return result;
+	}
+
 }
