@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
 public class IntervalPerVar {
 
 	public static class Pair {
@@ -67,6 +66,14 @@ public class IntervalPerVar {
 		values.put(var, i);
 	}
 
+	private Interval getIntervalForVarOrEmpty(String var) {
+		Interval interval = values.get(var);
+		if (interval == null) {
+			return Interval.EMPTY_INTERVAL;
+		}
+		return interval;
+	}
+
 	public Interval getIntervalForVar(String var) {
 		Interval interval = values.get(var);
 		if (interval == null) {
@@ -97,7 +104,7 @@ public class IntervalPerVar {
 		} else {
 			result = new LinkedList<Pair>();
 			for (Entry<String, Interval> entry : values.entrySet()) {
-				if (!entry.getValue().equals(last.getIntervalForVar(entry.getKey()))) {
+				if (!entry.getValue().equals(last.getIntervalForVarOrEmpty(entry.getKey()))) {
 					result.add(new Pair(entry.getKey(), entry.getValue()));
 				}
 			}
