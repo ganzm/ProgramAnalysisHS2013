@@ -1,5 +1,7 @@
 package ch.ethz.pa;
 
+import java.util.logging.Logger;
+
 import soot.Local;
 import soot.Value;
 import soot.jimple.AddExpr;
@@ -19,6 +21,7 @@ import ch.ethz.pa.intervals.IntervalPerVar;
  * Evaluates small step integer expressions.
  */
 public class IntegerExpressionAnalyzer {
+	private final Logger logger = Logger.getLogger(IntegerExpressionAnalyzer.class.getSimpleName());
 
 	private final ProblemReport problemReport;
 
@@ -73,9 +76,11 @@ public class IntegerExpressionAnalyzer {
 				}
 			} else if (binop instanceof JXorExpr) {
 				result = Interval.xor(i1, i2);
-			} else
-				throw new RuntimeException("unsupported expression " + binop);
-
+			} else {
+				// go to top if there is an unknown binary operation
+				logger.severe("Unexpected binary operation " + binop);
+				result = Interval.TOP_INTERVAL;
+			}
 		}
 		return result;
 	}
