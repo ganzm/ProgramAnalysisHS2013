@@ -13,7 +13,7 @@ import soot.jimple.NegExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.SubExpr;
 import soot.jimple.UnopExpr;
-import soot.jimple.internal.JXorExpr;
+import soot.jimple.XorExpr;
 import ch.ethz.pa.intervals.Interval;
 import ch.ethz.pa.intervals.IntervalPerVar;
 
@@ -74,7 +74,7 @@ public class IntegerExpressionAnalyzer {
 				if (divisionByZero[0]) {
 					problemReport.addProblem(binop, "division by zero");
 				}
-			} else if (binop instanceof JXorExpr) {
+			} else if (binop instanceof XorExpr) {
 				result = Interval.xor(i1, i2);
 			} else {
 				// go to top if there is an unknown binary operation
