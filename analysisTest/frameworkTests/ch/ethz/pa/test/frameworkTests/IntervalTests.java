@@ -383,7 +383,7 @@ public class IntervalTests {
 	}
 
 	/**
-	 * Test some bit-and with random intervals, and print out precision information.
+	 * Test some bit-xor with random intervals, and print out precision information.
 	 */
 	@Test
 	public void testXorExpensive() {
@@ -398,8 +398,8 @@ public class IntervalTests {
 	}
 
 	/**
-	 * A helper to judge the gap between soundness and precision for bit-and. This actually computes
-	 * all "and" combinations (may take a long time depending on the range). It will fail when
+	 * A helper to judge the gap between soundness and precision for bit-xor. This actually computes
+	 * all "xor" combinations (may take a long time depending on the range). It will fail when
 	 * unsound. It will also print out the actual "precise" and "approximated" solution, for whoever
 	 * cares to read it.
 	 * 
@@ -428,4 +428,78 @@ public class IntervalTests {
 		System.out.println("testing " + interval1 + " ^ " + interval2 + " is " + precise + " apr " + xorInterval);
 	}
 
+	/**
+	 * Test some bit-or operations in the integer range (Int.MIX...Int.MAX).
+	 */
+	@Test
+	public void testOr() {
+		Assert.assertEquals(new Interval(1 | 1), Interval.or(new Interval(1), new Interval(1)));
+		Assert.assertEquals(Interval.TOP_INTERVAL, Interval.or(Interval.TOP_INTERVAL, new Interval(0)));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.or(Interval.TOP_INTERVAL, Interval.EMPTY_INTERVAL));
+
+		// Assert.assertEquals(new Interval(-3904, -3889), Interval.xor(new Interval(-3718, -3717),
+		// new Interval(437, 444)));
+	}
+
+	/**
+	 * Test some bit-or operations in the instrument value range (-999,999).
+	 */
+	@Test
+	public void testInstrumentOr() {
+		int[][] pairs = new int[][] { new int[] { -999, 999 }, new int[] { -999, -1 }, new int[] { -999, 0 }, new int[] { 0, 999 }, new int[] { 1, 999 },
+				new int[] { 0, 511 } };
+		for (int idx1 = 0; idx1 < pairs.length; idx1++) {
+			int[] pair1 = pairs[idx1];
+			for (int idx2 = idx1; idx2 < pairs.length; idx2++) {
+				int[] pair2 = pairs[idx2];
+				assertIntervalOr(pair1[0], pair1[1], pair2[0], pair2[1]);
+			}
+		}
+	}
+
+	/**
+	 * Test some bit-or with random intervals, and print out precision information.
+	 */
+	@Test
+	public void testOrExpensive() {
+		for (int i = 0; i < 100; i++) {
+			Random rnd = new Random();
+			final int i1lo = rnd.nextInt(10000) - 5000;
+			final int i1hi = i1lo + rnd.nextInt(30);
+			final int i2lo = rnd.nextInt(10000) - 5000;
+			final int i2hi = i2lo + rnd.nextInt(30);
+			assertIntervalOr(i1lo, i1hi, i2lo, i2hi);
+		}
+	}
+
+	/**
+	 * A helper to judge the gap between soundness and precision for bit-or. This actually computes
+	 * all "or" combinations (may take a long time depending on the range). It will fail when
+	 * unsound. It will also print out the actual "precise" and "approximated" solution, for whoever
+	 * cares to read it.
+	 * 
+	 * @param i1lo
+	 * @param i1hi
+	 * @param i2lo
+	 * @param i2hi
+	 */
+	public void assertIntervalOr(final int i1lo, final int i1hi, final int i2lo, final int i2hi) {
+		Interval interval1 = new Interval(i1lo, i1hi);
+		Interval interval2 = new Interval(i2lo, i2hi);
+		Interval orInterval = Interval.or(interval1, interval2);
+		int min = Integer.MAX_VALUE;
+		int max = Integer.MIN_VALUE;
+		for (int i1 = i1lo; i1 <= i1hi; i1++) {
+			for (int i2 = i2lo; i2 <= i2hi; i2++) {
+				final int concreteOr = i1 | i2;
+				if (!orInterval.covers(concreteOr)) {
+					Assert.fail("failed " + interval1 + " | " + interval2 + " apr " + orInterval);
+				}
+				min = Math.min(min, concreteOr);
+				max = Math.max(max, concreteOr);
+			}
+		}
+		Interval precise = new Interval(min, max);
+		System.out.println("testing " + interval1 + " | " + interval2 + " is " + precise + " apr " + orInterval);
+	}
 }
