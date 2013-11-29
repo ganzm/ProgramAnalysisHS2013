@@ -339,7 +339,16 @@ public class Interval {
 	 * @return
 	 */
 	public static Interval xor(Interval i1, Interval i2) {
+		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
+			return EMPTY_INTERVAL;
 		// TODO this is inprecise
 		return TOP_INTERVAL;
+	}
+
+	public static Interval and(Interval i1, Interval i2) {
+		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
+			return EMPTY_INTERVAL;
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

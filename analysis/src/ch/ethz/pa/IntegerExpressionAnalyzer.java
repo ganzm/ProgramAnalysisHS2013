@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import soot.Local;
 import soot.Value;
 import soot.jimple.AddExpr;
+import soot.jimple.AndExpr;
 import soot.jimple.BinopExpr;
 import soot.jimple.DivExpr;
 import soot.jimple.IntConstant;
@@ -76,6 +77,8 @@ public class IntegerExpressionAnalyzer {
 				}
 			} else if (binop instanceof XorExpr) {
 				result = Interval.xor(i1, i2);
+			} else if (binop instanceof AndExpr) {
+				result = Interval.and(i1, i2);
 			} else {
 				// go to top if there is an unknown binary operation
 				logger.severe("Unexpected binary operation " + binop);
