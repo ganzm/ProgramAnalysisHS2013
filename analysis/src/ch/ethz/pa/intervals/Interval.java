@@ -396,9 +396,6 @@ public class Interval {
 		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
 			return EMPTY_INTERVAL;
 
-		if (i1.equals(i2))
-			return i1;
-
 		Interval br1 = i1.bitRange();
 		Interval br2 = i2.bitRange();
 		return smallestCover(br1.lower & br2.lower, br1.lower & br2.upper, br1.upper & br2.lower, br1.upper & br2.upper);

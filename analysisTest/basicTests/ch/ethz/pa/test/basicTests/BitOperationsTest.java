@@ -7,8 +7,8 @@ import ch.ethz.pa.test.ValidationTestBase;
 public class BitOperationsTest extends ValidationTestBase {
 
 	@Test
-	public void testGoodBitAnd() {
-		testAnyProgram("GoodBitAnd", SAFE);
+	public void testGoodBitAndImprecise1() {
+		testAnyProgram("GoodBitAndImprecise1", SAFE);
 	}
 
 }
