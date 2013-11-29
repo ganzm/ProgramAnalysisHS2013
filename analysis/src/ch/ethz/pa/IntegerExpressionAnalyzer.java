@@ -11,6 +11,7 @@ import soot.jimple.DivExpr;
 import soot.jimple.IntConstant;
 import soot.jimple.MulExpr;
 import soot.jimple.NegExpr;
+import soot.jimple.OrExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.SubExpr;
 import soot.jimple.UnopExpr;
@@ -77,6 +78,8 @@ public class IntegerExpressionAnalyzer {
 				}
 			} else if (binop instanceof XorExpr) {
 				result = Interval.xor(i1, i2);
+			} else if (binop instanceof OrExpr) {
+				result = Interval.or(i1, i2);
 			} else if (binop instanceof AndExpr) {
 				result = Interval.and(i1, i2);
 			} else {

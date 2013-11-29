@@ -391,7 +391,8 @@ public class Interval {
 	}
 
 	/**
-	 * XOr for Intervals
+	 * Approximates bit-xor for intervals. Here, "approximate" means it is somewhat imprecise, but
+	 * still sound.
 	 * 
 	 * @param i1
 	 * @param i2
@@ -425,10 +426,25 @@ public class Interval {
 		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
 			return EMPTY_INTERVAL;
 
-		int mask1 = i1.maskForConstantBits();
-
 		Interval br1 = i1.bitRange();
 		Interval br2 = i2.bitRange();
 		return smallestCover(br1.lower & br2.lower, br1.lower & br2.upper, br1.upper & br2.lower, br1.upper & br2.upper);
+	}
+
+	/**
+	 * Approximates bit-or for intervals. Here, "approximate" means it is somewhat imprecise, but
+	 * still sound.
+	 * 
+	 * @param i1
+	 * @param i2
+	 * @return
+	 */
+	public static Interval or(Interval i1, Interval i2) {
+		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
+			return EMPTY_INTERVAL;
+
+		Interval br1 = i1.bitRange();
+		Interval br2 = i2.bitRange();
+		return smallestCover(br1.lower | br2.lower, br1.lower | br2.upper, br1.upper | br2.lower, br1.upper | br2.upper);
 	}
 }
