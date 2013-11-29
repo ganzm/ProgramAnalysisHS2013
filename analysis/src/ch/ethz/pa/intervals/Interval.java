@@ -93,15 +93,30 @@ public class Interval {
 		return new Interval(i1.lower - i2.upper, i1.upper - i2.lower);
 	}
 
+	/**
+	 * Given four numbers, this returns the smallest interval covering all numbers.
+	 * 
+	 * @param x1
+	 * @param x2
+	 * @param x3
+	 * @param x4
+	 * @return
+	 */
+	public static Interval smallestCover(int x1, int x2, int x3, int x4) {
+		int lower = Math.min(Math.min(x1, x2), Math.min(x3, x4));
+		int upper = Math.max(Math.max(x1, x2), Math.max(x3, x4));
+		final Interval interval = new Interval(lower, upper);
+		return interval;
+	}
+
 	public static Interval multiply(Interval i1, Interval i2) {
 		// TODO: Handle overflow.
 		int x1 = i1.lower * i2.lower;
 		int x2 = i1.lower * i2.upper;
 		int x3 = i1.upper * i2.lower;
 		int x4 = i1.upper * i2.upper;
-		int lower = Math.min(Math.min(x1, x2), Math.min(x3, x4));
-		int upper = Math.max(Math.max(x1, x2), Math.max(x3, x4));
-		return new Interval(lower, upper);
+		final Interval interval = smallestCover(x1, x2, x3, x4);
+		return interval;
 	}
 
 	@Override
@@ -384,7 +399,8 @@ public class Interval {
 		if (i1.equals(i2))
 			return i1;
 
-		// TODO Auto-generated method stub
-		return new Interval(0);
+		Interval br1 = i1.bitRange();
+		Interval br2 = i2.bitRange();
+		return smallestCover(br1.lower & br2.lower, br1.lower & br2.upper, br1.upper & br2.lower, br1.upper & br2.upper);
 	}
 }

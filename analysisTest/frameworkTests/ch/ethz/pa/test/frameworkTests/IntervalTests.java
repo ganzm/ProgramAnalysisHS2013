@@ -279,5 +279,4 @@ public class IntervalTests {
 		Assert.assertEquals(new Interval(1), Interval.and(new Interval(1), new Interval(1)));
 		Assert.assertEquals(new Interval(13 & 26), Interval.and(new Interval(13), new Interval(26)));
 	}
-
 }
