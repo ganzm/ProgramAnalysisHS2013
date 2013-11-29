@@ -1,11 +1,23 @@
 /**
- * Take two readings, bit-and them if both positive (otherwise 0), then assign. This is SAFE.
+ * Take a reading and do some safe xor-based bit-toggling on some lower bits. This is SAFE.
  */
 public class GoodBitXor {
 
 	public static void bitXorTest() {
 		AircraftControl ac = new AircraftControl();
-		int v1 = ac.readSensor(5) ^ 35;
+		int v1 = ac.readSensor(5);
+		if (v1 >= 0) {
+			// extra gate needed to make it clearly safe
+			if (v1 < 512) {
+				v1 ^= 35;
+			}
+		}
+		if (v1 < 0) {
+			// extra gate needed to make it clearly safe
+			if (v1 >= -512) {
+				v1 ^= 35;
+			}
+		}
 		ac.adjustValue(8, v1);
 	}
 
