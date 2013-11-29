@@ -367,6 +367,22 @@ public class IntervalTests {
 	}
 
 	/**
+	 * Test some bit-xor operations in the instrument value range (-999,999).
+	 */
+	@Test
+	public void testInstrumentXor() {
+		int[][] pairs = new int[][] { new int[] { -999, 999 }, new int[] { -999, -1 }, new int[] { -999, 0 }, new int[] { 0, 999 }, new int[] { 1, 999 },
+				new int[] { 0, 511 } };
+		for (int idx1 = 0; idx1 < pairs.length; idx1++) {
+			int[] pair1 = pairs[idx1];
+			for (int idx2 = idx1; idx2 < pairs.length; idx2++) {
+				int[] pair2 = pairs[idx2];
+				assertIntervalXor(pair1[0], pair1[1], pair2[0], pair2[1]);
+			}
+		}
+	}
+
+	/**
 	 * Test some bit-and with random intervals, and print out precision information.
 	 */
 	@Test
@@ -395,21 +411,21 @@ public class IntervalTests {
 	public void assertIntervalXor(final int i1lo, final int i1hi, final int i2lo, final int i2hi) {
 		Interval interval1 = new Interval(i1lo, i1hi);
 		Interval interval2 = new Interval(i2lo, i2hi);
-		Interval andInterval = Interval.xor(interval1, interval2);
+		Interval xorInterval = Interval.xor(interval1, interval2);
 		int min = Integer.MAX_VALUE;
 		int max = Integer.MIN_VALUE;
 		for (int i1 = i1lo; i1 <= i1hi; i1++) {
 			for (int i2 = i2lo; i2 <= i2hi; i2++) {
-				final int and = i1 ^ i2;
-				if (!andInterval.covers(and)) {
-					Assert.fail("failed " + interval1 + " ^ " + interval2 + " apr " + andInterval);
+				final int concreteXor = i1 ^ i2;
+				if (!xorInterval.covers(concreteXor)) {
+					Assert.fail("failed " + interval1 + " ^ " + interval2 + " apr " + xorInterval);
 				}
-				min = Math.min(min, and);
-				max = Math.max(max, and);
+				min = Math.min(min, concreteXor);
+				max = Math.max(max, concreteXor);
 			}
 		}
 		Interval precise = new Interval(min, max);
-		System.out.println("testing " + interval1 + " ^ " + interval2 + " is " + precise + " apr " + andInterval);
+		System.out.println("testing " + interval1 + " ^ " + interval2 + " is " + precise + " apr " + xorInterval);
 	}
 
 }

@@ -405,6 +405,9 @@ public class Interval {
 		int mask2 = i2.maskForConstantBits();
 		int commonMask = mask1 & mask2;
 
+		if (commonMask == 0)
+			return TOP_INTERVAL;
+
 		Interval br1 = i1.bitRange(commonMask);
 		Interval br2 = i2.bitRange(commonMask);
 		return smallestCover(br1.lower ^ br2.lower, br1.lower ^ br2.upper, br1.upper ^ br2.lower, br1.upper ^ br2.upper);
