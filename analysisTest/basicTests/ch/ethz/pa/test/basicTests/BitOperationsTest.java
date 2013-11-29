@@ -11,4 +11,9 @@ public class BitOperationsTest extends ValidationTestBase {
 		testAnyProgram("GoodBitAndImprecise1", SAFE);
 	}
 
+	@Test
+	public void testGoodBitXor() {
+		testAnyProgram("GoodBitXor", SAFE);
+	}
+
 }

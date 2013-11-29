@@ -3,7 +3,7 @@
  */
 public class GoodBitAndImprecise1 {
 
-	public static void trinaryTest() {
+	public static void bitAndTest() {
 		AircraftControl ac = new AircraftControl();
 		int v1 = ac.readSensor(5);
 		int v2 = ac.readSensor(8);
