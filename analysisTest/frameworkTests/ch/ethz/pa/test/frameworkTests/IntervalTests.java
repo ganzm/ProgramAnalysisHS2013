@@ -250,4 +250,34 @@ public class IntervalTests {
 		Assert.assertEquals(new Interval(0, Integer.MAX_VALUE), plus1(negativeRange).negate());
 	}
 
+	@Test
+	public void testBitRange() {
+		Assert.assertEquals(new Interval(0), new Interval(0).bitRange());
+		Assert.assertEquals(new Interval(6), new Interval(6).bitRange());
+		Assert.assertEquals(new Interval(0, 7), new Interval(0, 7).bitRange());
+		Assert.assertEquals(new Interval(0, 7), new Interval(0, 4).bitRange());
+		Assert.assertEquals(new Interval(8, 15), new Interval(8, 15).bitRange());
+		Assert.assertEquals(new Interval(8, 15), new Interval(9, 14).bitRange());
+
+		Assert.assertEquals(new Interval(-5), new Interval(-5).bitRange());
+		Assert.assertEquals(new Interval(-8, -1), new Interval(-8, -1).bitRange());
+		Assert.assertEquals(new Interval(-16, -9), new Interval(-16, -9).bitRange());
+		Assert.assertEquals(new Interval(-16, -9), new Interval(-15, -10).bitRange());
+
+		Assert.assertEquals(new Interval(Integer.MIN_VALUE, -1), new Interval(Integer.MIN_VALUE, -1).bitRange());
+		Assert.assertEquals(new Interval(0, Integer.MAX_VALUE), new Interval(0, Integer.MAX_VALUE).bitRange());
+
+		Assert.assertEquals(Interval.TOP_INTERVAL, new Interval(-1, 1).bitRange());
+		Assert.assertEquals(Interval.TOP_INTERVAL, Interval.TOP_INTERVAL.bitRange());
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.bitRange());
+	}
+
+	@Test
+	public void testAnd() {
+		Assert.assertEquals(new Interval(0), Interval.and(new Interval(0), new Interval(0)));
+		Assert.assertEquals(new Interval(0), Interval.and(new Interval(0), new Interval(1)));
+		Assert.assertEquals(new Interval(1), Interval.and(new Interval(1), new Interval(1)));
+		Assert.assertEquals(new Interval(13 & 26), Interval.and(new Interval(13), new Interval(26)));
+	}
+
 }

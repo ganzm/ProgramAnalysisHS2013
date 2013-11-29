@@ -332,6 +332,38 @@ public class Interval {
 	}
 
 	/**
+	 * First determines the highest common bits of upper and lower. Then returns the interval by
+	 * setting and clearing the remaining lower bits.
+	 * 
+	 * @return
+	 */
+	public Interval bitRange() {
+		if (this.equals(EMPTY_INTERVAL))
+			return EMPTY_INTERVAL;
+		if (this.equals(TOP_INTERVAL))
+			return TOP_INTERVAL;
+
+		int join = lower ^ upper;
+
+		if (join == 0) {
+			return this;
+		}
+
+		int mask = 0;
+		for (int testBit = Integer.MIN_VALUE; testBit != 0 && (join & testBit) == 0; testBit >>= 1) {
+			mask |= testBit;
+		}
+
+		if (mask == 0)
+			return TOP_INTERVAL;
+
+		int i1 = lower & mask;
+		int i2 = i1 | ~mask;
+
+		return i1 <= i2 ? new Interval(i1, i2) : new Interval(i2, i1);
+	}
+
+	/**
 	 * XOr for Intervals
 	 * 
 	 * @param i1
@@ -348,7 +380,11 @@ public class Interval {
 	public static Interval and(Interval i1, Interval i2) {
 		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
 			return EMPTY_INTERVAL;
+
+		if (i1.equals(i2))
+			return i1;
+
 		// TODO Auto-generated method stub
-		return null;
+		return new Interval(0);
 	}
 }
