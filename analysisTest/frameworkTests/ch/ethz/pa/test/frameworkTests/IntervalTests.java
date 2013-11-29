@@ -274,6 +274,9 @@ public class IntervalTests {
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.EMPTY_INTERVAL.bitRange());
 	}
 
+	/**
+	 * Test some bit-and operations in the integer range (Int.MIX...Int.MAX).
+	 */
 	@Test
 	public void testAnd() {
 		Assert.assertEquals(new Interval(0), Interval.and(new Interval(0), new Interval(0)));
@@ -289,6 +292,9 @@ public class IntervalTests {
 		Assert.assertEquals(new Interval(4608, 4623), Interval.and(new Interval(-1408, -1400), new Interval(4651, 4652)));
 	}
 
+	/**
+	 * Test some bit-and operations in the instrument value range (-999,999).
+	 */
 	@Test
 	public void testInstrumentAnd() {
 		int[][] pairs = new int[][] { new int[] { -999, 999 }, new int[] { -999, -1 }, new int[] { -999, 0 }, new int[] { 0, 999 }, new int[] { 1, 999 },
@@ -302,6 +308,9 @@ public class IntervalTests {
 		}
 	}
 
+	/**
+	 * Test some bit-and with random intervals, and print out precision information.
+	 */
 	@Test
 	public void testAndExpensive() {
 		for (int i = 0; i < 100; i++) {
@@ -344,4 +353,59 @@ public class IntervalTests {
 		Interval precise = new Interval(min, max);
 		System.out.println("testing " + interval1 + " & " + interval2 + " is " + precise + " apr " + andInterval);
 	}
+
+	/**
+	 * Test some bit-xor operations in the integer range (Int.MIX...Int.MAX).
+	 */
+	@Test
+	public void testXor() {
+		Assert.assertEquals(new Interval(1 ^ 1), Interval.xor(new Interval(1), new Interval(1)));
+	}
+
+	/**
+	 * Test some bit-and with random intervals, and print out precision information.
+	 */
+	@Test
+	public void testXorExpensive() {
+		for (int i = 0; i < 100; i++) {
+			Random rnd = new Random();
+			final int i1lo = rnd.nextInt(10000) - 5000;
+			final int i1hi = i1lo + rnd.nextInt(30);
+			final int i2lo = rnd.nextInt(10000) - 5000;
+			final int i2hi = i2lo + rnd.nextInt(30);
+			assertIntervalXor(i1lo, i1hi, i2lo, i2hi);
+		}
+	}
+
+	/**
+	 * A helper to judge the gap between soundness and precision for bit-and. This actually computes
+	 * all "and" combinations (may take a long time depending on the range). It will fail when
+	 * unsound. It will also print out the actual "precise" and "approximated" solution, for whoever
+	 * cares to read it.
+	 * 
+	 * @param i1lo
+	 * @param i1hi
+	 * @param i2lo
+	 * @param i2hi
+	 */
+	public void assertIntervalXor(final int i1lo, final int i1hi, final int i2lo, final int i2hi) {
+		Interval interval1 = new Interval(i1lo, i1hi);
+		Interval interval2 = new Interval(i2lo, i2hi);
+		Interval andInterval = Interval.xor(interval1, interval2);
+		int min = Integer.MAX_VALUE;
+		int max = Integer.MIN_VALUE;
+		for (int i1 = i1lo; i1 <= i1hi; i1++) {
+			for (int i2 = i2lo; i2 <= i2hi; i2++) {
+				final int and = i1 ^ i2;
+				if (!andInterval.covers(and)) {
+					Assert.fail("failed " + interval1 + " ^ " + interval2 + " apr " + andInterval);
+				}
+				min = Math.min(min, and);
+				max = Math.max(max, and);
+			}
+		}
+		Interval precise = new Interval(min, max);
+		System.out.println("testing " + interval1 + " ^ " + interval2 + " is " + precise + " apr " + andInterval);
+	}
+
 }

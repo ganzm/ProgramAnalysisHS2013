@@ -347,33 +347,45 @@ public class Interval {
 	}
 
 	/**
+	 * Returns the mask of constant bits, i.e., the bits that never change across the range.
+	 * 
+	 * @return
+	 */
+	private int maskForConstantBits() {
+		int join = lower ^ upper;
+		int mask = 0;
+		for (int testBit = Integer.MIN_VALUE; testBit != 0 && (join & testBit) == 0; testBit >>>= 1) {
+			mask |= testBit;
+		}
+		return mask;
+	}
+
+	/**
 	 * First determines the highest common bits of upper and lower. Then returns the interval by
 	 * setting and clearing the remaining lower bits.
 	 * 
 	 * @return
 	 */
 	public Interval bitRange() {
+		return bitRange(maskForConstantBits());
+	}
+
+	/**
+	 * Returns a new interval, using lower with masked bits cleared and upper with masked bits set.
+	 * 
+	 * @param mask
+	 * @return
+	 */
+	public Interval bitRange(int mask) {
 		if (this.equals(EMPTY_INTERVAL))
 			return EMPTY_INTERVAL;
 		if (this.equals(TOP_INTERVAL))
 			return TOP_INTERVAL;
-
-		int join = lower ^ upper;
-
-		if (join == 0) {
-			return this;
-		}
-
-		int mask = 0;
-		for (int testBit = Integer.MIN_VALUE; testBit != 0 && (join & testBit) == 0; testBit >>= 1) {
-			mask |= testBit;
-		}
-
 		if (mask == 0)
 			return TOP_INTERVAL;
 
 		int i1 = lower & mask;
-		int i2 = i1 | ~mask;
+		int i2 = (upper & mask) | ~mask;
 
 		return i1 <= i2 ? new Interval(i1, i2) : new Interval(i2, i1);
 	}
@@ -388,13 +400,29 @@ public class Interval {
 	public static Interval xor(Interval i1, Interval i2) {
 		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
 			return EMPTY_INTERVAL;
-		// TODO this is inprecise
-		return TOP_INTERVAL;
+
+		int mask1 = i1.maskForConstantBits();
+		int mask2 = i2.maskForConstantBits();
+		int commonMask = mask1 & mask2;
+
+		Interval br1 = i1.bitRange(commonMask);
+		Interval br2 = i2.bitRange(commonMask);
+		return smallestCover(br1.lower ^ br2.lower, br1.lower ^ br2.upper, br1.upper ^ br2.lower, br1.upper ^ br2.upper);
 	}
 
+	/**
+	 * Approximates bit-and for intervals. Here, "approximate" means it is somewhat imprecise, but
+	 * still sound.
+	 * 
+	 * @param i1
+	 * @param i2
+	 * @return
+	 */
 	public static Interval and(Interval i1, Interval i2) {
 		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
 			return EMPTY_INTERVAL;
+
+		int mask1 = i1.maskForConstantBits();
 
 		Interval br1 = i1.bitRange();
 		Interval br2 = i2.bitRange();
