@@ -360,6 +360,10 @@ public class IntervalTests {
 	@Test
 	public void testXor() {
 		Assert.assertEquals(new Interval(1 ^ 1), Interval.xor(new Interval(1), new Interval(1)));
+		Assert.assertEquals(Interval.TOP_INTERVAL, Interval.xor(Interval.TOP_INTERVAL, new Interval(0)));
+		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.xor(Interval.TOP_INTERVAL, Interval.EMPTY_INTERVAL));
+
+		Assert.assertEquals(new Interval(-3904, -3889), Interval.xor(new Interval(-3718, -3717), new Interval(437, 444)));
 	}
 
 	/**
