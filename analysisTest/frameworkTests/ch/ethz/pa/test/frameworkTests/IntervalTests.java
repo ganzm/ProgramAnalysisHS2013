@@ -284,12 +284,12 @@ public class IntervalTests {
 		Assert.assertEquals(new Interval(1), Interval.and(new Interval(1), new Interval(1)));
 		Assert.assertEquals(new Interval(13 & 26), Interval.and(new Interval(13), new Interval(26)));
 
-		Assert.assertEquals(Interval.TOP_INTERVAL, Interval.and(new Interval(-999, 999), new Interval(-999, 999)));
-
-		Assert.assertEquals(new Interval(2560, 2663), Interval.and(new Interval(2656, 2663), new Interval(2606, 2627)));
-		Assert.assertEquals(new Interval(-5120, -4673), Interval.and(new Interval(-4696, -4675), new Interval(-4612, -4598)));
-		Assert.assertEquals(new Interval(320, 344), Interval.and(new Interval(328, 357), new Interval(-2728)));
-		Assert.assertEquals(new Interval(4608, 4623), Interval.and(new Interval(-1408, -1400), new Interval(4651, 4652)));
+		// check soundness, accepting SOME inprecission
+		Assert.assertTrue(new Interval(-1024, 1023).covers(Interval.and(new Interval(-999, 999), new Interval(-999, 999))));
+		Assert.assertTrue(new Interval(2560, 2663).covers(Interval.and(new Interval(2656, 2663), new Interval(2606, 2627))));
+		Assert.assertTrue(new Interval(-5120, -4673).covers(Interval.and(new Interval(-4696, -4675), new Interval(-4612, -4598))));
+		Assert.assertTrue(new Interval(320, 344).covers(Interval.and(new Interval(328, 357), new Interval(-2728))));
+		Assert.assertTrue(new Interval(4608, 4623).covers(Interval.and(new Interval(-1408, -1400), new Interval(4651, 4652))));
 	}
 
 	/**
@@ -363,7 +363,8 @@ public class IntervalTests {
 		Assert.assertEquals(Interval.TOP_INTERVAL, Interval.xor(Interval.TOP_INTERVAL, new Interval(0)));
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.xor(Interval.TOP_INTERVAL, Interval.EMPTY_INTERVAL));
 
-		Assert.assertEquals(new Interval(-3904, -3889), Interval.xor(new Interval(-3718, -3717), new Interval(437, 444)));
+		// check soundness, accepting SOME inprecission
+		Assert.assertTrue(new Interval(-3904, -3889).covers(Interval.xor(new Interval(-3718, -3717), new Interval(437, 444))));
 	}
 
 	/**
@@ -436,9 +437,6 @@ public class IntervalTests {
 		Assert.assertEquals(new Interval(1 | 1), Interval.or(new Interval(1), new Interval(1)));
 		Assert.assertEquals(Interval.TOP_INTERVAL, Interval.or(Interval.TOP_INTERVAL, new Interval(0)));
 		Assert.assertEquals(Interval.EMPTY_INTERVAL, Interval.or(Interval.TOP_INTERVAL, Interval.EMPTY_INTERVAL));
-
-		// Assert.assertEquals(new Interval(-3904, -3889), Interval.xor(new Interval(-3718, -3717),
-		// new Interval(437, 444)));
 	}
 
 	/**
