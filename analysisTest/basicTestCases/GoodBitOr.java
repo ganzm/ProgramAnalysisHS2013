@@ -6,7 +6,9 @@ public class GoodBitOr {
 	public static void bitXorTest() {
 		AircraftControl ac = new AircraftControl();
 		int v1 = ac.readSensor(5);
-		v1 |= 1;
+		if (v1 >= -512 && v1 < 512) {
+			v1 |= 1;
+		}
 		ac.adjustValue(8, v1);
 	}
 

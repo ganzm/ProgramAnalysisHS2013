@@ -443,8 +443,27 @@ public class Interval {
 		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
 			return EMPTY_INTERVAL;
 
-		Interval br1 = i1.bitRange();
-		Interval br2 = i2.bitRange();
-		return smallestCover(br1.lower | br2.lower, br1.lower | br2.upper, br1.upper | br2.lower, br1.upper | br2.upper);
+		// we gain precision when handling positive/negative intervals seperately,
+		// so we do this - recursively
+		if (i1.lower < 0 && i1.upper >= 0) {
+			// split i1 and recurse
+			Interval i1neg = new Interval(i1.lower, -1);
+			Interval i1pos = new Interval(0, i1.upper);
+			Interval neg = or(i1neg, i2);
+			Interval pos = or(i1pos, i2);
+			return neg.join(pos);
+		} else if (i2.lower < 0 && i2.upper >= 0) {
+			// split i2 and recurse
+			Interval i2neg = new Interval(i2.lower, -1);
+			Interval i2pos = new Interval(0, i2.upper);
+			Interval neg = or(i1, i2neg);
+			Interval pos = or(i1, i2pos);
+			return neg.join(pos);
+		} else {
+			// approximate
+			Interval br1 = i1.bitRange();
+			Interval br2 = i2.bitRange();
+			return smallestCover(br1.lower | br2.lower, br1.lower | br2.upper, br1.upper | br2.lower, br1.upper | br2.upper);
+		}
 	}
 }
