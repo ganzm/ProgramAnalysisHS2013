@@ -513,8 +513,8 @@ public class Interval {
 	public List<BitVariant> bitVariants() {
 		int mask = maskForConstantBits();
 		final LinkedList<BitVariant> result = new LinkedList<BitVariant>();
-		// stupid response
-		result.add(new BitVariant());
+		// simple response
+		result.add(new BitVariant(mask, lower & mask));
 		return result;
 	}
 }

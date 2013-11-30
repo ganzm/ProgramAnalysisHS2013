@@ -15,6 +15,8 @@ public class IntervalBitVariantTests {
 	public void testNothing() {
 		List<BitVariant> variants = new Interval(0).bitVariants();
 		Assert.assertEquals(1, variants.size());
+		Assert.assertEquals(-1, variants.get(0).mask);
+		Assert.assertEquals(0, variants.get(0).bits);
 
 	}
 }
