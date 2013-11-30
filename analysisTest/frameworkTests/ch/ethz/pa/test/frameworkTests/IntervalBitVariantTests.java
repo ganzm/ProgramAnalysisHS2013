@@ -12,11 +12,18 @@ import ch.ethz.pa.intervals.Interval;
 public class IntervalBitVariantTests {
 
 	@Test
-	public void testNothing() {
+	public void testVariantsForZero() {
 		List<BitVariant> variants = new Interval(0).bitVariants();
 		Assert.assertEquals(1, variants.size());
 		Assert.assertEquals(-1, variants.get(0).mask);
 		Assert.assertEquals(0, variants.get(0).bits);
+	}
 
+	@Test
+	public void testVariantsForZeroToOne() {
+		List<BitVariant> variants = new Interval(0, 1).bitVariants();
+		Assert.assertEquals(1, variants.size());
+		Assert.assertEquals(-1 ^ 1, variants.get(0).mask);
+		Assert.assertEquals(0, variants.get(0).bits);
 	}
 }
