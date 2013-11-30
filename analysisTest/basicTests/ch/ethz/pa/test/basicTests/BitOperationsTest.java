@@ -21,4 +21,9 @@ public class BitOperationsTest extends ValidationTestBase {
 		testAnyProgram("GoodBitOr", SAFE);
 	}
 
+	@Test
+	public void testGoodBitNeg() {
+		testAnyProgram("GoodBitNeg", SAFE);
+	}
+
 }
