@@ -1,5 +1,8 @@
 package ch.ethz.pa.intervals;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Interval is a read-only value type.
  */
@@ -347,7 +350,9 @@ public class Interval {
 	}
 
 	/**
-	 * Returns the mask of constant bits, i.e., the bits that never change across the range.
+	 * Returns the mask of constant bits, i.e., the bits that never change across the range of the
+	 * interval. This may serve as a starting point for more intense bit pattern analysis, since it
+	 * restricts the range of bit patterns to consider.
 	 * 
 	 * @return
 	 */
@@ -503,5 +508,13 @@ public class Interval {
 			Interval br2 = i2.bitRange();
 			return smallestCover(br1.lower | br2.lower, br1.lower | br2.upper, br1.upper | br2.lower, br1.upper | br2.upper);
 		}
+	}
+
+	public List<BitVariant> bitVariants() {
+		int mask = maskForConstantBits();
+		final LinkedList<BitVariant> result = new LinkedList<BitVariant>();
+		// stupid response
+		result.add(new BitVariant());
+		return result;
 	}
 }
