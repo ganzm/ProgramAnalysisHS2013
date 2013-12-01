@@ -4,7 +4,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.ethz.pa.intervals.BitVariant;
@@ -28,7 +27,6 @@ public class IntervalBitVariantTests {
 		Assert.assertEquals(0, variants.get(0).bits);
 	}
 
-	@Ignore
 	@Test
 	public void testVariantsForZeroToTwo() {
 		List<BitVariant> variants = new Interval(0, 2).bitVariants();
