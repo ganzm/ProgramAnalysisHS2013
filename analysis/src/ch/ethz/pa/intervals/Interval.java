@@ -1,6 +1,6 @@
 package ch.ethz.pa.intervals;
 
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -512,9 +512,30 @@ public class Interval {
 
 	public List<BitVariant> bitVariants() {
 		int mask = maskForConstantBits();
-		final LinkedList<BitVariant> result = new LinkedList<BitVariant>();
-		// simple response
-		result.add(new BitVariant(mask, lower & mask));
-		return result;
+		int bits = lower & mask;
+		return refineBitVariants(this, mask, bits);
+	}
+
+	private List<BitVariant> refineBitVariants(Interval interval, int mask, int bits) {
+
+		// this return is only valid if no refinement is possible, i.e., if the masked bits are
+		// really arbitrary
+		return Collections.singletonList(new BitVariant(mask, bits));
+
+		// while (mask != -1) {
+		//
+		// // shift left and set the highest bit
+		// int nextMask = (mask >> 1) | Integer.MIN_VALUE;
+		//
+		// // before, the interval's highest bits never changed
+		// // when viewed through the old bit mask
+		// // vice versa, with the new bit mask, we should have to cases,
+		// // since the new bit is undetermined.
+		// // but beyond that, further bits may be determined.
+		//
+		// int nextBitsLower = bits;
+		// int nextBitsUpper = bits | (~mask & nextMask);
+		//
+		// }
 	}
 }
