@@ -13,9 +13,15 @@ public class BitVariant implements Comparable<BitVariant> {
 	 */
 	public final int bits;
 
-	protected BitVariant(int mask, int bits) {
+	public BitVariant(int mask, int bits) {
 		this.mask = mask;
 		this.bits = bits;
+	}
+
+	public Interval toInterval() {
+		if (mask == 0)
+			return Interval.TOP_INTERVAL;
+		return new Interval(bits & mask, bits | ~mask);
 	}
 
 	@Override
