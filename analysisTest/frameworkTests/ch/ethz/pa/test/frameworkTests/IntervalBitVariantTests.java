@@ -33,4 +33,16 @@ public class IntervalBitVariantTests {
 		Assert.assertEquals(2, variants.size());
 	}
 
+	@Test
+	public void testVariantsForFourToFive() {
+		List<BitVariant> variants = new Interval(4, 5).bitVariants();
+		Assert.assertEquals(1, variants.size());
+	}
+
+	@Test
+	public void testVariantsForThreeToSix() {
+		List<BitVariant> variants = new Interval(3, 6).bitVariants();
+		Assert.assertEquals(4, variants.size());
+	}
+
 }

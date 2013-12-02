@@ -1,5 +1,6 @@
 package ch.ethz.pa.intervals;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -510,30 +511,77 @@ public class Interval {
 		}
 	}
 
+	/**
+	 * For the interval range, this method evaluates known bit patterns in terms of
+	 * {@link BitVariant}s. A variant is always a mask (of known bits) and a pattern (of bits set
+	 * within the mask). If a bit is not set in the mask, one has to assume it may take any value.
+	 * 
+	 * @return list of possible bit patterns, as precise as possible
+	 */
 	public List<BitVariant> bitVariants() {
+
+		// in the simplest case, the result is a single entry with all the bits that do not change
+		// across the full interval. this is a very coarse solution, in particular, it does not
+		// distinguish between [-1024,1023], [-999,999] and [-513,512].
 		int mask = maskForConstantBits();
-		int bits = lower & mask;
+		int bits = lower & mask; // upper would give the same result, since the bits are constant
+
+		// since the initial guess is so imprecise, we refine it recursively
 		return refineBitVariants(this, mask, bits);
 	}
 
-	private List<BitVariant> refineBitVariants(Interval interval, int mask, int bits) {
-
+	private static List<BitVariant> refineBitVariants(Interval interval, int mask, int bits) {
 		if (mask == -1) {
-			// the mask reached the full bit range, end of recursion
+			// terminate when the mask reached the full bit range. this is the worst case (but
+			// necessary) terminator. we should hit it not more than twice, at the top and bottom
+			// end of the original interval, otherwise this recursive call can be very costly.
 			return Collections.singletonList(new BitVariant(mask, bits));
 		} else {
-			// shift left and set the highest bit
+			// consider the next level of refinement by setting the next bit in the mask
 			int nextMask = (mask >> 1) | Integer.MIN_VALUE;
-			int nextBitsLower = nextMask & interval.lower;
-			int nextBitsUpper = nextMask & interval.upper;
 
-			if (nextBitsLower == nextBitsUpper) {
-				// when equal anyway, recurse once
-				return refineBitVariants(interval, nextMask, nextBitsUpper);
-			} else {
-				// the following is wrong, we will have to recurse twice...
+			// we have to judge whether more refinement makes sense. we refine at two boundaries,
+			// lower and upper. to make a judgment, we take the next bits of the lower and upper
+			// bound into account (that is, the whole number up to the
+			// next bit).
+			int nextBitsLower = (nextMask & interval.lower);
+			int nextBitsUpper = (nextMask & interval.upper) | ~nextMask;
+
+			// so we check if there is a gap between masked boundaries and actual boundaries.
+			// note that before, at the lower bound we assume unknown bits being erased, and at the
+			// upper bound being set. this means we check for excessive imprecision.
+			boolean refineLower = nextBitsLower < interval.lower;
+			boolean refineUpper = nextBitsUpper > interval.upper;
+
+			// there are four cases, which result in two cases effectively: either we do not refine
+			// at all, or we refine any or both ends. effectively, there are three results: a core,
+			// maybe a lower refinement, and maybe an upper refinement.
+
+			if (!refineLower && !refineUpper) {
+				// if we do not refine anyway, we just return the terminal variant at this point
 				return Collections.singletonList(new BitVariant(mask, bits));
 			}
+
+			// otherwise, there are two branches to keep or refine
+			List<BitVariant> result = new ArrayList<BitVariant>(2);
+
+			// maybe the lower bound
+			if (refineLower) {
+				Interval lowerInterval = new Interval(interval.lower, nextBitsLower | ~nextMask);
+				result.addAll(refineBitVariants(lowerInterval, nextMask, nextBitsLower));
+			} else {
+				result.add(new BitVariant(nextMask, nextBitsLower));
+			}
+
+			// maybe the upper bound
+			if (refineUpper) {
+				Interval upperInterval = new Interval(nextBitsUpper & nextMask, interval.upper);
+				result.addAll(refineBitVariants(upperInterval, nextMask, nextBitsUpper));
+			} else {
+				result.add(new BitVariant(nextMask, nextBitsUpper));
+			}
+
+			return result;
 		}
 	}
 }
