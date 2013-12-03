@@ -14,6 +14,8 @@ public class BitVariant implements Comparable<BitVariant> {
 	public final int bits;
 
 	public BitVariant(int mask, int bits) {
+		if ((bits & ~mask) != 0)
+			throw new RuntimeException("excessive bits");
 		this.mask = mask;
 		this.bits = bits;
 	}
@@ -35,5 +37,19 @@ public class BitVariant implements Comparable<BitVariant> {
 			return maskCompare;
 		int bitsCompare = Integer.compare(this.bits, bits);
 		return bitsCompare;
+	}
+
+	public boolean equals(Object o) {
+		if (o == null)
+			return false;
+		if (!(o instanceof BitVariant))
+			return false;
+		BitVariant obv = (BitVariant) o;
+		return mask == obv.mask && bits == obv.bits;
+	}
+
+	@Override
+	public String toString() {
+		return "[mask: " + Integer.toBinaryString(mask) + ", bits: " + Integer.toBinaryString(bits) + "]";
 	}
 }

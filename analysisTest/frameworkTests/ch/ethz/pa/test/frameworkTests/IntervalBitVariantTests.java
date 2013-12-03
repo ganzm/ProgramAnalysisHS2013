@@ -23,7 +23,9 @@ public class IntervalBitVariantTests {
 
 	@Test
 	public void testNegativeVariantToInterval() {
-		Assert.assertEquals(new Interval(-8, -5), new BitVariant(-1 ^ 3, -5).toInterval());
+		final int mask = -1 ^ 3;
+		final int bits = -5 & mask;
+		Assert.assertEquals(new Interval(-8, -5), new BitVariant(mask, bits).toInterval());
 	}
 
 	@Test
@@ -46,6 +48,16 @@ public class IntervalBitVariantTests {
 	public void testVariantsForZeroToTwo() {
 		List<BitVariant> variants = new Interval(0, 2).bitVariants();
 		Assert.assertEquals(2, variants.size());
+		assertContains(variants, new BitVariant(-2, 0));
+		assertContains(variants, new BitVariant(-1, 2));
+	}
+
+	private void assertContains(List<BitVariant> variants, BitVariant bitVariant) {
+		for (BitVariant variant : variants) {
+			if (variant.equals(bitVariant))
+				return;
+		}
+		Assert.fail("expected " + bitVariant);
 	}
 
 	@Test

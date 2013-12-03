@@ -531,11 +531,16 @@ public class Interval {
 	}
 
 	private static List<BitVariant> refineBitVariants(Interval interval, int mask, int bits) {
+		if ((bits & ~mask) != 0)
+			throw new RuntimeException("excessive bits");
+
 		if (mask == -1) {
 			// terminate when the mask reached the full bit range. this is the worst case (but
 			// necessary) terminator. we should hit it not more than twice, at the top and bottom
 			// end of the original interval, otherwise this recursive call can be very costly.
-			return Collections.singletonList(new BitVariant(mask, bits));
+			final BitVariant bitVariant = new BitVariant(mask, bits);
+			System.out.println("keep terminal " + bitVariant);
+			return Collections.singletonList(bitVariant);
 		} else {
 			// consider the next level of refinement by setting the next bit in the mask
 			int nextMask = (mask >> 1) | Integer.MIN_VALUE;
@@ -559,7 +564,11 @@ public class Interval {
 
 			if (!refineLower && !refineUpper) {
 				// if we do not refine anyway, we just return the terminal variant at this point
-				return Collections.singletonList(new BitVariant(mask, bits));
+				final int finalMask = interval.maskForConstantBits();
+				final int finalBits = interval.lower & finalMask;
+				final BitVariant bitVariant = new BitVariant(finalMask, finalBits);
+				System.out.println("keep unrefined " + bitVariant);
+				return Collections.singletonList(bitVariant);
 			}
 
 			// otherwise, there are two branches to keep or refine
@@ -568,17 +577,23 @@ public class Interval {
 			// maybe the lower bound
 			if (refineLower) {
 				Interval lowerInterval = new Interval(interval.lower, nextBitsLower | ~nextMask);
+				System.out.println("refine lower " + lowerInterval);
 				result.addAll(refineBitVariants(lowerInterval, nextMask, nextBitsLower));
 			} else {
-				result.add(new BitVariant(nextMask, nextBitsLower));
+				final BitVariant bitVariant = new BitVariant(nextMask, nextBitsLower);
+				System.out.println("keep lower " + bitVariant);
+				result.add(bitVariant);
 			}
 
 			// maybe the upper bound
 			if (refineUpper) {
 				Interval upperInterval = new Interval(nextBitsUpper & nextMask, interval.upper);
-				result.addAll(refineBitVariants(upperInterval, nextMask, nextBitsUpper));
+				System.out.println("refine upper " + upperInterval);
+				result.addAll(refineBitVariants(upperInterval, nextMask, nextBitsUpper & nextMask));
 			} else {
-				result.add(new BitVariant(nextMask, nextBitsUpper));
+				final BitVariant bitVariant = new BitVariant(nextMask, nextBitsUpper & nextMask);
+				System.out.println("keep upper " + bitVariant);
+				result.add(bitVariant);
 			}
 
 			return result;
