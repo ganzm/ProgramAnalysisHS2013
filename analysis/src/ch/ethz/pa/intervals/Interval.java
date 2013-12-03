@@ -577,8 +577,10 @@ public class Interval {
 			// maybe the lower bound
 			if (refineLower) {
 				Interval lowerInterval = new Interval(interval.lower, nextBitsLower | ~nextMask);
+				final int nextLowerMask = lowerInterval.maskForConstantBits();
+				final int nextLowerBits = interval.lower & nextLowerMask;
 				System.out.println("refine lower " + lowerInterval);
-				result.addAll(refineBitVariants(lowerInterval, nextMask, nextBitsLower));
+				result.addAll(refineBitVariants(lowerInterval, nextLowerMask, nextLowerBits));
 			} else {
 				final BitVariant bitVariant = new BitVariant(nextMask, nextBitsLower);
 				System.out.println("keep lower " + bitVariant);
@@ -588,8 +590,10 @@ public class Interval {
 			// maybe the upper bound
 			if (refineUpper) {
 				Interval upperInterval = new Interval(nextBitsUpper & nextMask, interval.upper);
+				final int nextUpperMask = upperInterval.maskForConstantBits();
+				final int nextUpperBits = interval.upper & nextUpperMask;
 				System.out.println("refine upper " + upperInterval);
-				result.addAll(refineBitVariants(upperInterval, nextMask, nextBitsUpper & nextMask));
+				result.addAll(refineBitVariants(upperInterval, nextUpperMask, nextUpperBits));
 			} else {
 				final BitVariant bitVariant = new BitVariant(nextMask, nextBitsUpper & nextMask);
 				System.out.println("keep upper " + bitVariant);

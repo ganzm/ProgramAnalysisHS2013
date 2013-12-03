@@ -64,12 +64,16 @@ public class IntervalBitVariantTests {
 	public void testVariantsForFourToFive() {
 		List<BitVariant> variants = new Interval(4, 5).bitVariants();
 		Assert.assertEquals(1, variants.size());
+		assertContains(variants, new BitVariant(-1 ^ 1, 4));
 	}
 
 	@Test
 	public void testVariantsForThreeToSix() {
 		List<BitVariant> variants = new Interval(3, 6).bitVariants();
-		Assert.assertEquals(4, variants.size());
+		Assert.assertEquals(3, variants.size());
+		assertContains(variants, new BitVariant(-1, 3));
+		assertContains(variants, new BitVariant(-1 ^ 1, 4));
+		assertContains(variants, new BitVariant(-1, 6));
 	}
 
 }
