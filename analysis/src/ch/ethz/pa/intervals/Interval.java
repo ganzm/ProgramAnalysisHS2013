@@ -539,7 +539,6 @@ public class Interval {
 			// necessary) terminator. we should hit it not more than twice, at the top and bottom
 			// end of the original interval, otherwise this recursive call can be very costly.
 			final BitVariant bitVariant = new BitVariant(mask, bits);
-			System.out.println("keep terminal " + bitVariant);
 			return Collections.singletonList(bitVariant);
 		} else {
 			// consider the next level of refinement by setting the next bit in the mask
@@ -567,7 +566,6 @@ public class Interval {
 				final int finalMask = interval.maskForConstantBits();
 				final int finalBits = interval.lower & finalMask;
 				final BitVariant bitVariant = new BitVariant(finalMask, finalBits);
-				System.out.println("keep unrefined " + bitVariant);
 				return Collections.singletonList(bitVariant);
 			}
 
@@ -579,11 +577,9 @@ public class Interval {
 				Interval lowerInterval = new Interval(interval.lower, nextBitsLower | ~nextMask);
 				final int nextLowerMask = lowerInterval.maskForConstantBits();
 				final int nextLowerBits = interval.lower & nextLowerMask;
-				System.out.println("refine lower " + lowerInterval);
 				result.addAll(refineBitVariants(lowerInterval, nextLowerMask, nextLowerBits));
 			} else {
 				final BitVariant bitVariant = new BitVariant(nextMask, nextBitsLower);
-				System.out.println("keep lower " + bitVariant);
 				result.add(bitVariant);
 			}
 
@@ -592,11 +588,9 @@ public class Interval {
 				Interval upperInterval = new Interval(nextBitsUpper & nextMask, interval.upper);
 				final int nextUpperMask = upperInterval.maskForConstantBits();
 				final int nextUpperBits = interval.upper & nextUpperMask;
-				System.out.println("refine upper " + upperInterval);
 				result.addAll(refineBitVariants(upperInterval, nextUpperMask, nextUpperBits));
 			} else {
 				final BitVariant bitVariant = new BitVariant(nextMask, nextBitsUpper & nextMask);
-				System.out.println("keep upper " + bitVariant);
 				result.add(bitVariant);
 			}
 

@@ -76,4 +76,25 @@ public class IntervalBitVariantTests {
 		assertContains(variants, new BitVariant(-1, 6));
 	}
 
+	@Test
+	public void testVariantsForMinusTwoToOne() {
+		List<BitVariant> variants = new Interval(-2, 1).bitVariants();
+		Assert.assertEquals(2, variants.size());
+		assertContains(variants, new BitVariant(-1 ^ 1, -2));
+		assertContains(variants, new BitVariant(-1 ^ 1, 0));
+	}
+
+	@Test
+	public void testVariantsFor500To999() {
+		List<BitVariant> variants = new Interval(500, 999).bitVariants();
+		Assert.assertEquals(7, variants.size());
+		assertContains(variants, new BitVariant(-4, 500));
+		assertContains(variants, new BitVariant(-8, 504));
+		assertContains(variants, new BitVariant(-256, 512));
+		assertContains(variants, new BitVariant(-128, 768));
+		assertContains(variants, new BitVariant(-64, 896));
+		assertContains(variants, new BitVariant(-32, 960));
+		assertContains(variants, new BitVariant(-8, 992));
+	}
+
 }
