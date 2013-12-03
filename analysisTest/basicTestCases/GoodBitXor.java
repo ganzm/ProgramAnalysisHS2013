@@ -7,18 +7,10 @@ public class GoodBitXor {
 		AircraftControl ac = new AircraftControl();
 		int v1 = ac.readSensor(5);
 		if (v1 >= 0) {
-			// extra gate needed to make it clearly safe
-			if (v1 < 512) {
-				v1 ^= 35;
-			}
-		}
-		if (v1 < 0) {
-			// extra gate needed to make it clearly safe
-			if (v1 >= -512) {
-				v1 ^= 35;
-			}
+			v1 ^= 7;
+		} else if (v1 >= -993) {
+			v1 ^= 3;
 		}
 		ac.adjustValue(8, v1);
 	}
-
 }
