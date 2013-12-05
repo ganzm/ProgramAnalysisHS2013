@@ -2,8 +2,7 @@ package ch.ethz.pa.test.frameworkTests;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 import ch.ethz.pa.intervals.BitVariant;

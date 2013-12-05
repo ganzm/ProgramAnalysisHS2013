@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ch.ethz.pa.BinaryUtil;
+
 /**
  * Interval is a read-only value type.
  */
@@ -67,6 +69,14 @@ public class Interval {
 		if (this.upper == this.lower)
 			return String.format("[%d]", lower);
 		return String.format("[%d,%d]", lower, upper);
+	}
+
+	public String toBinString() {
+		if (this == EMPTY_INTERVAL)
+			return "[]";
+		if (this.upper == this.lower)
+			return String.format("[%s]", BinaryUtil.toBinString(lower));
+		return String.format("[%s,%s]", BinaryUtil.toBinString(lower), BinaryUtil.toBinString(upper));
 	}
 
 	public static Interval plus(Interval i1, Interval i2) {
@@ -425,6 +435,88 @@ public class Interval {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * counts the number of bits which are identical for the lower and upper bound starting from the
+	 * MSB
+	 * 
+	 * e.g: lower: 1010 upper: 1011 result: 3
+	 * 
+	 * e.g. lower: 1010 upper: 0010 result 0
+	 * 
+	 * 
+	 * @return
+	 */
+	private int numUnchangedBits() {
+		int mask = 1 << 31;
+		for (int i = 0; i < 32; i++) {
+			if ((lower & mask) != (upper & mask)) {
+				// bits at position i differ
+				return i;
+			}
+
+			// shift mask
+			mask = mask >>> 1;
+		}
+
+		// lower and upper bound are identical we have 32 unchanged bits
+		return 32;
+	}
+
+	public static Interval andNew(Interval i1, Interval i2) {
+		// handle trivial case
+		if (i1 == Interval.TOP_INTERVAL || i2 == Interval.TOP_INTERVAL) {
+			return Interval.TOP_INTERVAL;
+		}
+
+		// count number of unchanged bits
+		int n1 = i1.numUnchangedBits();
+		int n2 = i2.numUnchangedBits();
+		int nMax = Math.max(n1, n2);
+		int n = Math.min(n1, n2);
+
+		int toCheck = 0;
+		if (n1 == nMax) {
+			toCheck = i1.lower;
+		} else {
+			toCheck = i2.lower;
+		}
+		while (n < nMax) {
+			// check if n-th bit from the left is a zero (where the left most is 0)
+			int mask = 1 << (31 - n);
+
+			if ((toCheck & mask) == 0) {
+				n++;
+			} else {
+				break;
+			}
+		}
+
+		if (n == 0) {
+			return Interval.TOP_INTERVAL;
+		}
+
+		// create a 32bit pattern with n ones followed by (32-n) zeroes
+		int mask = 0;
+		for (int i = 0; i < n; i++) {
+			mask = mask << 1;
+			mask++;
+
+			BinaryUtil.toBinString(mask);
+		}
+		mask = mask << (32 - n);
+
+		// AND the unchanged bit-patterns
+		int l1 = i1.lower & mask;
+		int l2 = i2.lower & mask;
+
+		// Vary the changing bits
+		int res1 = l1 & l2;
+		int res2 = res1 | (~mask);
+
+		// use min/max because we are lazy, could have checked sign bit
+		return new Interval(Math.min(res1, res2), Math.max(res1, res2));
 	}
 
 	/**

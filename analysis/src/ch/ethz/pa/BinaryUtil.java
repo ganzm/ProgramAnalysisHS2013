@@ -1,0 +1,21 @@
+package ch.ethz.pa;
+
+public class BinaryUtil {
+
+	public static String toBinString(int intVal) {
+		StringBuilder sb = new StringBuilder();
+
+		int mask = 1 << 31;
+		for (int i = 0; i < 32; i++) {
+			if ((intVal & mask) != 0) {
+				sb.append("1");
+			} else {
+				sb.append("0");
+			}
+
+			// shift mask
+			mask = mask >>> 1;
+		}
+		return sb.toString();
+	}
+}
