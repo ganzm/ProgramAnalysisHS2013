@@ -11,9 +11,9 @@ import ch.ethz.pa.ProblemException;
 import ch.ethz.pa.intervals.Interval;
 import ch.ethz.pa.logging.LoggerUtil;
 
-public class IntervalBitShiftTest {
+public class IntervalBitUnsignedShiftRightTest {
 
-	private final Logger logger = Logger.getLogger(IntervalBitShiftTest.class.getSimpleName());
+	private final Logger logger = Logger.getLogger(IntervalBitUnsignedShiftRightTest.class.getSimpleName());
 
 	@BeforeClass
 	public static void beforeClass() {
