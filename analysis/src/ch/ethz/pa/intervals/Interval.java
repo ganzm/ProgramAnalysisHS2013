@@ -678,8 +678,31 @@ public class Interval {
 	}
 
 	public static Interval shiftRight(Interval i1, Interval i2) {
-		// TODO Auto-generated method stub
-		return Interval.TOP_INTERVAL;
+		if (i2.upper <= 0) {
+			// Interval.Bottom
+			throw new ProblemException("Problem with bitshift of " + i1 + " >> " + i2 + " - Second Operand must not be negative but was " + i2);
+		}
+
+		// no negative values allowed for second argument
+		i2 = new Interval(Math.max(1, i2.lower), i2.upper);
+
+		int iNew1;
+		int iNew2;
+
+		logger.fine("Interval to shift\n" + i1.toBinString() + "shift by\n" + i2.toBinString());
+
+		if (Math.abs(i1.lower) > Math.abs(i1.upper)) {
+			iNew1 = i1.lower >> i2.lower;
+			iNew2 = i1.upper >> i2.upper;
+		} else {
+			iNew1 = i1.lower >> i2.upper;
+			iNew2 = i1.upper >> i2.lower;
+
+		}
+
+		Interval result = new Interval(Math.min(iNew1, iNew2), Math.max(iNew1, iNew2));
+		logger.fine("Result\n" + result.toBinString());
+		return result;
 	}
 
 	/**
