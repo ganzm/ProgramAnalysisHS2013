@@ -18,4 +18,19 @@ public class BinaryUtil {
 		}
 		return sb.toString();
 	}
+
+	public static int fromBinString(String s) {
+		int result = 0;
+		for (int i = 0; i < s.length(); i++) {
+			result = result << 1;
+
+			char c = s.charAt(i);
+			if (c == '1') {
+				result = result | 1;
+			}
+
+		}
+
+		return result;
+	}
 }

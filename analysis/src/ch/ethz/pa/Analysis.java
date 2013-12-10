@@ -157,6 +157,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 
 			copyToMany(fallState, fallOut);
 			copyToMany(branchState, branchOuts);
+		} catch (ProblemException ex) {
+			problemReport.addProblem(op, ex.getMessage());
 		} finally {
 			logger.info("\n\tFallouts(" + fallOut.size() + "): " + fallOut + "\n\tBranchOuts(" + branchOuts.size() + "): " + branchOuts);
 		}
