@@ -26,4 +26,19 @@ public class BitOperationsTest extends ValidationTestBase {
 		testAnyProgram("GoodBitNeg", SAFE);
 	}
 
+	@Test
+	public void testGoodBitShift() {
+		testAnyProgram("GoodBitShift", SAFE);
+	}
+
+	@Test
+	public void testBadBitShift1() {
+		testAnyProgram("BadBitShift1", UNSAFE);
+	}
+
+	@Test
+	public void testBadBitShift2() {
+		testAnyProgram("BadBitShift2", UNSAFE);
+	}
+
 }
