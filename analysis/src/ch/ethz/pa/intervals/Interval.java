@@ -144,14 +144,12 @@ public class Interval {
 	}
 
 	/**
-	 * Since there are special Intervals (like {@link #EMPTY_INTERVAL}, we make the object immutable
-	 * and the fields private.
+	 * Since there are special Intervals (like {@link #EMPTY_INTERVAL}, we make the object immutable and the fields private.
 	 */
 	private final int lower;
 
 	/**
-	 * Since there are special Intervals (like {@link #EMPTY_INTERVAL}, we make the object immutable
-	 * and the fields private.
+	 * Since there are special Intervals (like {@link #EMPTY_INTERVAL}, we make the object immutable and the fields private.
 	 */
 	private final int upper;
 
@@ -171,8 +169,8 @@ public class Interval {
 	}
 
 	/**
-	 * Determine the interval covering the result of a division. If division by zero is possible,
-	 * this returns the {@link #EMPTY_INTERVAL} and sets the flag {@link divisionByZero}.
+	 * Determine the interval covering the result of a division. If division by zero is possible, this returns the {@link #EMPTY_INTERVAL} and sets the flag
+	 * {@link divisionByZero}.
 	 * 
 	 * @param i1
 	 * @param i2
@@ -193,8 +191,8 @@ public class Interval {
 	}
 
 	/**
-	 * Determine the interval covering the result of a remainder computation. If division by zero is
-	 * possible, this returns the {@link #EMPTY_INTERVAL} and sets the flag {@link divisionByZero}.
+	 * Determine the interval covering the result of a remainder computation. If division by zero is possible, this returns the {@link #EMPTY_INTERVAL} and sets
+	 * the flag {@link divisionByZero}.
 	 * 
 	 * @param dividend
 	 * @param divisor
@@ -361,9 +359,8 @@ public class Interval {
 	}
 
 	/**
-	 * Returns the mask of constant bits, i.e., the bits that never change across the range of the
-	 * interval. This may serve as a starting point for more intense bit pattern analysis, since it
-	 * restricts the range of bit patterns to consider.
+	 * Returns the mask of constant bits, i.e., the bits that never change across the range of the interval. This may serve as a starting point for more intense
+	 * bit pattern analysis, since it restricts the range of bit patterns to consider.
 	 * 
 	 * @return
 	 */
@@ -377,8 +374,7 @@ public class Interval {
 	}
 
 	/**
-	 * First determines the highest common bits of upper and lower. Then returns the interval by
-	 * setting and clearing the remaining lower bits.
+	 * First determines the highest common bits of upper and lower. Then returns the interval by setting and clearing the remaining lower bits.
 	 * 
 	 * @return
 	 */
@@ -407,8 +403,7 @@ public class Interval {
 	}
 
 	/**
-	 * Approximates bit-xor for intervals. Here, "approximate" means it is somewhat imprecise, but
-	 * still sound.
+	 * Approximates bit-xor for intervals. Here, "approximate" means it is somewhat imprecise, but still sound.
 	 * 
 	 * @param i1
 	 * @param i2
@@ -438,8 +433,7 @@ public class Interval {
 	}
 
 	/**
-	 * counts the number of bits which are identical for the lower and upper bound starting from the
-	 * MSB
+	 * counts the number of bits which are identical for the lower and upper bound starting from the MSB
 	 * 
 	 * e.g: lower: 1010 upper: 1011 result: 3
 	 * 
@@ -520,8 +514,7 @@ public class Interval {
 	}
 
 	/**
-	 * Approximates bit-and for intervals. Here, "approximate" means it is somewhat imprecise, but
-	 * still sound.
+	 * Approximates bit-and for intervals. Here, "approximate" means it is somewhat imprecise, but still sound.
 	 * 
 	 * @param i1
 	 * @param i2
@@ -556,8 +549,7 @@ public class Interval {
 	}
 
 	/**
-	 * Approximates bit-or for intervals. Here, "approximate" means it is somewhat imprecise, but
-	 * still sound.
+	 * Approximates bit-or for intervals. Here, "approximate" means it is somewhat imprecise, but still sound.
 	 * 
 	 * @param i1
 	 * @param i2
@@ -592,9 +584,8 @@ public class Interval {
 	}
 
 	/**
-	 * For the interval range, this method evaluates known bit patterns in terms of
-	 * {@link BitVariant}s. A variant is always a mask (of known bits) and a pattern (of bits set
-	 * within the mask). If a bit is not set in the mask, one has to assume it may take any value.
+	 * For the interval range, this method evaluates known bit patterns in terms of {@link BitVariant}s. A variant is always a mask (of known bits) and a
+	 * pattern (of bits set within the mask). If a bit is not set in the mask, one has to assume it may take any value.
 	 * 
 	 * @return list of possible bit patterns, as precise as possible
 	 */
@@ -676,5 +667,20 @@ public class Interval {
 
 			return result;
 		}
+	}
+
+	public static Interval shiftLeft(Interval i1, Interval i2) {
+		// TODO Auto-generated method stub
+		return Interval.TOP_INTERVAL;
+	}
+
+	public static Interval shiftRight(Interval i1, Interval i2) {
+		// TODO Auto-generated method stub
+		return Interval.TOP_INTERVAL;
+	}
+
+	public static Interval shiftUnsignedRight(Interval i1, Interval i2) {
+		// TODO Auto-generated method stub
+		return Interval.TOP_INTERVAL;
 	}
 }

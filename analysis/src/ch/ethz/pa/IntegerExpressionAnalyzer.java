@@ -13,8 +13,11 @@ import soot.jimple.MulExpr;
 import soot.jimple.NegExpr;
 import soot.jimple.OrExpr;
 import soot.jimple.RemExpr;
+import soot.jimple.ShlExpr;
+import soot.jimple.ShrExpr;
 import soot.jimple.SubExpr;
 import soot.jimple.UnopExpr;
+import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 import ch.ethz.pa.intervals.Interval;
 import ch.ethz.pa.intervals.IntervalPerVar;
@@ -82,6 +85,12 @@ public class IntegerExpressionAnalyzer {
 				result = Interval.or(i1, i2);
 			} else if (binop instanceof AndExpr) {
 				result = Interval.and(i1, i2);
+			} else if (binop instanceof ShlExpr) {
+				result = Interval.shiftLeft(i1, i2);
+			} else if (binop instanceof ShrExpr) {
+				result = Interval.shiftRight(i1, i2);
+			} else if (binop instanceof UshrExpr) {
+				result = Interval.shiftUnsignedRight(i1, i2);
 			} else {
 				// go to top if there is an unknown binary operation
 				logger.severe("Unexpected binary operation " + binop);
