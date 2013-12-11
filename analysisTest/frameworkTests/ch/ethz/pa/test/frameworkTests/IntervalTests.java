@@ -98,7 +98,27 @@ public class IntervalTests {
 
 	@Test
 	public void testSubtract() {
-		Assert.assertEquals(new Interval(-3, 4), Interval.subtract(new Interval(-1, 5), new Interval(1, 2)));
+		Interval i1;
+		Interval i2;
+		Interval res;
+
+		i1 = new Interval(-1, 5);
+		i2 = new Interval(1, 2);
+		res = new Interval(-3, 4);
+		Assert.assertEquals(res, Interval.subtract(i1, i2));
+
+		// upper value overflow
+		i1 = new Interval(-2147483647, 2147483647);
+		i2 = new Interval(-2147483648);
+		res = new Interval(1, Integer.MAX_VALUE);
+		Assert.assertEquals(res, Interval.subtract(i1, i2));
+
+		// underflow
+		i1 = new Interval(Integer.MIN_VALUE, 0);
+		i2 = new Interval(1);
+		res = new Interval(Integer.MIN_VALUE, -1);
+		Assert.assertEquals(res, Interval.subtract(i1, i2));
+
 	}
 
 	@Test
