@@ -157,20 +157,20 @@ public class DefinitionStmtAnalyzer {
 
 				else
 					logger.severe("hit unexpected type " + param.getType());
-				// throw new RuntimeException("hit unexpected type " + param.getType());
+				throw new RuntimeException("hit unexpected type " + param.getType());
 
 			}
 
 			else {
 				logger.severe("unhandled JimpleLocal " + left + " at " + sd);
-				// throw new RuntimeException("unhandled JimpleLocal " + left + " at " + sd);
+				throw new RuntimeException("unhandled JimpleLocal " + left + " at " + sd);
 			}
 			// ...
 		}
 
 		else {
 			logger.severe("unhandled lhs " + left);
-			// throw new RuntimeException("unhandled lhs " + left);
+			throw new RuntimeException("unhandled lhs " + left);
 		}
 		// ...
 	}
