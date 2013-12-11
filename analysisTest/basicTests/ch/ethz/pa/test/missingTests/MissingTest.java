@@ -31,7 +31,7 @@ public class MissingTest extends ValidationTestBase {
 		testAnyProgram("TestSoundBranch1_315_at_testBranch4_Fixed", SAFE);
 	}
 
-	@Test
+	@Test(timeout = 10000)
 	public void testTestSoundBranch1_316_at_testBranch5_Fixed() {
 		testAnyProgram("TestSoundBranch1_316_at_testBranch5_Fixed", SAFE);
 	}

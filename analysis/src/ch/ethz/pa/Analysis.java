@@ -38,7 +38,7 @@ import ch.ethz.pa.pairs.PairNotEqual;
  */
 public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 
-	private final Logger logger = Logger.getLogger(Analysis.class.getSimpleName());
+	private static final Logger logger = Logger.getLogger(Analysis.class.getSimpleName());
 
 	private final ProblemReport problemReport;
 	private final DefinitionStmtAnalyzer definitionStmtAnalyzer;
@@ -61,6 +61,12 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 	static void unhandled(String what) {
 		System.err.println("Can't handle " + what);
 		System.exit(1);
+	}
+
+	public static void uncoveredBranch(String what) {
+
+		logger.severe(what);
+		throw new RuntimeException(what);
 	}
 
 	@Override
@@ -131,12 +137,12 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 						new PairGreaterThan(a1, a2, currentInerval).restrict(fallStateInterval);
 					}
 
-					else
-						throw new RuntimeException("unhandled binop condition: " + condition);
+					else {
+						Analysis.uncoveredBranch("unhandled binop condition: " + condition);
+					}
+				} else {
+					Analysis.uncoveredBranch("unhandled condition: " + op);
 				}
-
-				else
-					throw new RuntimeException("unhandled condition: " + op);
 			}
 
 			else if (s instanceof ReturnVoidStmt) {
@@ -152,7 +158,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 			}
 
 			else {
-				throw new RuntimeException("unhandled statement: " + op);
+				Analysis.uncoveredBranch("unhandled statement: " + op);
 			}
 
 			copyToMany(fallState, fallOut);

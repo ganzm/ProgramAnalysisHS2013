@@ -2,12 +2,14 @@ package ch.ethz.pa;
 
 import java.util.logging.Logger;
 
+import soot.ArrayType;
 import soot.BooleanType;
 import soot.IntegerType;
 import soot.Local;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.SootMethod;
+import soot.Type;
 import soot.Value;
 import soot.jimple.ArrayRef;
 import soot.jimple.BinopExpr;
@@ -18,6 +20,7 @@ import soot.jimple.ParameterRef;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.UnopExpr;
 import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.internal.JNewArrayExpr;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.internal.JimpleLocalBox;
 import ch.ethz.pa.intervals.Interval;
@@ -149,28 +152,49 @@ public class DefinitionStmtAnalyzer {
 
 				if (param.getType() instanceof BooleanType) {
 					// handle BooleanType before IntegerType because
-					throw new RuntimeException("boolean type assignment not handled");
+
+					Analysis.uncoveredBranch("boolean type assignment not handled");
 
 				} else if (param.getType() instanceof IntegerType) {
 					fallStateInterval.putIntervalForVar(varName, Interval.TOP_INTERVAL);
+				} else if (param.getType() instanceof ArrayType) {
+
+					ArrayType arrayParam = (ArrayType) param.getType();
+
+					Type elementType = arrayParam.getElementType();
+
+					if ("AircraftControl".equals(arrayParam.getArrayElementType().toString())) {
+						// TODO
+						Analysis.uncoveredBranch("TODO");
+
+					} else {
+						logger.finest("Got Array of " + elementType);
+					}
 				}
 
-				else
-					logger.severe("hit unexpected type " + param.getType());
-				throw new RuntimeException("hit unexpected type " + param.getType());
+				else {
+					Analysis.uncoveredBranch("hit unexpected type " + param.getType());
+				}
 
-			}
+			} else if (right instanceof JNewArrayExpr) {
+				JNewArrayExpr rightArrayExpr = (JNewArrayExpr) right;
 
-			else {
-				logger.severe("unhandled JimpleLocal " + left + " at " + sd);
-				throw new RuntimeException("unhandled JimpleLocal " + left + " at " + sd);
+				Type baseType = rightArrayExpr.getBaseType();
+				if ("AircraftControl".equals(baseType.toString())) {
+					Value sizeValue = rightArrayExpr.getSize();
+					Interval sizeInterval = IntegerExpressionAnalyzer.getIntervalForValue(currentInterval, sizeValue);
+					Analysis.uncoveredBranch("TODO");
+				} else {
+					logger.fine("Ignore Arrays of " + baseType);
+				}
+			} else {
+				Analysis.uncoveredBranch("unhandled JimpleLocal " + left + " at " + sd);
 			}
 			// ...
 		}
 
 		else {
-			logger.severe("unhandled lhs " + left);
-			throw new RuntimeException("unhandled lhs " + left);
+			Analysis.uncoveredBranch("unhandled lhs " + left);
 		}
 		// ...
 	}
