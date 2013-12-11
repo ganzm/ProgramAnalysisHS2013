@@ -71,7 +71,7 @@ public class IntervalBitShiftRightTest {
 		expected1 = BinaryUtil.fromBinString(expectedString);
 		expectedString = "11100000000000000000000000000000";
 		expected2 = BinaryUtil.fromBinString(expectedString);
-		iRes = Interval.shiftRight(new Interval(expected1), new Interval(1));
+		iRes = Interval.shiftRight(new Interval(expected1), new Interval(2));
 		Assert.assertEquals(new Interval(expected2), iRes);
 
 	}
