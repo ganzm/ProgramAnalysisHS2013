@@ -743,6 +743,13 @@ public class Interval {
 		return new Interval(lower, upper);
 	}
 
+	/**
+	 * >> operation
+	 * 
+	 * @param i1
+	 * @param i2
+	 * @return
+	 */
 	public static Interval shiftRight(Interval i1, Interval i2) {
 		i2 = adjustIntervalForBitShift(i2);
 
