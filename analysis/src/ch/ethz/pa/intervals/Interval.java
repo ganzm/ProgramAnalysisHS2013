@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import ch.ethz.pa.BinaryUtil;
-import ch.ethz.pa.ProblemException;
 
 /**
  * Interval is a read-only value type.
@@ -672,19 +671,80 @@ public class Interval {
 		}
 	}
 
+	public static Interval adjustIntervalForBitShift(Interval i1) {
+		boolean[] b = new boolean[32];
+
+		for (int i = 0; i < b.length; i++) {
+			int bound = Math.min(i1.lower + 32, i1.upper);
+			for (int j = i1.lower; j <= bound; j++) {
+
+				int tmp = j;
+
+				// lift tmp to the range of [0...31]
+				if (tmp < 0) {
+					tmp += 32 * Math.ceil((double) tmp / -32d);
+				}
+
+				if (tmp >= 32) {
+					tmp = tmp % 32;
+				}
+
+				if (tmp == i) {
+					b[i] = true;
+					break;
+				}
+			}
+		}
+
+		int lower = 0;
+		for (int i = 0; i < b.length; i++) {
+			if (b[i]) {
+				lower = i;
+				break;
+			}
+		}
+
+		int upper = 31;
+		for (int i = 31; i >= 0; i--) {
+			if (b[i]) {
+				upper = i;
+				break;
+			}
+		}
+
+		return new Interval(lower, upper);
+	}
+
+	/**
+	 * Performs a bitshift left
+	 * 
+	 * Take care java does this
+	 * 
+	 * x << 1 == x << 33 == x << -31
+	 * 
+	 * and
+	 * 
+	 * x << 0 == x << 32 == x << -32
+	 * 
+	 * @param i1
+	 * @param i2
+	 * @return
+	 */
 	public static Interval shiftLeft(Interval i1, Interval i2) {
-		// TODO Auto-generated method stub
-		return Interval.TOP_INTERVAL;
+		i2 = adjustIntervalForBitShift(i2);
+
+		int iNew1 = i1.lower << i2.lower;
+		int iNew2 = i1.lower << i2.upper;
+		int iNew3 = i1.upper << i2.lower;
+		int iNew4 = i1.upper << i2.upper;
+
+		int lower = Math.min(Math.min(iNew1, iNew2), Math.min(iNew3, iNew4));
+		int upper = Math.max(Math.max(iNew1, iNew2), Math.max(iNew3, iNew4));
+		return new Interval(lower, upper);
 	}
 
 	public static Interval shiftRight(Interval i1, Interval i2) {
-		if (i2.upper < 0) {
-			// Interval.Bottom
-			throw new ProblemException("Problem with bitshift of " + i1 + " >> " + i2 + " - Second Operand must not be negative but was " + i2);
-		}
-
-		// no negative values allowed for second argument
-		i2 = new Interval(Math.max(0, i2.lower), i2.upper);
+		i2 = adjustIntervalForBitShift(i2);
 
 		int iNew1;
 		int iNew2;
@@ -713,10 +773,7 @@ public class Interval {
 	 * @return
 	 */
 	public static Interval shiftUnsignedRight(Interval i1, Interval i2) {
-		if (i2.upper < 0) {
-			// Interval.Bottom
-			throw new ProblemException("Problem with unsigned bitshift of " + i1 + " >>> " + i2 + " - Second Operand must not be negative but was " + i2);
-		}
+		i2 = adjustIntervalForBitShift(i2);
 
 		// no negative values allowed for second argument
 		i2 = new Interval(Math.max(0, i2.lower), i2.upper);

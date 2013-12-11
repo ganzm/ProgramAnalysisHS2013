@@ -7,7 +7,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import ch.ethz.pa.BinaryUtil;
-import ch.ethz.pa.ProblemException;
 import ch.ethz.pa.intervals.Interval;
 import ch.ethz.pa.logging.LoggerUtil;
 
@@ -82,21 +81,5 @@ public class IntervalBitShiftRightTest {
 		iRes = Interval.shiftRight(new Interval(expected1), new Interval(2));
 		Assert.assertEquals(new Interval(expected2), iRes);
 
-	}
-
-	@Test
-	public void testException() {
-		Interval i1 = new Interval(1024);
-		Interval i2 = new Interval(-1024, -1);
-
-		try {
-			Interval.shiftUnsignedRight(i1, i2);
-			Assert.fail("Expected ProblemException");
-		} catch (ProblemException ex) {
-			// Expected that
-			logger.info("Got ProblemException " + ex);
-		} catch (Exception ex) {
-			Assert.fail("Expected ProblemException " + ex);
-		}
 	}
 }
