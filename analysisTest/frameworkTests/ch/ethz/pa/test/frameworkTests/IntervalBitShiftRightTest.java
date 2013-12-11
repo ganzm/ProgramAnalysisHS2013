@@ -58,6 +58,14 @@ public class IntervalBitShiftRightTest {
 		int expected1;
 		int expected2;
 
+		// no shift by 0
+		expectedString = "10000000000000000000000000000000";
+		expected1 = BinaryUtil.fromBinString(expectedString);
+		expectedString = "10000000000000000000000000000000";
+		expected2 = BinaryUtil.fromBinString(expectedString);
+		iRes = Interval.shiftRight(new Interval(expected1), new Interval(0));
+		Assert.assertEquals(new Interval(expected2), iRes);
+
 		// simple shift by 1
 		expectedString = "10000000000000000000000000000000";
 		expected1 = BinaryUtil.fromBinString(expectedString);
@@ -79,7 +87,7 @@ public class IntervalBitShiftRightTest {
 	@Test
 	public void testException() {
 		Interval i1 = new Interval(1024);
-		Interval i2 = new Interval(-1024, 0);
+		Interval i2 = new Interval(-1024, -1);
 
 		try {
 			Interval.shiftUnsignedRight(i1, i2);

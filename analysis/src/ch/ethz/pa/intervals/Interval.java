@@ -678,13 +678,13 @@ public class Interval {
 	}
 
 	public static Interval shiftRight(Interval i1, Interval i2) {
-		if (i2.upper <= 0) {
+		if (i2.upper < 0) {
 			// Interval.Bottom
 			throw new ProblemException("Problem with bitshift of " + i1 + " >> " + i2 + " - Second Operand must not be negative but was " + i2);
 		}
 
 		// no negative values allowed for second argument
-		i2 = new Interval(Math.max(1, i2.lower), i2.upper);
+		i2 = new Interval(Math.max(0, i2.lower), i2.upper);
 
 		int iNew1;
 		int iNew2;
@@ -713,13 +713,13 @@ public class Interval {
 	 * @return
 	 */
 	public static Interval shiftUnsignedRight(Interval i1, Interval i2) {
-		if (i2.upper <= 0) {
+		if (i2.upper < 0) {
 			// Interval.Bottom
 			throw new ProblemException("Problem with unsigned bitshift of " + i1 + " >>> " + i2 + " - Second Operand must not be negative but was " + i2);
 		}
 
 		// no negative values allowed for second argument
-		i2 = new Interval(Math.max(1, i2.lower), i2.upper);
+		i2 = new Interval(Math.max(0, i2.lower), i2.upper);
 
 		int iNew1;
 		int iNew2;
