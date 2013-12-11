@@ -31,7 +31,7 @@ public class ImpreciseTest extends ValidationTestBase {
 		testAnyProgram("TestSimpleGen11_424_at_testOSMSSuuS_OK_52", SAFE);
 	}
 
-	@Test
+	@Test(timeout = 5000)
 	public void testTestSimpleGen11_404_at_testOASSuAOA_OK_32() {
 		testAnyProgram("TestSimpleGen11_404_at_testOASSuAOA_OK_32", SAFE);
 	}
