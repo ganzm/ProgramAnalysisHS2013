@@ -31,4 +31,14 @@ public class ImpreciseTest extends ValidationTestBase {
 		testAnyProgram("TestSimpleGen11_424_at_testOSMSSuuS_OK_52", SAFE);
 	}
 
+	@Test
+	public void testTestSimpleGen11_404_at_testOASSuAOA_OK_32() {
+		testAnyProgram("TestSimpleGen11_404_at_testOASSuAOA_OK_32", SAFE);
+	}
+
+	@Test
+	public void testTestSimpleGen11_416_at_testOSSuSS_OK_44() {
+		testAnyProgram("TestSimpleGen11_416_at_testOSSuSS_OK_44", SAFE);
+	}
+
 }

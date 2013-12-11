@@ -31,4 +31,14 @@ public class UnsoundTest extends ValidationTestBase {
 		testAnyProgram("TestSimpleGen13_893_at_testDMD_NegativeAboveEnd_23", UNSAFE);
 	}
 
+	@Test
+	public void testTestSimpleGen13_928_at_testRR_Negative_58() {
+		testAnyProgram("TestSimpleGen13_928_at_testRR_Negative_58", UNSAFE);
+	}
+
+	@Test
+	public void testTestSimpleGen14_286_at_testRR_Negative_58() {
+		testAnyProgram("TestSimpleGen14_286_at_testRR_Negative_58", UNSAFE);
+	}
+
 }
