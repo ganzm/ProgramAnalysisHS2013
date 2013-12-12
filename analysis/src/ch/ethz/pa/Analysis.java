@@ -73,7 +73,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 	@Override
 	protected void flowThrough(StateContainer current, Unit op, List<StateContainer> fallOut, List<StateContainer> branchOuts) {
 		// This could be optimized.
-		logger.info("===================================\n\tOperation: " + op + "   - " + op.getClass().getName() + "\n\tState: " + current);
+		logger.info("===================================\n\tOperation: " + op + "   - " + op.getClass().getName() + "  ::::  State: " + current);
 		try {
 
 			IntervalPerVar currentInerval = current.getIntervalPerVar();
