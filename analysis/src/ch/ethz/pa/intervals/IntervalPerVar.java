@@ -83,10 +83,15 @@ public class IntervalPerVar {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof IntervalPerVar))
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		return ((IntervalPerVar) o).values.equals(values);
+		if (getClass() != obj.getClass())
+			return false;
+		IntervalPerVar other = (IntervalPerVar) obj;
+		return (other.values.equals(values));
 	}
 
 	/**
