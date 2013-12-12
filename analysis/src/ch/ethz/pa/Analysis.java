@@ -19,6 +19,7 @@ import soot.jimple.LtExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
+import soot.jimple.internal.JEqExpr;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.internal.JimpleLocalBox;
 import soot.toolkits.graph.UnitGraph;
@@ -135,9 +136,11 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 					else if (condition instanceof LeExpr) {
 						new PairLowerEqual(a1, a2, currentInerval).restrict(branchStateInterval);
 						new PairGreaterThan(a1, a2, currentInerval).restrict(fallStateInterval);
-					}
-
-					else {
+					} else if (condition instanceof JEqExpr) {
+						// == expression
+						new PairEqual(a1, a2, currentInerval).restrict(branchStateInterval);
+						new PairNotEqual(a1, a2, currentInerval).restrict(fallStateInterval);
+					} else {
 						Analysis.uncoveredBranch("unhandled binop condition: " + condition);
 					}
 				} else {
