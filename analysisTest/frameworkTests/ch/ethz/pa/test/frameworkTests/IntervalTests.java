@@ -200,6 +200,12 @@ public class IntervalTests {
 		// enclosed sets
 		Assert.assertEquals(new Interval(2, 4), new Interval(2, 4).limitToNotEqual(new Interval(0, 6)));
 		Assert.assertEquals(new Interval(0, 6), new Interval(0, 6).limitToNotEqual(new Interval(2, 4)));
+
+		// bounding sets
+		Assert.assertEquals(new Interval(1, 15), new Interval(0, 15).limitToNotEqual(new Interval(0)));
+		Assert.assertEquals(new Interval(0, 14), new Interval(0, 15).limitToNotEqual(new Interval(15)));
+		Assert.assertEquals(new Interval(0, 15), new Interval(0, 15).limitToNotEqual(new Interval(0, 1)));
+		Assert.assertEquals(new Interval(0, 15), new Interval(0, 15).limitToNotEqual(new Interval(14, 15)));
 	}
 
 	@Test
