@@ -38,6 +38,9 @@ public class IntervalTests {
 		Assert.assertEquals(new Interval(-9, 3), Interval.multiply(new Interval(-3, 1), new Interval(-1, 3)));
 		Assert.assertEquals(new Interval(-4, 0), Interval.multiply(new Interval(-2, 0), new Interval(0, 2)));
 		Assert.assertEquals(new Interval(0, 0), Interval.multiply(new Interval(-5, 5), new Interval(0, 0)));
+		Assert.assertEquals(new Interval(1, 1), Interval.multiply(new Interval(1, 1), new Interval(1, 1)));
+		Assert.assertEquals(new Interval(-1, -1), Interval.multiply(new Interval(-1, -1), new Interval(1, 1)));
+		Assert.assertEquals(new Interval(-1, -1), Interval.multiply(new Interval(1, 1), new Interval(-1, -1)));
 	}
 
 	@Test

@@ -21,6 +21,26 @@ public class ReadWriteOnceTest extends ValidationTestBase {
 		testAnyProgram("BadReadTwice", UNSAFE);
 	}
 
+	@Test
+	public void testWrongReadeBelow() {
+		testAnyProgram("BadReadBelow", UNSAFE);
+	}
+
+	@Test
+	public void testWrongReadeAbove() {
+		testAnyProgram("BadReadAbove", UNSAFE);
+	}
+
+	@Test
+	public void testBadAdjustBelow() {
+		testAnyProgram("BadAdjustBelow", UNSAFE);
+	}
+
+	@Test
+	public void testBadAdjustAbove() {
+		testAnyProgram("BadAdjustAbove", UNSAFE);
+	}
+
 	@Test(timeout = 10000)
 	public void testGoodReadTwice() {
 		testAnyProgram("GoodReadTwice", SAFE);
