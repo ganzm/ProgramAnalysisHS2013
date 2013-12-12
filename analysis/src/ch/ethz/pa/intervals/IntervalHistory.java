@@ -50,11 +50,21 @@ public class IntervalHistory {
 			return false;
 		}
 
-		if (history.getLast().covers(interval)) {
+		final Interval latestHistory = history.getLast();
+		if (latestHistory.covers(interval)) {
 			return false;
 		}
 
-		history.add(interval);
+		Interval newInterval;
+		if (interval.covers(latestHistory)) {
+			newInterval = interval;
+			System.out.println(String.format("Enlarge %s to %s", latestHistory, newInterval));
+		} else {
+			newInterval = interval.join(latestHistory);
+			System.out.println(String.format("Combine current %s and previous %s to %s", interval, latestHistory, newInterval));
+		}
+
+		history.add(newInterval);
 		return true;
 	}
 
