@@ -82,26 +82,33 @@ public class Interval {
 	}
 
 	public static Interval plus(Interval i1, Interval i2) {
-		boolean overflow[] = new boolean[] { false };
-		int newLower = addCheckOverflow(i1.lower, i2.lower, overflow);
-		int newUpper = addCheckOverflow(i1.upper, i2.upper, overflow);
-		return overflow[0] ? TOP_INTERVAL : new Interval(newLower, newUpper);
-	}
+		int newUpper = i1.upper + i2.upper;
+		int newLower = i1.lower + i2.lower;
 
-	/**
-	 * Perform integer addition and check for overflow.
-	 * 
-	 * @param a1
-	 * @param a2
-	 * @param overflow
-	 *            set true on overflow, unchanged otherwise
-	 * @return
-	 */
-	private static int addCheckOverflow(int a1, int a2, boolean[] overflow) {
-		int result = a1 + a2;
-		if ((a2 > 0 && result < a1) || (a2 < 0 && result > a1))
-			overflow[0] = true;
-		return result;
+		if (addOverflow(i1.upper, i2.upper, newUpper)) {
+			// upper overflows
+			if (addOverflow(i1.lower, i2.lower, newLower)) {
+				// both overflow
+				return new Interval(newLower, newUpper);
+			} else {
+				// only one value overflows
+				return TOP_INTERVAL;
+			}
+		}
+
+		if (addUnderflow(i1.lower, i2.lower, newLower)) {
+			// newLower underflows
+
+			if (addUnderflow(i1.upper, i2.upper, newUpper)) {
+				// both underflow
+				return new Interval(newLower, newUpper);
+			} else {
+				// only one vlaue underflows
+				return TOP_INTERVAL;
+			}
+		}
+
+		return new Interval(newLower, newUpper);
 	}
 
 	/**
@@ -141,6 +148,14 @@ public class Interval {
 		}
 
 		return new Interval(newLower, newUpper);
+	}
+
+	private static boolean addOverflow(int s1, int s2, int sum) {
+		return s1 > 0 && s2 > 0 && sum < 0;
+	}
+
+	private static boolean addUnderflow(int s1, int s2, int sum) {
+		return s1 < 0 && s2 < 0 && sum > 0;
 	}
 
 	private static boolean subtractUnderflow(int minuend, int subtrahend, int difference) {

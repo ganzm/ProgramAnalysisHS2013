@@ -113,6 +113,37 @@ public class IntervalTests {
 	}
 
 	@Test
+	public void testAddUnderflowOverflow() {
+		Interval i1;
+		Interval i2;
+		Interval res;
+
+		// only one overflow
+		i1 = new Interval(Integer.MAX_VALUE - 1, Integer.MAX_VALUE);
+		i2 = new Interval(1);
+		res = Interval.TOP_INTERVAL;
+		Assert.assertEquals(res, Interval.plus(i1, i2));
+
+		// both overflow
+		i1 = new Interval(Integer.MAX_VALUE - 1, Integer.MAX_VALUE);
+		i2 = new Interval(2, 3);
+		res = new Interval(Integer.MIN_VALUE, Integer.MIN_VALUE + 2);
+		Assert.assertEquals(res, Interval.plus(i1, i2));
+
+		// only one underflow
+		i1 = new Interval(Integer.MIN_VALUE, Integer.MIN_VALUE + 1);
+		i2 = new Interval(-1);
+		res = Interval.TOP_INTERVAL;
+		Assert.assertEquals(res, Interval.plus(i1, i2));
+
+		// both underflow
+		i1 = new Interval(Integer.MIN_VALUE, Integer.MIN_VALUE + 1);
+		i2 = new Interval(-3, -2);
+		res = new Interval(Integer.MAX_VALUE - 2, Integer.MAX_VALUE);
+		Assert.assertEquals(res, Interval.plus(i1, i2));
+	}
+
+	@Test
 	public void testSubtractUnderflowOverflow() {
 		Interval i1;
 		Interval i2;
