@@ -131,12 +131,18 @@ public class DefinitionStmtAnalyzer {
 						if (!acRef.readSensorMethodCalled(readIntArgument)) {
 							problemReport.addProblem(sd, "readSensor already called with " + readIntArgument);
 						}
+
+						problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, currentInterval, sd);
+
 					} else if (method.getName().equals("adjustSensor")) {
 						Value sensorArg = expr.getArg(0);
 						Interval readIntArgument = IntegerExpressionAnalyzer.getIntervalForValue(currentInterval, sensorArg);
 						if (!acRef.adjustValueMethodCalled(readIntArgument)) {
 							problemReport.addProblem(sd, "adjustSensor already called with " + readIntArgument);
 						}
+
+						problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, currentInterval, sd);
+						problemReport.checkInterval(expr.getArg(1), Config.legalValueInterval, currentInterval, sd);
 					}
 				}
 			}
@@ -183,7 +189,7 @@ public class DefinitionStmtAnalyzer {
 				if ("AircraftControl".equals(baseType.toString())) {
 					Value sizeValue = rightArrayExpr.getSize();
 					Interval sizeInterval = IntegerExpressionAnalyzer.getIntervalForValue(currentInterval, sizeValue);
-					Analysis.uncoveredBranch("TODO");
+					Analysis.uncoveredBranch("Arrays of AircraftControl not handled");
 				} else {
 					logger.fine("Ignore Arrays of " + baseType);
 				}

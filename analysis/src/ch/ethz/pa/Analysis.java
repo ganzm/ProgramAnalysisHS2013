@@ -199,6 +199,8 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 		if (method.getDeclaringClass().getName().equals("AircraftControl")) {
 			if (method.getName().equals("readSensor")) {
 				flowThrougReadSensorInvoke(current, s, expr);
+
+				problemReport.checkInterval(expr.getArg(0), Config.legalSensorInterval, currentIntervalPerVar, s);
 			} else if (method.getName().equals("adjustValue")) {
 
 				flowThrougAdjustValueInvoke(current, s, expr);
