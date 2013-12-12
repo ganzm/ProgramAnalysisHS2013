@@ -104,9 +104,51 @@ public class Interval {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param i1
+	 * @param i2
+	 * @return
+	 */
 	public static Interval subtract(Interval i1, Interval i2) {
-		// TODO: Handle overflow.
-		return new Interval(i1.lower - i2.upper, i1.upper - i2.lower);
+		int newLower = i1.lower - i2.upper;
+		int newUpper = i1.upper - i2.lower;
+
+		if (subtractUnderflow(i1.lower, i2.upper, newLower)) {
+			// underflow detected for newLower
+
+			if (subtractUnderflow(i1.upper, i2.lower, newUpper)) {
+				// both lower and upper bound do underflow
+				return new Interval(newLower, newUpper);
+			} else {
+				// lower bound does underflow but upper bound does not
+				// go to top
+				return Interval.TOP_INTERVAL;
+			}
+		}
+
+		if (subtractOverflow(i1.upper, i2.lower, newUpper)) {
+			// overflow detected for newUpper
+
+			if (subtractOverflow(i1.lower, i2.upper, newLower)) {
+				// both lower and upper bound do overflow
+				return new Interval(newLower, newUpper);
+			} else {
+				// newUpper does overflow but new lower does not
+				// go to top
+				return Interval.TOP_INTERVAL;
+			}
+		}
+
+		return new Interval(newLower, newUpper);
+	}
+
+	private static boolean subtractUnderflow(int minuend, int subtrahend, int difference) {
+		return minuend < 0 && subtrahend > 0 && difference > 0;
+	}
+
+	private static boolean subtractOverflow(int minuend, int subtrahend, int difference) {
+		return minuend > 0 && subtrahend < 0 && difference < 0;
 	}
 
 	/**
