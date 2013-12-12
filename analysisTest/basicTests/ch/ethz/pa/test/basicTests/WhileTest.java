@@ -31,4 +31,9 @@ public class WhileTest extends ValidationTestBase {
 		testAnyProgram("GoodSimpleWhile5", SAFE);
 	}
 
+	@Test(timeout = 10000)
+	public void testGoodLoopTest1() {
+		testAnyProgram("GoodLoopTest1", SAFE);
+	}
+
 }
