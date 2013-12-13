@@ -6,8 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeSet;
 
-public class IntervalPerVar {
+final public class IntervalPerVar {
 
 	public static class Pair {
 		public final String name;
@@ -47,15 +48,19 @@ public class IntervalPerVar {
 
 	public void mergeWith(IntervalPerVar other) {
 
-		for (Map.Entry<String, Interval> entry : other.values.entrySet()) {
+		TreeSet<String> keys = new TreeSet<String>(values.keySet());
+		keys.addAll(other.values.keySet());
 
-			String otherName = entry.getKey();
-			Interval otherInterval = entry.getValue();
-
-			Interval ownInterval = values.get(otherName);
-			Interval newInterval = ownInterval != null ? ownInterval.join(otherInterval) : otherInterval;
-
-			values.put(otherName, newInterval);
+		for (String key : keys) {
+			Interval otherInterval = other.values.get(key);
+			Interval ownInterval = values.get(key);
+			Interval newInterval;
+			if (otherInterval == null) {
+				newInterval = ownInterval;
+			} else {
+				newInterval = ownInterval != null ? ownInterval.join(otherInterval) : otherInterval;
+			}
+			values.put(key, newInterval);
 		}
 	}
 

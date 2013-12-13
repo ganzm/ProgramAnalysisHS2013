@@ -7,7 +7,7 @@ import java.util.LinkedList;
 /**
  * Tracks the history of one {@link Interval}.
  */
-public class IntervalHistory {
+final public class IntervalHistory {
 
 	public final static int ITERATIONS_BEFORE_WIDENING = 5;
 

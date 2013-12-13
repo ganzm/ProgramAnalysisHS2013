@@ -1,6 +1,6 @@
 package ch.ethz.pa.intervals;
 
-public class BitVariant implements Comparable<BitVariant> {
+final public class BitVariant implements Comparable<BitVariant> {
 
 	/**
 	 * The mask for the bits that this variant knows about. Any bit set in the mask is fully

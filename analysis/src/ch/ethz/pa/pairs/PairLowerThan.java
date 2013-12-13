@@ -9,7 +9,7 @@ import ch.ethz.pa.intervals.IntervalPerVar;
 /**
  * @see Pair
  */
-public class PairLowerThan extends Pair {
+final public class PairLowerThan extends Pair {
 
 	public PairLowerThan(Value a1, Value a2, IntervalPerVar current) {
 

@@ -9,7 +9,7 @@ import ch.ethz.pa.intervals.IntervalPerVar;
 /**
  * @see Pair
  */
-public class PairGreaterEqual extends Pair {
+final public class PairGreaterEqual extends Pair {
 
 	public PairGreaterEqual(Value a1, Value a2, IntervalPerVar current) {
 

@@ -6,7 +6,7 @@ import ch.ethz.pa.IntegerExpressionAnalyzer;
 import ch.ethz.pa.intervals.Interval;
 import ch.ethz.pa.intervals.IntervalPerVar;
 
-public class PairNotEqual extends Pair {
+final public class PairNotEqual extends Pair {
 
 	public PairNotEqual(Value a1, Value a2, IntervalPerVar current) {
 

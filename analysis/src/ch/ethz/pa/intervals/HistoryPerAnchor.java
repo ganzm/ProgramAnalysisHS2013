@@ -12,7 +12,7 @@ import ch.ethz.pa.intervals.IntervalPerVar.Pair;
  * 
  * @param <TAnchor>
  */
-public class HistoryPerAnchor {
+final public class HistoryPerAnchor {
 
 	/**
 	 * References to next-level delegates which handle history per interval.

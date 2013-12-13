@@ -9,7 +9,7 @@ import java.util.Map;
  * 
  * @param <TAnchor>
  */
-public class IntervalPerVarHistory<TAnchor> {
+final public class IntervalPerVarHistory<TAnchor> {
 
 	/**
 	 * References to next-level delegates which handle history per program point.

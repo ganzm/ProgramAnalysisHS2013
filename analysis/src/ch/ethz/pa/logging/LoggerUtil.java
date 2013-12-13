@@ -9,25 +9,22 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
-public class LoggerUtil {
+final public class LoggerUtil {
 
 	/**
 	 * Debug Log configuration properties (key=value)
 	 */
-	//@formatter:off
-	private static final String debugLloggingProperties = ""
-			+ "handlers= java.util.logging.ConsoleHandler\n" 
-			+ ".level= ALL\n";
-	//@formatter:on
+	// @formatter:off
+	private static final String debugLloggingProperties = "" + "handlers= java.util.logging.ConsoleHandler\n" + ".level= ALL\n";
+	// @formatter:on
 
 	/**
 	 * Debug Log configuration properties (key=value)
 	 */
-	//@formatter:off
-	private static final String silentLoggingProperties = ""
-			+ "handlers=java.util.logging.ConsoleHandler\n" 
-			+ ".level=SEVERE\n";
-	//@formatter:on
+	// @formatter:off
+	private static final String silentLoggingProperties = "" + "handlers=java.util.logging.ConsoleHandler\n" + ".level=SEVERE\n";
+
+	// @formatter:on
 
 	public static void iniDebug() {
 		iniFromConfigString(debugLloggingProperties);
