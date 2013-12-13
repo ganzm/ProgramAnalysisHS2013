@@ -165,6 +165,11 @@ public class IntervalBitShiftLeftTest {
 		System.out.println(BinaryUtil.toBinString(-1 >>> 0) + "= -1 >>> 32");
 	}
 
+	@Test
+	public void testShiftByMany() {
+		Assert.assertTrue(Interval.shiftLeft(new Interval(233, 257), new Interval(28)).covers(242 << 28));
+	}
+
 	/**
 	 * Test some bit-or with random intervals, and print out precision information.
 	 */
@@ -199,15 +204,17 @@ public class IntervalBitShiftLeftTest {
 		int max = Integer.MIN_VALUE;
 		for (int i1 = i1lo; i1 <= i1hi; i1++) {
 			for (int i2 = i2lo; i2 <= i2hi; i2++) {
-				final int concreteOr = i1 << i2;
-				if (!shlInterval.covers(concreteOr)) {
-					Assert.fail("failed " + interval1 + " << " + interval2 + " apr " + shlInterval + " exp " + concreteOr);
+				final int concreteShl = i1 << i2;
+				if (!shlInterval.covers(concreteShl)) {
+					Assert.fail("failed " + interval1 + " << " + interval2 + " apr " + shlInterval + " exp " + concreteShl + " (when shifting " + i1 + " by "
+							+ i2 + ")");
 				}
-				min = Math.min(min, concreteOr);
-				max = Math.max(max, concreteOr);
+				min = Math.min(min, concreteShl);
+				max = Math.max(max, concreteShl);
 			}
 		}
 		Interval precise = new Interval(min, max);
+		System.out.print(precise.covers(shlInterval) ? "precise " : "approx  ");
 		System.out.println("testing " + interval1 + " << " + interval2 + " is " + precise + " apr " + shlInterval);
 	}
 

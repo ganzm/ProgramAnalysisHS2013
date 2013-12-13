@@ -846,16 +846,36 @@ final public class Interval {
 	 * @return
 	 */
 	public static Interval shiftLeft(Interval i1, Interval i2) {
-		i2 = adjustIntervalForBitShift(i2);
+		if (i1 == EMPTY_INTERVAL || i2 == EMPTY_INTERVAL)
+			return EMPTY_INTERVAL;
 
-		int iNew1 = i1.lower << i2.lower;
-		int iNew2 = i1.lower << i2.upper;
-		int iNew3 = i1.upper << i2.lower;
-		int iNew4 = i1.upper << i2.upper;
+		// special case:
+		// if we ALAWYS loose all bits, return zero
+		if (i2.lower > 32 || i2.upper < 0)
+			return new Interval(0);
 
-		int lower = Math.min(Math.min(iNew1, iNew2), Math.min(iNew3, iNew4));
-		int upper = Math.max(Math.max(iNew1, iNew2), Math.max(iNew3, iNew4));
-		return new Interval(lower, upper);
+		int minShift = i2.lower > 0 ? i2.lower : 0;
+		int maxShift = i2.upper < 32 ? i2.upper : 32;
+
+		Interval result = null;
+		final List<BitVariant> bitVariants1 = i1.bitVariants();
+		for (BitVariant bitVariant1 : bitVariants1) {
+			final int bitsA = bitVariant1.bits & bitVariant1.mask;
+			final int bitsB = bitVariant1.bits | ~bitVariant1.mask;
+			for (int shift = minShift; shift <= maxShift; ++shift) {
+				Interval partialSolution = new Interval(bitsA << shift).join(new Interval(bitsB << shift));
+				result = result == null ? partialSolution : result.join(partialSolution);
+
+				// in addition, if the top bit is a masked-out bit, it could be toggled...
+				int toggleBit = ((~bitVariant1.mask) << shift) & Integer.MIN_VALUE;
+				if (toggleBit != 0) {
+					final int bitsCshifted = (bitsA << shift) ^ Integer.MIN_VALUE;
+					final int bitsDshifted = (bitsB << shift) ^ Integer.MIN_VALUE;
+					result = result.join(new Interval(bitsCshifted).join(new Interval(bitsDshifted)));
+				}
+			}
+		}
+		return result;
 	}
 
 	/**
