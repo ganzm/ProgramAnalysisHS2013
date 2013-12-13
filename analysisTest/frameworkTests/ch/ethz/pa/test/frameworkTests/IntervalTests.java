@@ -70,13 +70,13 @@ public class IntervalTests {
 			// dividend within minimum and maximum divisor magnitude
 			Assert.assertEquals(new Interval(-110, 120), Interval.remainder(new Interval(-110, 120), divisor, flag));
 			// dividend exceeds negative divisor magnitude
-			Assert.assertEquals(new Interval(-150, 90), Interval.remainder(new Interval(-170, 90), divisor, flag));
-			Assert.assertEquals(new Interval(-150, 120), Interval.remainder(new Interval(-170, 120), divisor, flag));
+			Assert.assertEquals(new Interval(-149, 90), Interval.remainder(new Interval(-170, 90), divisor, flag));
+			Assert.assertEquals(new Interval(-149, 120), Interval.remainder(new Interval(-170, 120), divisor, flag));
 			// dividend exceeds positive divisor magnitude
-			Assert.assertEquals(new Interval(-80, 150), Interval.remainder(new Interval(-80, 170), divisor, flag));
-			Assert.assertEquals(new Interval(-110, 150), Interval.remainder(new Interval(-110, 170), divisor, flag));
+			Assert.assertEquals(new Interval(-80, 149), Interval.remainder(new Interval(-80, 170), divisor, flag));
+			Assert.assertEquals(new Interval(-110, 149), Interval.remainder(new Interval(-110, 170), divisor, flag));
 			// dividend exceed divisor completely
-			Assert.assertEquals(new Interval(-150, 150), Interval.remainder(new Interval(-170, 170), divisor, flag));
+			Assert.assertEquals(new Interval(-149, 149), Interval.remainder(new Interval(-170, 170), divisor, flag));
 		}
 
 		// simple cases where divisor is unique (has only one element) and dividend is positive
@@ -122,9 +122,19 @@ public class IntervalTests {
 		res = new Interval(0, 100);
 		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
 
+		i1 = new Interval(0);
+		i2 = new Interval(Integer.MIN_VALUE, Integer.MAX_VALUE);
+		res = new Interval(0);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
 		i1 = new Interval(-2, 10);
 		i2 = new Interval(5, 5);
 		res = new Interval(-2, 4);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(5, 6);
+		i2 = new Interval(4, 5);
+		res = new Interval(0, 2);
 		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
 
 		i1 = new Interval(-10, -8);
@@ -138,7 +148,7 @@ public class IntervalTests {
 		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
 
 		i1 = new Interval(-10, 10);
-		i2 = new Interval(-2, -3);
+		i2 = new Interval(-3, -2);
 		res = new Interval(-2, 2);
 		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
 
@@ -152,7 +162,17 @@ public class IntervalTests {
 		res = new Interval(-4, 0);
 		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
 
-		i1 = new Interval(-999, 99);
+		i1 = new Interval(4, 6);
+		i2 = new Interval(5);
+		res = new Interval(0, 4);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(5, 6);
+		i2 = new Interval(5);
+		res = new Interval(0, 1);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-999, 999);
 		i2 = new Interval(99, 101);
 		res = new Interval(-100, 100);
 		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));

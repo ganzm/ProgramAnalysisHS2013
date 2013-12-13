@@ -275,64 +275,95 @@ public class Interval {
 			return EMPTY_INTERVAL;
 		}
 
-		// from here on, consider only the absolute magnitude of the divisor
-		// (the sign of the divisor does not matter)
-		final int minDivisor = Math.min(Math.abs(divisor.lower), Math.abs(divisor.upper));
-		final int maxDivisor = Math.max(Math.abs(divisor.lower), Math.abs(divisor.upper));
-
-		// -------------------------------------------------
-		// SPECIAL CASE: THE DIVIDEND RANGE CROSSES ZERO
-		// (here, we have to consider that java preserves the sign of the dividend)
-
-		if (dividend.lower < 0 && 0 < dividend.upper) {
-
-			// dividend potentially exceeds the divisor magnitude on both sides
-			if (dividend.lower <= -minDivisor && minDivisor <= dividend.upper)
-				return new Interval(Math.max(-maxDivisor, dividend.lower), Math.min(maxDivisor, dividend.upper));
-
-			// dividend potentially exceeds divisor on lower side, but never on upper
-			if (dividend.lower <= -minDivisor && dividend.upper < minDivisor)
-				return new Interval(Math.max(-maxDivisor, dividend.lower), dividend.upper);
-
-			// dividend potentially exceeds divisor on lower side, but never on upper
-			if (-minDivisor < dividend.lower && minDivisor <= dividend.upper)
-				return new Interval(dividend.lower, Math.min(maxDivisor, dividend.upper));
-
-			// otherwise, dividend magnitude is always below the divisor magnitude
-			return dividend;
+		// clean up divisor (since java ignores negative divisors
+		if (divisor.lower <= 0 && divisor.upper <= 0) {
+			divisor = new Interval(Math.abs(divisor.upper), Math.abs(divisor.lower));
 		}
 
-		// -------------------------------------------------
-		// TRIVIAL CASE: the dividend is normalized negative
-		if (-minDivisor < dividend.lower && dividend.lower < 0 && dividend.upper <= 0)
-			return dividend;
-		// TRIVIAL CASE: the dividend is normalized positive
-		if (0 <= dividend.lower && 0 < dividend.upper && dividend.upper < minDivisor)
-			return dividend;
+		// expect strict positive divisor from now
+		assert divisor.lower > 0;
+		assert divisor.upper > 0;
 
-		// -------------------------------------------------
-		// GENERAL CASE: DIVIDEND RANGE EQUALS OR EXCEEDS THE MINIMUM DIVISOR
-		// then anything between 0 and the actual upper divisor is possible
-		// but we can exclude sign flipping, which was handled before
-		final int dividendRange = dividend.upper - dividend.lower + 1;
-		if (dividendRange >= minDivisor)
-			return dividend.lower < 0 ? new Interval(1 - maxDivisor, 0) : new Interval(0, maxDivisor - 1);
+		if (divisor.upper == divisor.lower) {
+			return remainder(dividend, divisor.lower);
+		} else {
+			Interval i1 = remainder(dividend, divisor.upper);
+			Interval i2 = remainder(dividend, divisor.lower);
 
-		// -------------------------------------------------
-		// SPECIAL CASE: THE DIVISOR IS UNIQUE
-		// (so we can actually compute the remainder for upper and lower bounds)
-		// (and we already excluded wrap-around by range)
-		if (minDivisor == maxDivisor) {
-			final int remainderFromLower = dividend.lower % maxDivisor;
-			final int remainderFromUpper = dividend.upper % maxDivisor;
-			// only if there was no wrap-around, we gain precision
-			// (that is the case when the remainder relation preserves the dividend relation)
-			if (remainderFromLower <= remainderFromUpper)
-				return new Interval(remainderFromLower, remainderFromUpper);
+			return i1.join(i2);
 		}
+	}
 
-		// default: return the full range
-		return dividend.lower < 0 ? new Interval(1 - maxDivisor, 0) : new Interval(0, maxDivisor - 1);
+	/**
+	 * Implements the Modulo Operator where the divisor is a simple integer not an interval
+	 * 
+	 * @param i1
+	 * @param divisor
+	 * @return
+	 */
+	private static Interval remainder(Interval i1, int divisor) {
+		assert divisor > 0;
+
+		if (i1.lower >= 0 && i1.upper >= 0) {
+			// interval is strict positive
+
+			if ((i1.upper - i1.lower + 1) >= divisor) {
+				// we cover the full range of the divisor
+				return new Interval(0, divisor - 1);
+			}
+
+			int resultUpper = 0;
+			int resultLower = 0;
+
+			// calculate upper bound
+			int r1 = i1.upper % divisor;
+			if (i1.upper - r1 - 1 >= i1.lower) {
+				resultUpper = divisor - 1;
+			} else {
+				resultUpper = r1;
+			}
+
+			// calculate lower bound
+			if (i1.upper - r1 >= i1.lower) {
+				resultLower = 0;
+			} else {
+				resultLower = i1.lower % divisor;
+			}
+
+			return new Interval(resultLower, resultUpper);
+		} else if (i1.lower < 0 && i1.upper <= 0) {
+			// interval is strict below zero
+
+			if ((i1.upper - i1.lower + 1) >= divisor) {
+				// we cover the full range of the divisor
+				return new Interval(-(divisor - 1), 0);
+			}
+
+			int resultUpper = 0;
+			int resultLower = 0;
+
+			// calculate lower bound
+			int r1 = i1.lower % divisor;
+			if (i1.lower - r1 + 1 <= i1.upper) {
+				resultLower = -(divisor - 1);
+			} else {
+				resultLower = r1;
+			}
+
+			// calculate upper bound
+			if (i1.lower + r1 >= i1.upper) {
+				resultUpper = 0;
+			} else {
+				resultUpper = i1.upper % divisor;
+			}
+
+			return new Interval(resultLower, resultUpper);
+		} else {
+			// interval is both negative and positive
+			Interval res1 = remainder(new Interval(0, i1.upper), divisor);
+			Interval res2 = remainder(new Interval(i1.lower, 0), divisor);
+			return res1.join(res2);
+		}
 	}
 
 	public Interval limitToGreaterEqual(Interval other) {
