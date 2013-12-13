@@ -9,7 +9,7 @@ import java.util.LinkedList;
  */
 final public class IntervalHistory {
 
-	public final static int ITERATIONS_BEFORE_WIDENING = 5;
+	public final static int ITERATIONS_BEFORE_WIDENING = 6;
 
 	/**
 	 * The actual evolution of the interval.
