@@ -294,13 +294,12 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 			// only src2 reachable
 			trg.copyFrom(src2);
 		}
-
-		logger.info(String.format("Merge:\n    %s\n    %s\n    ============\n    %s\n", src1.toString(), src2.toString(), trg.toString()));
 	}
 
 	@Override
 	protected void merge(Unit op, StateContainer src1, StateContainer src2, StateContainer trg) {
 		merge(src1, src2, trg);
+		logger.info(String.format("Merge: %s\n    %s\n    %s\n    ============\n    %s\n", op, src1.toString(), src2.toString(), trg.toString()));
 		intervalPerVarHistory.considerWidening(op, trg.getIntervalPerVar());
 	}
 
