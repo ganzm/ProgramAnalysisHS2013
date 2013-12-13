@@ -80,6 +80,7 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 			// entrance check: do nothing on unreachable code
 			// (unreachable is where any intervals are empty)
 			if (currentInerval.hasEmptyIntervals()) {
+				logger.info("State unreachable - fail fast");
 				copyToMany(current, fallOut);
 				copyToMany(current, branchOuts);
 				return;
@@ -274,8 +275,25 @@ public class Analysis extends ForwardBranchedFlowAnalysis<StateContainer> {
 	@Override
 	protected void merge(StateContainer src1, StateContainer src2, StateContainer trg) {
 
-		trg.copyFrom(src1);
-		trg.mergeWith(src2);
+		boolean src1Unreachable = src1.getIntervalPerVar().hasEmptyIntervals();
+		boolean src2Unreachable = src2.getIntervalPerVar().hasEmptyIntervals();
+
+		if (src1Unreachable && src2Unreachable) {
+			// both states unreachable
+			// don't care, take any
+
+			trg.copyFrom(src1);
+		} else if (!src1Unreachable && !src2Unreachable) {
+			// both states reachable
+			trg.copyFrom(src1);
+			trg.mergeWith(src2);
+		} else if (!src1Unreachable) {
+			// only src1 reachable
+			trg.copyFrom(src1);
+		} else {
+			// only src2 reachable
+			trg.copyFrom(src2);
+		}
 
 		logger.info(String.format("Merge:\n    %s\n    %s\n    ============\n    %s\n", src1.toString(), src2.toString(), trg.toString()));
 	}
