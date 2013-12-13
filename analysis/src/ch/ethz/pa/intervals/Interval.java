@@ -891,8 +891,6 @@ final public class Interval {
 		int iNew1;
 		int iNew2;
 
-		logger.fine("Interval to shift\n" + i1.toBinString() + "shift by\n" + i2.toBinString());
-
 		if (Math.abs(i1.lower) > Math.abs(i1.upper)) {
 			iNew1 = i1.lower >> i2.lower;
 			iNew2 = i1.upper >> i2.upper;
@@ -903,7 +901,6 @@ final public class Interval {
 		}
 
 		Interval result = new Interval(Math.min(iNew1, iNew2), Math.max(iNew1, iNew2));
-		logger.fine("Result\n" + result.toBinString());
 		return result;
 	}
 

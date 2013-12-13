@@ -171,10 +171,10 @@ public class IntervalBitShiftLeftTest {
 	}
 
 	/**
-	 * Test some bit-or with random intervals, and print out precision information.
+	 * Test some bit-shl with random intervals, and print out precision information.
 	 */
 	@Test
-	public void testOrExpensive() {
+	public void testShlExpensive() {
 		for (int i = 0; i < 100; i++) {
 			Random rnd = new Random();
 			final int i1lo = rnd.nextInt(1000) - 500;
