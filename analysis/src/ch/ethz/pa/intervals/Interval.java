@@ -10,7 +10,7 @@ import ch.ethz.pa.BinaryUtil;
 /**
  * Interval is a read-only value type.
  */
-public class Interval {
+final public class Interval {
 	private static final Logger logger = Logger.getLogger(Interval.class.getSimpleName());
 
 	/**
@@ -917,5 +917,17 @@ public class Interval {
 		Interval result = new Interval(Math.min(iNew1, iNew2), Math.max(iNew1, iNew2));
 		logger.fine("Result\n" + result.toBinString());
 		return result;
+	}
+
+	public boolean lowerThan(int i) {
+		if (this == EMPTY_INTERVAL)
+			return false;
+		return upper < i;
+	}
+
+	public boolean greaterThan(int i) {
+		if (this == EMPTY_INTERVAL)
+			return false;
+		return lower > i;
 	}
 }

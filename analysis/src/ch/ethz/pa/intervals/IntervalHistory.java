@@ -101,13 +101,67 @@ public class IntervalHistory {
 
 		Interval modifiedInterval = getLatestInterval();
 		if (pushLowerCount > ITERATIONS_BEFORE_WIDENING) {
-			modifiedInterval = modifiedInterval.join(new Interval(Integer.MIN_VALUE));
+			modifiedInterval = widenLowerBound(modifiedInterval);
 		}
 		if (pushUpperCount > ITERATIONS_BEFORE_WIDENING) {
-			modifiedInterval = modifiedInterval.join(new Interval(Integer.MAX_VALUE));
+			modifiedInterval = widenUpperBound(modifiedInterval);
 		}
 
 		return recordAndCheckDifference(modifiedInterval);
+	}
+
+	public Interval widenUpperBound(Interval modifiedInterval) {
+		if (modifiedInterval.lowerThan(-1000))
+			return modifiedInterval.join(new Interval(-1000));
+		if (modifiedInterval.lowerThan(-999))
+			return modifiedInterval.join(new Interval(-999));
+		if (modifiedInterval.lowerThan(-16))
+			return modifiedInterval.join(new Interval(-16));
+		if (modifiedInterval.lowerThan(-15))
+			return modifiedInterval.join(new Interval(-15));
+		if (modifiedInterval.lowerThan(-1))
+			return modifiedInterval.join(new Interval(-1));
+		if (modifiedInterval.lowerThan(0))
+			return modifiedInterval.join(new Interval(0));
+		if (modifiedInterval.lowerThan(15))
+			return modifiedInterval.join(new Interval(15));
+		if (modifiedInterval.lowerThan(16))
+			return modifiedInterval.join(new Interval(16));
+		if (modifiedInterval.lowerThan(999))
+			return modifiedInterval.join(new Interval(999));
+		if (modifiedInterval.lowerThan(1000))
+			return modifiedInterval.join(new Interval(1000));
+		if (modifiedInterval.lowerThan(Integer.MAX_VALUE - 1))
+			return modifiedInterval.join(new Interval(Integer.MAX_VALUE - 1));
+		return modifiedInterval.join(new Interval(Integer.MAX_VALUE));
+	}
+
+	public Interval widenLowerBound(Interval modifiedInterval) {
+		if (modifiedInterval.greaterThan(1000))
+			return modifiedInterval.join(new Interval(1000));
+		if (modifiedInterval.greaterThan(999))
+			return modifiedInterval.join(new Interval(999));
+		if (modifiedInterval.greaterThan(16))
+			return modifiedInterval.join(new Interval(16));
+		if (modifiedInterval.greaterThan(15))
+			return modifiedInterval.join(new Interval(15));
+		if (modifiedInterval.greaterThan(1))
+			return modifiedInterval.join(new Interval(1));
+		if (modifiedInterval.greaterThan(0))
+			return modifiedInterval.join(new Interval(0));
+		if (modifiedInterval.greaterThan(-1))
+			return modifiedInterval.join(new Interval(-1));
+		if (modifiedInterval.greaterThan(-15))
+			return modifiedInterval.join(new Interval(-15));
+		if (modifiedInterval.greaterThan(-16))
+			return modifiedInterval.join(new Interval(-16));
+		if (modifiedInterval.greaterThan(-999))
+			return modifiedInterval.join(new Interval(-999));
+		if (modifiedInterval.greaterThan(-1000))
+			return modifiedInterval.join(new Interval(-1000));
+		if (modifiedInterval.greaterThan(Integer.MIN_VALUE + 1))
+			return modifiedInterval.join(new Interval(Integer.MIN_VALUE + 1));
+		return modifiedInterval.join(new Interval(Integer.MIN_VALUE));
 	}
 
 	/**
