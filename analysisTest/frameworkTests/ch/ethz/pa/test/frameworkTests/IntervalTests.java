@@ -100,6 +100,66 @@ public class IntervalTests {
 	}
 
 	@Test
+	public void testRemainder2() {
+
+		System.out.println("-2 % 7 = " + (-2 % 7));
+		System.out.println("-16 % 7 = " + (-16 % 7));
+		System.out.println("-1 % 7 = " + (-1 % 7));
+		System.out.println("-1 % -7 = " + (-1 % -7));
+		System.out.println("1 % -7 = " + (1 % -7));
+
+		System.out.println("-999 % 101 = " + (-999 % 101));
+		System.out.println("-908 101 = " + (-908 % 101));
+		System.out.println("-999 % 99 = " + (-999 % 99));
+
+		Interval i1;
+		Interval i2;
+		Interval res;
+		boolean[] divisionByZero = new boolean[1];
+
+		i1 = new Interval(0, Integer.MAX_VALUE);
+		i2 = new Interval(99, 101);
+		res = new Interval(0, 100);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-2, 10);
+		i2 = new Interval(5, 5);
+		res = new Interval(-2, 4);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-10, -8);
+		i2 = new Interval(5, 5);
+		res = new Interval(-4, -3);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-10, 10);
+		i2 = new Interval(2, 3);
+		res = new Interval(-2, 2);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-10, 10);
+		i2 = new Interval(-2, -3);
+		res = new Interval(-2, 2);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-5, 5);
+		i2 = new Interval(8, 10);
+		res = new Interval(-5, 5);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-10, -8);
+		i2 = new Interval(4, 5);
+		res = new Interval(-4, 0);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-999, 99);
+		i2 = new Interval(99, 101);
+		res = new Interval(-100, 100);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+	}
+
+	@Test
 	public void testSubtract() {
 		Interval i1;
 		Interval i2;
