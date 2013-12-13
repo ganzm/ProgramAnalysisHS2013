@@ -70,13 +70,13 @@ public class IntervalTests {
 			// dividend within minimum and maximum divisor magnitude
 			Assert.assertEquals(new Interval(-110, 120), Interval.remainder(new Interval(-110, 120), divisor, flag));
 			// dividend exceeds negative divisor magnitude
-			Assert.assertEquals(new Interval(-150, 90), Interval.remainder(new Interval(-170, 90), divisor, flag));
-			Assert.assertEquals(new Interval(-150, 120), Interval.remainder(new Interval(-170, 120), divisor, flag));
+			Assert.assertEquals(new Interval(-149, 90), Interval.remainder(new Interval(-170, 90), divisor, flag));
+			Assert.assertEquals(new Interval(-149, 120), Interval.remainder(new Interval(-170, 120), divisor, flag));
 			// dividend exceeds positive divisor magnitude
-			Assert.assertEquals(new Interval(-80, 150), Interval.remainder(new Interval(-80, 170), divisor, flag));
-			Assert.assertEquals(new Interval(-110, 150), Interval.remainder(new Interval(-110, 170), divisor, flag));
+			Assert.assertEquals(new Interval(-80, 149), Interval.remainder(new Interval(-80, 170), divisor, flag));
+			Assert.assertEquals(new Interval(-110, 149), Interval.remainder(new Interval(-110, 170), divisor, flag));
 			// dividend exceed divisor completely
-			Assert.assertEquals(new Interval(-150, 150), Interval.remainder(new Interval(-170, 170), divisor, flag));
+			Assert.assertEquals(new Interval(-149, 149), Interval.remainder(new Interval(-170, 170), divisor, flag));
 		}
 
 		// simple cases where divisor is unique (has only one element) and dividend is positive
@@ -100,6 +100,86 @@ public class IntervalTests {
 	}
 
 	@Test
+	public void testRemainder2() {
+
+		System.out.println("-2 % 7 = " + (-2 % 7));
+		System.out.println("-16 % 7 = " + (-16 % 7));
+		System.out.println("-1 % 7 = " + (-1 % 7));
+		System.out.println("-1 % -7 = " + (-1 % -7));
+		System.out.println("1 % -7 = " + (1 % -7));
+
+		System.out.println("-999 % 101 = " + (-999 % 101));
+		System.out.println("-908 101 = " + (-908 % 101));
+		System.out.println("-999 % 99 = " + (-999 % 99));
+
+		Interval i1;
+		Interval i2;
+		Interval res;
+		boolean[] divisionByZero = new boolean[1];
+
+		i1 = new Interval(0, Integer.MAX_VALUE);
+		i2 = new Interval(99, 101);
+		res = new Interval(0, 100);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(0);
+		i2 = new Interval(Integer.MIN_VALUE, Integer.MAX_VALUE);
+		res = new Interval(0);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-2, 10);
+		i2 = new Interval(5, 5);
+		res = new Interval(-2, 4);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(5, 6);
+		i2 = new Interval(4, 5);
+		res = new Interval(0, 2);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-10, -8);
+		i2 = new Interval(5, 5);
+		res = new Interval(-4, -3);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-10, 10);
+		i2 = new Interval(2, 3);
+		res = new Interval(-2, 2);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-10, 10);
+		i2 = new Interval(-3, -2);
+		res = new Interval(-2, 2);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-5, 5);
+		i2 = new Interval(8, 10);
+		res = new Interval(-5, 5);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-10, -8);
+		i2 = new Interval(4, 5);
+		res = new Interval(-4, 0);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(4, 6);
+		i2 = new Interval(5);
+		res = new Interval(0, 4);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(5, 6);
+		i2 = new Interval(5);
+		res = new Interval(0, 1);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+		i1 = new Interval(-999, 999);
+		i2 = new Interval(99, 101);
+		res = new Interval(-100, 100);
+		Assert.assertEquals(res, Interval.remainder(i1, i2, divisionByZero));
+
+	}
+
+	@Test
 	public void testSubtract() {
 		Interval i1;
 		Interval i2;
@@ -110,16 +190,67 @@ public class IntervalTests {
 		res = new Interval(-3, 4);
 		Assert.assertEquals(res, Interval.subtract(i1, i2));
 
-		// upper value overflow
-		i1 = new Interval(-2147483647, 2147483647);
-		i2 = new Interval(-2147483648);
-		res = new Interval(1, Integer.MAX_VALUE);
+	}
+
+	@Test
+	public void testAddUnderflowOverflow() {
+		Interval i1;
+		Interval i2;
+		Interval res;
+
+		// only one overflow
+		i1 = new Interval(Integer.MAX_VALUE - 1, Integer.MAX_VALUE);
+		i2 = new Interval(1);
+		res = Interval.TOP_INTERVAL;
+		Assert.assertEquals(res, Interval.plus(i1, i2));
+
+		// both overflow
+		i1 = new Interval(Integer.MAX_VALUE - 1, Integer.MAX_VALUE);
+		i2 = new Interval(2, 3);
+		res = new Interval(Integer.MIN_VALUE, Integer.MIN_VALUE + 2);
+		Assert.assertEquals(res, Interval.plus(i1, i2));
+
+		// only one underflow
+		i1 = new Interval(Integer.MIN_VALUE, Integer.MIN_VALUE + 1);
+		i2 = new Interval(-1);
+		res = Interval.TOP_INTERVAL;
+		Assert.assertEquals(res, Interval.plus(i1, i2));
+
+		// both underflow
+		i1 = new Interval(Integer.MIN_VALUE, Integer.MIN_VALUE + 1);
+		i2 = new Interval(-3, -2);
+		res = new Interval(Integer.MAX_VALUE - 2, Integer.MAX_VALUE);
+		Assert.assertEquals(res, Interval.plus(i1, i2));
+	}
+
+	@Test
+	public void testSubtractUnderflowOverflow() {
+		Interval i1;
+		Interval i2;
+		Interval res;
+
+		// only one overflow
+		i1 = new Interval(Integer.MAX_VALUE - 1, Integer.MAX_VALUE);
+		i2 = new Interval(-1);
+		res = Interval.TOP_INTERVAL;
 		Assert.assertEquals(res, Interval.subtract(i1, i2));
 
-		// underflow
-		i1 = new Interval(Integer.MIN_VALUE, 0);
+		// both overflow
+		i1 = new Interval(Integer.MAX_VALUE - 1, Integer.MAX_VALUE);
+		i2 = new Interval(-3, -2);
+		res = new Interval(Integer.MIN_VALUE, Integer.MIN_VALUE + 2);
+		Assert.assertEquals(res, Interval.subtract(i1, i2));
+
+		// only one underflow
+		i1 = new Interval(Integer.MIN_VALUE, Integer.MIN_VALUE + 1);
 		i2 = new Interval(1);
-		res = new Interval(Integer.MIN_VALUE, -1);
+		res = Interval.TOP_INTERVAL;
+		Assert.assertEquals(res, Interval.subtract(i1, i2));
+
+		// both underflow
+		i1 = new Interval(Integer.MIN_VALUE, Integer.MIN_VALUE + 1);
+		i2 = new Interval(2, 3);
+		res = new Interval(Integer.MAX_VALUE - 2, Integer.MAX_VALUE);
 		Assert.assertEquals(res, Interval.subtract(i1, i2));
 
 	}
