@@ -17,6 +17,16 @@ public class ImpreciseTest extends ValidationTestBase {
 	}
 
 	@Test(timeout = 10000)
+	public void testTestSimpleGen10_199_at_testRRR_OK_24_Simplified1() {
+		testAnyProgram("TestSimpleGen10_199_at_testRRR_OK_24_Simplified1", SAFE);
+	}
+
+	@Test(timeout = 10000)
+	public void testTestSimpleGen10_199_at_testRRR_OK_24_Simplified2() {
+		testAnyProgram("TestSimpleGen10_199_at_testRRR_OK_24_Simplified2", SAFE);
+	}
+
+	@Test(timeout = 10000)
 	public void testTestSimpleGen11_380_at_testOAMu_OK_8() {
 		testAnyProgram("TestSimpleGen11_380_at_testOAMu_OK_8", SAFE);
 	}
